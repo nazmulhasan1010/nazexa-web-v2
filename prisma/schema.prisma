@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model HomeSection {
+  id       String  @id @default(uuid())
+  type     String
+  position Int
+  visible  Boolean @default(true)
+  title    String?
+  subtitle String?
+  content  String  @db.LongText
+
+  @@map("home_sections")
+}
+
+model SiteSettings {
+  id                      String  @id @default(uuid())
+  site_name               String
+  tagline                 String?
+  default_seo_title       String?
+  default_seo_description String? @db.Text
+  theme                   String  @db.LongText
+
+  @@map("site_settings")
+}
+
+model Page {
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  title           String
+  eyebrow         String?
+  description     String?  @db.Text
+  seo_title       String?
+  seo_description String?  @db.Text
+  og_image_url    String?
+  published       Boolean  @default(false)
+  updated_at      DateTime @updatedAt
+
+  @@map("pages")
+}
+
+model ContentItem {
+  id         String  @id @default(uuid())
+  collection String
+  slug       String
+  position   Int
+  published  Boolean @default(false)
+  title      String?
+  subtitle   String? @db.Text
+  body       String? @db.LongText
+  icon       String?
+  tone       String?
+  category   String?
+  image_url  String?
+  link_url   String?
+  link_label String?
+  data       String? @db.LongText
+
+  @@map("content_items")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password_hash String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+
+  sessions       Session[]
+  accounts       Account[]
+  authorizations Authorization[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id
+  userId       String
+  expiresAt    DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Application {
+  id             String   @id @default(uuid())
+  clientId       String   @unique
+  clientSecret   String
+  name           String
+  redirectUris   String   @db.Text
+  allowedOrigins String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  authorizations Authorization[]
+
+  @@map("applications")
+}
+
+model Authorization {
+  id            String   @id @default(uuid())
+  userId        String
+  applicationId String
+  scopes        String?
+  createdAt     DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, applicationId])
+  @@map("authorizations")
+}
