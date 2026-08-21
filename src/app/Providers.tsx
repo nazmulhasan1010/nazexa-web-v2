@@ -12,8 +12,15 @@ import {
   NoiseOverlay,
 } from "@/components/backgrounds/AnimatedBackground";
 import { Toaster } from "@/components/ui/sonner";
+import type { ContentItem } from "@/lib/cms";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  products,
+}: {
+  children: React.ReactNode;
+  products: ContentItem[];
+}) {
   const [queryClient] = useState(() => new QueryClient());
   const pathname = usePathname();
   const bare = pathname?.startsWith("/admin") || pathname?.startsWith("/auth");
@@ -24,7 +31,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <ThemeSync />
         {!bare && <MouseGlow />}
         <NoiseOverlay />
-        {!bare && <SiteHeader />}
+        {!bare && <SiteHeader products={products} />}
         <main className="relative z-10">{children}</main>
         {!bare && <SiteFooter />}
         <Toaster />

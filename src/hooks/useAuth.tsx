@@ -6,7 +6,14 @@ import { createContext, useContext, type ReactNode } from "react";
 import { getSession, logout } from "@/lib/auth.server";
 
 type AuthContextValue = {
-  user: { id: string; email: string } | null;
+  user: {
+    id: string;
+    email: string;
+    name?: string | null;
+    image?: string | null;
+    emailVerified?: Date | null | string;
+    hasPassword?: boolean;
+  } | null;
   loading: boolean;
 };
 
@@ -45,6 +52,6 @@ export function useSignOut() {
     await logout();
     await queryClient.cancelQueries();
     queryClient.clear();
-    router.replace("/auth");
+    router.replace("/login");
   };
 }

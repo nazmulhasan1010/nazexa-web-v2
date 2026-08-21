@@ -1,27 +1,20 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/auth";
+import { getSession, issueApplicationToken } from "@/lib/auth";
 
 export async function POST(request: Request) {
-  // This endpoint serves as a mini-OAuth token issuer for internal Nazexa apps.
-  // In a real OAuth flow, this exchanges an authorization code for an access token.
-  // Since DB Design and DEV Tools run on the same ecosystem, they can just validate via the HTTP-only session directly or exchange a short-lived ticket.
-
   try {
     const body = await request.json();
     const { client_id, client_secret, grant_type } = body;
 
-    // Very basic Client Credentials/App validation
+    // Validate Application Client
     const app = await db.application.findUnique({
       where: { clientId: client_id },
     });
 
-    if (!app || app.clientSecret !== client_secret) {
+    if (!app || app.clientSecret !== client_secret || app.status !== "active") {
       return NextResponse.json({ error: "invalid_client" }, { status: 401 });
     }
-
-    // Since they share the domain cookie (e.g. nazexa.com/db-design), we can just fetch the active user session!
-    // Alternatively, if this was cross-domain, we'd exchange an 'authorization_code' grant here.
 
     if (grant_type === "session_exchange") {
       const user = await getSession();
@@ -32,22 +25,30 @@ export async function POST(request: Request) {
         );
       }
 
+      if (user.status !== "active") {
+        return NextResponse.json(
+          { error: "account_disabled" },
+          { status: 403 },
+        );
+      }
+
+      const scopes = "profile email";
+
       // Record authorization grant
       await db.authorization.upsert({
         where: {
           userId_applicationId: { userId: user.id, applicationId: app.id },
         },
-        create: {
-          userId: user.id,
-          applicationId: app.id,
-          scopes: "profile email",
-        },
+        create: { userId: user.id, applicationId: app.id, scopes },
         update: {},
       });
 
-      // We could issue a dedicated JWT access_token here specifically for this app
+      const access_token = await issueApplicationToken(user.id, app.id, scopes);
+
       return NextResponse.json({
-        access_token: "mock-access-token-since-we-rely-on-cookie",
+        access_token,
+        token_type: "Bearer",
+        expires_in: 3600,
         user_info: { id: user.id, email: user.email, name: user.name },
       });
     }

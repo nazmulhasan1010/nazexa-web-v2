@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Providers } from "./Providers";
 import { constructMetadata, generateOrganizationSchema } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
+import { fetchContentItems } from "@/lib/cms";
 import "../styles.css";
 
 export const metadata: Metadata = {
@@ -24,11 +25,13 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const dynamicProducts = await fetchContentItems("products");
+
   return (
     <html lang="en">
       <head>
@@ -48,7 +51,7 @@ export default function RootLayout({
         <JsonLd schema={generateOrganizationSchema()} />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers products={dynamicProducts}>{children}</Providers>
       </body>
     </html>
   );

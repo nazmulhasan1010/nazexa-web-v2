@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import { constructMetadata } from "@/lib/seo";
 import { StandardPage } from "@/components/site/PageShell";
 import { pages } from "@/lib/site-content";
+import { ContactForm } from "@/components/forms/ContactForm";
+import { db } from "@/lib/db";
 
 const page = pages["contact"]!;
 
@@ -14,7 +16,9 @@ export const metadata = constructMetadata({
   url: "/contact",
 });
 
-export default function Page() {
+export default async function Page() {
+  const settings = await db.contactSettings.findFirst();
+
   return (
     <>
       <script
@@ -28,7 +32,12 @@ export default function Page() {
           }),
         }}
       />
-      <StandardPage page={page} />
+      <div className="pb-24">
+        <StandardPage page={page} />
+        <div className="px-5 relative z-10">
+          <ContactForm settings={settings || undefined} />
+        </div>
+      </div>
     </>
   );
 }

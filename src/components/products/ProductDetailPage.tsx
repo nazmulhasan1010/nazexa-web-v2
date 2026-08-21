@@ -82,7 +82,7 @@ export function ProductDetailPage({ product }: { product: ProductDetail }) {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link href="/pricing">See pricing</Link>
+                  <Link href={`/${product.slug}/pricing`}>See pricing</Link>
                 </Button>
               </div>
             </Reveal>

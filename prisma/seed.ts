@@ -214,6 +214,35 @@ async function main() {
     },
   ]);
 
+  // Seed ContactSettings
+  await prisma.contactSettings.deleteMany();
+  await prisma.contactSettings.create({
+    data: {
+      title: "Let's talk about your project",
+      subtitle:
+        "Whether you have a question about features, pricing, need a demo, or anything else, our team is ready to answer all your questions.",
+      phone: "+1 (555) 000-0000",
+      email: "hello@nazexa.com",
+      address: "123 Tech Avenue, NY 10001",
+    },
+  });
+
+  // 5. Seed Applications for SSO
+  await prisma.application.upsert({
+    where: { clientId: "nazexa-db-design" },
+    create: {
+      clientId: "nazexa-db-design",
+      clientSecret: "secret-db-design-123",
+      name: "Nazexa DB Design",
+      redirectUris: "http://localhost:3001/api/auth/sso/callback",
+      allowedOrigins: "http://localhost:3001",
+    },
+    update: {
+      clientSecret: "secret-db-design-123",
+      redirectUris: "http://localhost:3001/api/auth/sso/callback",
+    }
+  });
+
   console.log("Database seeded successfully!");
 }
 

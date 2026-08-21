@@ -11,6 +11,8 @@ import {
   LogOut,
   Loader2,
   Library,
+  MessageSquare,
+  PhoneCall,
 } from "lucide-react";
 import { useEffect } from "react";
 
@@ -25,6 +27,8 @@ const nav = [
   { to: "/admin/pages", label: "Pages", icon: FileText },
   { to: "/admin/theme", label: "Theme", icon: Palette },
   { to: "/admin/seo", label: "SEO", icon: Search },
+  { to: "/admin/messages", label: "Messages", icon: MessageSquare },
+  { to: "/admin/contact-settings", label: "Contact Config", icon: PhoneCall },
 ];
 
 export default function AdminLayout({

@@ -18,6 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { PageBlock, PageContent } from "@/lib/site-content";
+import { PricingTiers } from "@/components/pricing/PricingTiers";
 
 export function PageHero({
   eyebrow,
@@ -538,55 +539,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
         if (block.kind === "pricing") {
           return (
             <Section key={i} title={block.title}>
-              <div className="grid gap-5 lg:grid-cols-3">
-                {block.tiers.map((tier, j) => (
-                  <Reveal key={tier.name} variant="up" delay={j * 90}>
-                    <div
-                      className={`surface-card flex h-full flex-col p-7 ${tier.highlight ? "glow-ring ring-1 ring-primary/40" : ""}`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold">{tier.name}</h3>
-                        {tier.highlight ? (
-                          <Badge className="bg-primary/15 text-primary">
-                            Most popular
-                          </Badge>
-                        ) : null}
-                      </div>
-                      <div className="mt-4 flex items-baseline gap-2">
-                        <span className="text-gradient font-display text-4xl font-semibold">
-                          {tier.price}
-                        </span>
-                        {tier.cadence ? (
-                          <span className="text-xs text-muted-foreground">
-                            {tier.cadence}
-                          </span>
-                        ) : null}
-                      </div>
-                      <p className="mt-3 text-sm text-muted-foreground">
-                        {tier.body}
-                      </p>
-                      <ul className="mt-6 flex-1 space-y-3">
-                        {tier.features.map((ft) => (
-                          <li
-                            key={ft}
-                            className="flex gap-2 text-sm text-muted-foreground"
-                          >
-                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                            <span>{ft}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <Button
-                        asChild
-                        className="mt-7"
-                        variant={tier.highlight ? "default" : "outline"}
-                      >
-                        <Link href="/contact">Get started</Link>
-                      </Button>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
+              <PricingTiers tiers={block.tiers as any} />
             </Section>
           );
         }

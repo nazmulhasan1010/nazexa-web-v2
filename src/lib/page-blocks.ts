@@ -2093,11 +2093,6 @@ const { rows } = await db.query(sql\`
           },
         ],
       },
-      {
-        kind: "cta",
-        title: "Prefer to talk?",
-        body: "Book a 30-minute call with a solutions engineer at a time that suits your timezone.",
-      },
     ],
   },
 
@@ -2716,14 +2711,6 @@ cosign verify-blob \\
         body: "Sales can send the SOC 2 report, penetration test summary and questionnaire answers within one business day.",
       },
     ],
-  },
-
-  services: {
-    tone: "brand-2",
-    heroVariant: "split",
-    intro:
-      "Beyond the platform, our solution architects and implementation teams ensure your transition to Nazexa is predictable and fast.",
-    blocks: [],
   },
 
   privacy: {

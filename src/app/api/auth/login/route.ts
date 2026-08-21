@@ -28,6 +28,32 @@ export async function POST(request: Request) {
       );
     }
 
+    if (user.status !== "active") {
+      return NextResponse.json(
+        { error: "Account is disabled" },
+        { status: 403 },
+      );
+    }
+
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+
+    await db.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date(), lastLoginIp: ip },
+      });
+      await tx.userEvent.create({
+        data: {
+          eventId: crypto.randomUUID(),
+          centralUserId: user.id,
+          source: "nazexa-web-core",
+          eventType: "USER_LOGGED_IN",
+          payload: JSON.stringify({ ip }),
+          status: "pending",
+        },
+      });
+    });
+
     await createSession(user.id);
 
     return NextResponse.json({
@@ -37,6 +63,7 @@ export async function POST(request: Request) {
         name: user.name,
         email: user.email,
         emailVerified: user.emailVerified,
+        status: user.status,
       },
     });
   } catch (error) {

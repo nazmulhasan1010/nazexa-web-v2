@@ -76,14 +76,18 @@ model User {
   name          String?
   email         String    @unique
   emailVerified DateTime?
-  image         String?
+  image         String?   @db.LongText
   password_hash String?
+  status        String    @default("active")
+  lastLoginAt   DateTime?
+  lastLoginIp   String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now()) @updatedAt
 
   sessions       Session[]
   accounts       Account[]
   authorizations Authorization[]
+  emailVerificationCodes EmailVerificationCode[]
 
   @@map("users")
 }
@@ -126,11 +130,27 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+model EmailVerificationCode {
+  id        String   @id @default(cuid())
+  userId    String
+  email     String
+  code      String   /// 6-digit numeric code (stored as bcrypt hash)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([email])
+  @@map("email_verification_codes")
+}
+
 model Application {
   id             String   @id @default(uuid())
   clientId       String   @unique
   clientSecret   String
   name           String
+  status         String   @default("active")
   redirectUris   String   @db.Text
   allowedOrigins String?  @db.Text
   createdAt      DateTime @default(now())
@@ -153,4 +173,42 @@ model Authorization {
 
   @@unique([userId, applicationId])
   @@map("authorizations")
+}
+
+model UserEvent {
+  id            String   @id @default(uuid())
+  eventId       String   @unique @default(uuid())
+  source        String
+  centralUserId String
+  eventType     String
+  payload       String   @db.LongText
+  status        String   @default("pending")
+  createdAt     DateTime @default(now())
+
+  @@index([centralUserId])
+  @@index([status])
+  @@map("user_events")
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String?
+  email     String?
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  userId    String?
+
+  @@map("contact_messages")
+}
+
+model ContactSettings {
+  id       String @id @default(uuid())
+  title    String
+  subtitle String @db.Text
+  phone    String
+  email    String
+  address  String
+
+  @@map("contact_settings")
 }

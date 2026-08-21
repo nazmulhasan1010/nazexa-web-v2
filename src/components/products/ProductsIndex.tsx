@@ -94,7 +94,7 @@ export function ProductsIndex({
                     </Button>
                   )}
                   <Button asChild variant="outline">
-                    <Link href="/pricing">Pricing</Link>
+                    <Link href={`/${p.slug}/pricing`}>Pricing</Link>
                   </Button>
                 </div>
               </article>

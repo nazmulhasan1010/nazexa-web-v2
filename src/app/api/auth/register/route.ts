@@ -17,23 +17,57 @@ export async function POST(request: Request) {
       );
     }
 
-    const password_hash = await hashPassword(password);
-    const user = await db.user.create({
-      data: { name, email, password_hash },
+    const hashedPassword = await hashPassword(password);
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+
+    // 4. Create user and events in transaction
+    const newUser = await db.$transaction(async (tx) => {
+      const u = await tx.user.create({
+        data: {
+          name,
+          email,
+          password_hash: hashedPassword,
+          lastLoginAt: new Date(),
+          lastLoginIp: ip,
+        },
+      });
+
+      await tx.userEvent.create({
+        data: {
+          eventId: crypto.randomUUID(),
+          centralUserId: u.id,
+          source: "nazexa-web-core",
+          eventType: "USER_CREATED",
+          payload: JSON.stringify({ provider: "email" }),
+        },
+      });
+      await tx.userEvent.create({
+        data: {
+          eventId: crypto.randomUUID(),
+          centralUserId: u.id,
+          source: "nazexa-web-core",
+          eventType: "USER_LOGGED_IN",
+          payload: JSON.stringify({ ip, provider: "email" }),
+        },
+      });
+      return u;
     });
 
-    // TODO: Integrate with Resend/AWS SES to send a verification email with a token
-    // For now we'll create the session (users can log in, but emailVerified is null)
-
-    await createSession(user.id);
+    // 5. Create secure session
+    await createSession(newUser.id);
 
     return NextResponse.json({
       success: true,
-      user: { id: user.id, name, email, emailVerified: user.emailVerified },
+      user: {
+        id: newUser.id,
+        name,
+        email,
+        emailVerified: newUser.emailVerified,
+      },
     });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: error.message || "Internal server error" },
       { status: 500 },
     );
   }
