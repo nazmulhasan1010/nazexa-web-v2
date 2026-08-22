@@ -1,7 +1,7 @@
-"use server";
+'use server';
 
-import { queryOptions } from "@tanstack/react-query";
-import { db } from "./db";
+import { queryOptions } from '@tanstack/react-query';
+import { db } from './db';
 
 export type HomeSection = {
   id: string;
@@ -65,7 +65,7 @@ export type ContentItem = {
 
 export async function fetchHomeSections() {
   const sections = await db.homeSection.findMany({
-    orderBy: { position: "asc" },
+    orderBy: { position: 'asc' },
   });
   return sections.map((s) => ({
     ...s,
@@ -75,7 +75,7 @@ export async function fetchHomeSections() {
 
 export async function fetchSiteSettings() {
   const settings = await db.siteSettings.findUnique({
-    where: { id: "default" },
+    where: { id: 'default' },
   });
   if (!settings) return null;
   return {
@@ -86,7 +86,7 @@ export async function fetchSiteSettings() {
 
 export async function fetchCmsPages() {
   const pages = await db.page.findMany({
-    orderBy: { updated_at: "desc" },
+    orderBy: { updated_at: 'desc' },
   });
   return pages.map((p) => ({
     ...p,
@@ -97,22 +97,22 @@ export async function fetchCmsPages() {
 export async function fetchContentItems(collection: string) {
   const items = await db.contentItem.findMany({
     where: { collection, published: true },
-    orderBy: { position: "asc" },
+    orderBy: { position: 'asc' },
   });
   return items.map((item) => ({
     ...item,
-    data: JSON.parse(item.data || "{}") as Record<string, unknown>,
+    data: JSON.parse(item.data || '{}') as Record<string, unknown>,
   })) as ContentItem[];
 }
 
 export async function fetchAdminContentItems(collection: string) {
   const items = await db.contentItem.findMany({
     where: { collection },
-    orderBy: { position: "asc" },
+    orderBy: { position: 'asc' },
   });
   return items.map((item) => ({
     ...item,
-    data: JSON.parse(item.data || "{}") as Record<string, unknown>,
+    data: JSON.parse(item.data || '{}') as Record<string, unknown>,
   })) as ContentItem[];
 }
 
@@ -120,15 +120,14 @@ export async function fetchAdminContentItems(collection: string) {
 export async function upsertCmsPage(page: Partial<CmsPage>) {
   try {
     const payload = {
-      slug: (page.slug ?? "").trim().replace(/^\/+/, ""),
-      title: (page.title ?? "").trim(),
+      slug: (page.slug ?? '').trim().replace(/^\/+/, ''),
+      title: (page.title ?? '').trim(),
       description: page.description ?? null,
       seo_title: page.seo_title ?? null,
       seo_description: page.seo_description ?? null,
       published: page.published ?? false,
     };
-    if (!payload.slug || !payload.title)
-      return { error: "Slug and title are required" };
+    if (!payload.slug || !payload.title) return { error: 'Slug and title are required' };
 
     if (page.id) {
       await db.page.update({
@@ -142,8 +141,8 @@ export async function upsertCmsPage(page: Partial<CmsPage>) {
     }
     return { success: true };
   } catch (err: any) {
-    console.error("Save error:", err);
-    return { error: "Failed to save CMS page. Please try again." };
+    console.error('Save error:', err);
+    return { error: 'Failed to save CMS page. Please try again.' };
   }
 }
 
@@ -153,7 +152,7 @@ export async function deleteCmsPage(id: string) {
 }
 
 export async function saveContentItems(
-  rows: (ContentItem & { _new?: boolean; _deleted?: boolean })[],
+  rows: (ContentItem & { _new?: boolean; _deleted?: boolean })[]
 ) {
   const removed = rows.filter((r) => r._deleted && !r._new).map((r) => r.id);
   if (removed.length > 0) {
@@ -164,7 +163,7 @@ export async function saveContentItems(
   for (const [index, row] of keep.entries()) {
     const payload = {
       collection: row.collection,
-      slug: row.slug ?? "",
+      slug: row.slug ?? '',
       position: index,
       published: row.published,
       title: row.title,
@@ -215,11 +214,10 @@ export async function saveSiteSettings(settings: Partial<SiteSettings>) {
     payload.default_seo_title = settings.default_seo_title;
   if (settings.default_seo_description !== undefined)
     payload.default_seo_description = settings.default_seo_description;
-  if (settings.theme !== undefined)
-    payload.theme = JSON.stringify(settings.theme);
+  if (settings.theme !== undefined) payload.theme = JSON.stringify(settings.theme);
 
   await db.siteSettings.update({
-    where: { id: "default" },
+    where: { id: 'default' },
     data: payload,
   });
   return true;

@@ -7,16 +7,15 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client";
-import type * as $Enums from "../enums.js";
-import type * as Prisma from "../internal/prismaNamespace.js";
+import type * as runtime from '@prisma/client/runtime/client';
+import type * as $Enums from '../enums.js';
+import type * as Prisma from '../internal/prismaNamespace.js';
 
 /**
  * Model Page
  *
  */
-export type PageModel =
-  runtime.Types.Result.DefaultSelection<Prisma.$PagePayload>;
+export type PageModel = runtime.Types.Result.DefaultSelection<Prisma.$PagePayload>;
 
 export type AggregatePage = {
   _count: PageCountAggregateOutputType | null;
@@ -105,8 +104,7 @@ export type PageCountAggregateInputType = {
 };
 
 export type PageAggregateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Filter which Page to aggregate.
@@ -117,8 +115,7 @@ export type PageAggregateArgs<
    *
    * Determine the order of Pages to fetch.
    */
-  orderBy?:
-    Prisma.PageOrderByWithRelationInput | Prisma.PageOrderByWithRelationInput[];
+  orderBy?: Prisma.PageOrderByWithRelationInput | Prisma.PageOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -158,7 +155,7 @@ export type PageAggregateArgs<
 };
 
 export type GetPageAggregateType<T extends PageAggregateArgs> = {
-  [P in keyof T & keyof AggregatePage]: P extends "_count" | "count"
+  [P in keyof T & keyof AggregatePage]: P extends '_count' | 'count'
     ? T[P] extends true
       ? number
       : Prisma.GetScalarType<T[P], AggregatePage[P]>
@@ -166,13 +163,10 @@ export type GetPageAggregateType<T extends PageAggregateArgs> = {
 };
 
 export type PageGroupByArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   where?: Prisma.PageWhereInput;
-  orderBy?:
-    | Prisma.PageOrderByWithAggregationInput
-    | Prisma.PageOrderByWithAggregationInput[];
+  orderBy?: Prisma.PageOrderByWithAggregationInput | Prisma.PageOrderByWithAggregationInput[];
   by: Prisma.PageScalarFieldEnum[] | Prisma.PageScalarFieldEnum;
   having?: Prisma.PageScalarWhereWithAggregatesInput;
   take?: number;
@@ -198,33 +192,32 @@ export type PageGroupByOutputType = {
   _max: PageMaxAggregateOutputType | null;
 };
 
-export type GetPageGroupByPayload<T extends PageGroupByArgs> =
-  Prisma.PrismaPromise<
-    Array<
-      Prisma.PickEnumerable<PageGroupByOutputType, T["by"]> & {
-        [P in keyof T & keyof PageGroupByOutputType]: P extends "_count"
-          ? T[P] extends boolean
-            ? number
-            : Prisma.GetScalarType<T[P], PageGroupByOutputType[P]>
-          : Prisma.GetScalarType<T[P], PageGroupByOutputType[P]>;
-      }
-    >
-  >;
+export type GetPageGroupByPayload<T extends PageGroupByArgs> = Prisma.PrismaPromise<
+  Array<
+    Prisma.PickEnumerable<PageGroupByOutputType, T['by']> & {
+      [P in keyof T & keyof PageGroupByOutputType]: P extends '_count'
+        ? T[P] extends boolean
+          ? number
+          : Prisma.GetScalarType<T[P], PageGroupByOutputType[P]>
+        : Prisma.GetScalarType<T[P], PageGroupByOutputType[P]>;
+    }
+  >
+>;
 
 export type PageWhereInput = {
   AND?: Prisma.PageWhereInput | Prisma.PageWhereInput[];
   OR?: Prisma.PageWhereInput[];
   NOT?: Prisma.PageWhereInput | Prisma.PageWhereInput[];
-  id?: Prisma.StringFilter<"Page"> | string;
-  slug?: Prisma.StringFilter<"Page"> | string;
-  title?: Prisma.StringFilter<"Page"> | string;
-  eyebrow?: Prisma.StringNullableFilter<"Page"> | string | null;
-  description?: Prisma.StringNullableFilter<"Page"> | string | null;
-  seo_title?: Prisma.StringNullableFilter<"Page"> | string | null;
-  seo_description?: Prisma.StringNullableFilter<"Page"> | string | null;
-  og_image_url?: Prisma.StringNullableFilter<"Page"> | string | null;
-  published?: Prisma.BoolFilter<"Page"> | boolean;
-  updated_at?: Prisma.DateTimeFilter<"Page"> | Date | string;
+  id?: Prisma.StringFilter<'Page'> | string;
+  slug?: Prisma.StringFilter<'Page'> | string;
+  title?: Prisma.StringFilter<'Page'> | string;
+  eyebrow?: Prisma.StringNullableFilter<'Page'> | string | null;
+  description?: Prisma.StringNullableFilter<'Page'> | string | null;
+  seo_title?: Prisma.StringNullableFilter<'Page'> | string | null;
+  seo_description?: Prisma.StringNullableFilter<'Page'> | string | null;
+  og_image_url?: Prisma.StringNullableFilter<'Page'> | string | null;
+  published?: Prisma.BoolFilter<'Page'> | boolean;
+  updated_at?: Prisma.DateTimeFilter<'Page'> | Date | string;
 };
 
 export type PageOrderByWithRelationInput = {
@@ -247,16 +240,16 @@ export type PageWhereUniqueInput = Prisma.AtLeast<
     AND?: Prisma.PageWhereInput | Prisma.PageWhereInput[];
     OR?: Prisma.PageWhereInput[];
     NOT?: Prisma.PageWhereInput | Prisma.PageWhereInput[];
-    title?: Prisma.StringFilter<"Page"> | string;
-    eyebrow?: Prisma.StringNullableFilter<"Page"> | string | null;
-    description?: Prisma.StringNullableFilter<"Page"> | string | null;
-    seo_title?: Prisma.StringNullableFilter<"Page"> | string | null;
-    seo_description?: Prisma.StringNullableFilter<"Page"> | string | null;
-    og_image_url?: Prisma.StringNullableFilter<"Page"> | string | null;
-    published?: Prisma.BoolFilter<"Page"> | boolean;
-    updated_at?: Prisma.DateTimeFilter<"Page"> | Date | string;
+    title?: Prisma.StringFilter<'Page'> | string;
+    eyebrow?: Prisma.StringNullableFilter<'Page'> | string | null;
+    description?: Prisma.StringNullableFilter<'Page'> | string | null;
+    seo_title?: Prisma.StringNullableFilter<'Page'> | string | null;
+    seo_description?: Prisma.StringNullableFilter<'Page'> | string | null;
+    og_image_url?: Prisma.StringNullableFilter<'Page'> | string | null;
+    published?: Prisma.BoolFilter<'Page'> | boolean;
+    updated_at?: Prisma.DateTimeFilter<'Page'> | Date | string;
   },
-  "id" | "slug"
+  'id' | 'slug'
 >;
 
 export type PageOrderByWithAggregationInput = {
@@ -276,26 +269,19 @@ export type PageOrderByWithAggregationInput = {
 };
 
 export type PageScalarWhereWithAggregatesInput = {
-  AND?:
-    | Prisma.PageScalarWhereWithAggregatesInput
-    | Prisma.PageScalarWhereWithAggregatesInput[];
+  AND?: Prisma.PageScalarWhereWithAggregatesInput | Prisma.PageScalarWhereWithAggregatesInput[];
   OR?: Prisma.PageScalarWhereWithAggregatesInput[];
-  NOT?:
-    | Prisma.PageScalarWhereWithAggregatesInput
-    | Prisma.PageScalarWhereWithAggregatesInput[];
-  id?: Prisma.StringWithAggregatesFilter<"Page"> | string;
-  slug?: Prisma.StringWithAggregatesFilter<"Page"> | string;
-  title?: Prisma.StringWithAggregatesFilter<"Page"> | string;
-  eyebrow?: Prisma.StringNullableWithAggregatesFilter<"Page"> | string | null;
-  description?:
-    Prisma.StringNullableWithAggregatesFilter<"Page"> | string | null;
-  seo_title?: Prisma.StringNullableWithAggregatesFilter<"Page"> | string | null;
-  seo_description?:
-    Prisma.StringNullableWithAggregatesFilter<"Page"> | string | null;
-  og_image_url?:
-    Prisma.StringNullableWithAggregatesFilter<"Page"> | string | null;
-  published?: Prisma.BoolWithAggregatesFilter<"Page"> | boolean;
-  updated_at?: Prisma.DateTimeWithAggregatesFilter<"Page"> | Date | string;
+  NOT?: Prisma.PageScalarWhereWithAggregatesInput | Prisma.PageScalarWhereWithAggregatesInput[];
+  id?: Prisma.StringWithAggregatesFilter<'Page'> | string;
+  slug?: Prisma.StringWithAggregatesFilter<'Page'> | string;
+  title?: Prisma.StringWithAggregatesFilter<'Page'> | string;
+  eyebrow?: Prisma.StringNullableWithAggregatesFilter<'Page'> | string | null;
+  description?: Prisma.StringNullableWithAggregatesFilter<'Page'> | string | null;
+  seo_title?: Prisma.StringNullableWithAggregatesFilter<'Page'> | string | null;
+  seo_description?: Prisma.StringNullableWithAggregatesFilter<'Page'> | string | null;
+  og_image_url?: Prisma.StringNullableWithAggregatesFilter<'Page'> | string | null;
+  published?: Prisma.BoolWithAggregatesFilter<'Page'> | boolean;
+  updated_at?: Prisma.DateTimeWithAggregatesFilter<'Page'> | Date | string;
 };
 
 export type PageCreateInput = {
@@ -331,10 +317,8 @@ export type PageUpdateInput = {
   eyebrow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   seo_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  seo_description?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  og_image_url?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  seo_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  og_image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -346,10 +330,8 @@ export type PageUncheckedUpdateInput = {
   eyebrow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   seo_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  seo_description?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  og_image_url?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  seo_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  og_image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -374,10 +356,8 @@ export type PageUpdateManyMutationInput = {
   eyebrow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   seo_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  seo_description?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  og_image_url?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  seo_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  og_image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -389,10 +369,8 @@ export type PageUncheckedUpdateManyInput = {
   eyebrow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   seo_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  seo_description?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  og_image_url?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  seo_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  og_image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -441,8 +419,7 @@ export type DateTimeFieldUpdateOperationsInput = {
 };
 
 export type PageSelect<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
@@ -456,12 +433,11 @@ export type PageSelect<
     published?: boolean;
     updated_at?: boolean;
   },
-  ExtArgs["result"]["page"]
+  ExtArgs['result']['page']
 >;
 
 export type PageSelectCreateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
@@ -475,12 +451,11 @@ export type PageSelectCreateManyAndReturn<
     published?: boolean;
     updated_at?: boolean;
   },
-  ExtArgs["result"]["page"]
+  ExtArgs['result']['page']
 >;
 
 export type PageSelectUpdateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
@@ -494,7 +469,7 @@ export type PageSelectUpdateManyAndReturn<
     published?: boolean;
     updated_at?: boolean;
   },
-  ExtArgs["result"]["page"]
+  ExtArgs['result']['page']
 >;
 
 export type PageSelectScalar = {
@@ -511,27 +486,25 @@ export type PageSelectScalar = {
 };
 
 export type PageOmit<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  | "id"
-  | "slug"
-  | "title"
-  | "eyebrow"
-  | "description"
-  | "seo_title"
-  | "seo_description"
-  | "og_image_url"
-  | "published"
-  | "updated_at",
-  ExtArgs["result"]["page"]
+  | 'id'
+  | 'slug'
+  | 'title'
+  | 'eyebrow'
+  | 'description'
+  | 'seo_title'
+  | 'seo_description'
+  | 'og_image_url'
+  | 'published'
+  | 'updated_at',
+  ExtArgs['result']['page']
 >;
 
 export type $PagePayload<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-  name: "Page";
+  name: 'Page';
   objects: {};
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -546,30 +519,27 @@ export type $PagePayload<
       published: boolean;
       updated_at: Date;
     },
-    ExtArgs["result"]["page"]
+    ExtArgs['result']['page']
   >;
   composites: {};
 };
 
-export type PageGetPayload<
-  S extends boolean | null | undefined | PageDefaultArgs,
-> = runtime.Types.Result.GetResult<Prisma.$PagePayload, S>;
+export type PageGetPayload<S extends boolean | null | undefined | PageDefaultArgs> =
+  runtime.Types.Result.GetResult<Prisma.$PagePayload, S>;
 
 export type PageCountArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = Omit<PageFindManyArgs, "select" | "include" | "distinct" | "omit"> & {
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = Omit<PageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
   select?: PageCountAggregateInputType | true;
 };
 
 export interface PageDelegate<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
   GlobalOmitOptions = {},
 > {
   [K: symbol]: {
-    types: Prisma.TypeMap<ExtArgs>["model"]["Page"];
-    meta: { name: "Page" };
+    types: Prisma.TypeMap<ExtArgs>['model']['Page'];
+    meta: { name: 'Page' };
   };
   /**
    * Find zero or one Page that matches the filter.
@@ -583,12 +553,12 @@ export interface PageDelegate<
    * })
    */
   findUnique<T extends PageFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, PageFindUniqueArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, PageFindUniqueArgs<ExtArgs>>
   ): Prisma.Prisma__PageClient<
     runtime.Types.Result.GetResult<
       Prisma.$PagePayload<ExtArgs>,
       T,
-      "findUnique",
+      'findUnique',
       GlobalOmitOptions
     > | null,
     null,
@@ -609,12 +579,12 @@ export interface PageDelegate<
    * })
    */
   findUniqueOrThrow<T extends PageFindUniqueOrThrowArgs>(
-    args: Prisma.SelectSubset<T, PageFindUniqueOrThrowArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, PageFindUniqueOrThrowArgs<ExtArgs>>
   ): Prisma.Prisma__PageClient<
     runtime.Types.Result.GetResult<
       Prisma.$PagePayload<ExtArgs>,
       T,
-      "findUniqueOrThrow",
+      'findUniqueOrThrow',
       GlobalOmitOptions
     >,
     never,
@@ -636,12 +606,12 @@ export interface PageDelegate<
    * })
    */
   findFirst<T extends PageFindFirstArgs>(
-    args?: Prisma.SelectSubset<T, PageFindFirstArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, PageFindFirstArgs<ExtArgs>>
   ): Prisma.Prisma__PageClient<
     runtime.Types.Result.GetResult<
       Prisma.$PagePayload<ExtArgs>,
       T,
-      "findFirst",
+      'findFirst',
       GlobalOmitOptions
     > | null,
     null,
@@ -664,12 +634,12 @@ export interface PageDelegate<
    * })
    */
   findFirstOrThrow<T extends PageFindFirstOrThrowArgs>(
-    args?: Prisma.SelectSubset<T, PageFindFirstOrThrowArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, PageFindFirstOrThrowArgs<ExtArgs>>
   ): Prisma.Prisma__PageClient<
     runtime.Types.Result.GetResult<
       Prisma.$PagePayload<ExtArgs>,
       T,
-      "findFirstOrThrow",
+      'findFirstOrThrow',
       GlobalOmitOptions
     >,
     never,
@@ -694,14 +664,9 @@ export interface PageDelegate<
    *
    */
   findMany<T extends PageFindManyArgs>(
-    args?: Prisma.SelectSubset<T, PageFindManyArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, PageFindManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
-    runtime.Types.Result.GetResult<
-      Prisma.$PagePayload<ExtArgs>,
-      T,
-      "findMany",
-      GlobalOmitOptions
-    >
+    runtime.Types.Result.GetResult<Prisma.$PagePayload<ExtArgs>, T, 'findMany', GlobalOmitOptions>
   >;
 
   /**
@@ -717,14 +682,9 @@ export interface PageDelegate<
    *
    */
   create<T extends PageCreateArgs>(
-    args: Prisma.SelectSubset<T, PageCreateArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, PageCreateArgs<ExtArgs>>
   ): Prisma.Prisma__PageClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$PagePayload<ExtArgs>,
-      T,
-      "create",
-      GlobalOmitOptions
-    >,
+    runtime.Types.Result.GetResult<Prisma.$PagePayload<ExtArgs>, T, 'create', GlobalOmitOptions>,
     never,
     ExtArgs,
     GlobalOmitOptions
@@ -743,7 +703,7 @@ export interface PageDelegate<
    *
    */
   createMany<T extends PageCreateManyArgs>(
-    args?: Prisma.SelectSubset<T, PageCreateManyArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, PageCreateManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
@@ -769,12 +729,12 @@ export interface PageDelegate<
    *
    */
   createManyAndReturn<T extends PageCreateManyAndReturnArgs>(
-    args?: Prisma.SelectSubset<T, PageCreateManyAndReturnArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, PageCreateManyAndReturnArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
       Prisma.$PagePayload<ExtArgs>,
       T,
-      "createManyAndReturn",
+      'createManyAndReturn',
       GlobalOmitOptions
     >
   >;
@@ -792,14 +752,9 @@ export interface PageDelegate<
    *
    */
   delete<T extends PageDeleteArgs>(
-    args: Prisma.SelectSubset<T, PageDeleteArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, PageDeleteArgs<ExtArgs>>
   ): Prisma.Prisma__PageClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$PagePayload<ExtArgs>,
-      T,
-      "delete",
-      GlobalOmitOptions
-    >,
+    runtime.Types.Result.GetResult<Prisma.$PagePayload<ExtArgs>, T, 'delete', GlobalOmitOptions>,
     never,
     ExtArgs,
     GlobalOmitOptions
@@ -821,14 +776,9 @@ export interface PageDelegate<
    *
    */
   update<T extends PageUpdateArgs>(
-    args: Prisma.SelectSubset<T, PageUpdateArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, PageUpdateArgs<ExtArgs>>
   ): Prisma.Prisma__PageClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$PagePayload<ExtArgs>,
-      T,
-      "update",
-      GlobalOmitOptions
-    >,
+    runtime.Types.Result.GetResult<Prisma.$PagePayload<ExtArgs>, T, 'update', GlobalOmitOptions>,
     never,
     ExtArgs,
     GlobalOmitOptions
@@ -847,7 +797,7 @@ export interface PageDelegate<
    *
    */
   deleteMany<T extends PageDeleteManyArgs>(
-    args?: Prisma.SelectSubset<T, PageDeleteManyArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, PageDeleteManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
@@ -868,7 +818,7 @@ export interface PageDelegate<
    *
    */
   updateMany<T extends PageUpdateManyArgs>(
-    args: Prisma.SelectSubset<T, PageUpdateManyArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, PageUpdateManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
@@ -900,12 +850,12 @@ export interface PageDelegate<
    *
    */
   updateManyAndReturn<T extends PageUpdateManyAndReturnArgs>(
-    args: Prisma.SelectSubset<T, PageUpdateManyAndReturnArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, PageUpdateManyAndReturnArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
       Prisma.$PagePayload<ExtArgs>,
       T,
-      "updateManyAndReturn",
+      'updateManyAndReturn',
       GlobalOmitOptions
     >
   >;
@@ -928,14 +878,9 @@ export interface PageDelegate<
    * })
    */
   upsert<T extends PageUpsertArgs>(
-    args: Prisma.SelectSubset<T, PageUpsertArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, PageUpsertArgs<ExtArgs>>
   ): Prisma.Prisma__PageClient<
-    runtime.Types.Result.GetResult<
-      Prisma.$PagePayload<ExtArgs>,
-      T,
-      "upsert",
-      GlobalOmitOptions
-    >,
+    runtime.Types.Result.GetResult<Prisma.$PagePayload<ExtArgs>, T, 'upsert', GlobalOmitOptions>,
     never,
     ExtArgs,
     GlobalOmitOptions
@@ -955,12 +900,12 @@ export interface PageDelegate<
    * })
    **/
   count<T extends PageCountArgs>(
-    args?: Prisma.Subset<T, PageCountArgs>,
+    args?: Prisma.Subset<T, PageCountArgs>
   ): Prisma.PrismaPromise<
-    T extends runtime.Types.Utils.Record<"select", any>
-      ? T["select"] extends true
+    T extends runtime.Types.Utils.Record<'select', any>
+      ? T['select'] extends true
         ? number
-        : Prisma.GetScalarType<T["select"], PageCountAggregateOutputType>
+        : Prisma.GetScalarType<T['select'], PageCountAggregateOutputType>
       : number
   >;
 
@@ -989,7 +934,7 @@ export interface PageDelegate<
    * })
    **/
   aggregate<T extends PageAggregateArgs>(
-    args: Prisma.Subset<T, PageAggregateArgs>,
+    args: Prisma.Subset<T, PageAggregateArgs>
   ): Prisma.PrismaPromise<GetPageAggregateType<T>>;
 
   /**
@@ -1013,20 +958,20 @@ export interface PageDelegate<
   groupBy<
     T extends PageGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
-      Prisma.Extends<"skip", Prisma.Keys<T>>,
-      Prisma.Extends<"take", Prisma.Keys<T>>
+      Prisma.Extends<'skip', Prisma.Keys<T>>,
+      Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends (Prisma.True extends HasSelectOrTake
-      ? { orderBy: PageGroupByArgs["orderBy"] }
-      : { orderBy?: PageGroupByArgs["orderBy"] }),
+      ? { orderBy: PageGroupByArgs['orderBy'] }
+      : { orderBy?: PageGroupByArgs['orderBy'] }),
     OrderFields extends Prisma.ExcludeUnderscoreKeys<
-      Prisma.Keys<Prisma.MaybeTupleToUnion<T["orderBy"]>>
+      Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>
     >,
-    ByFields extends Prisma.MaybeTupleToUnion<T["by"]>,
+    ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
-    HavingFields extends Prisma.GetHavingFields<T["having"]>,
+    HavingFields extends Prisma.GetHavingFields<T['having']>,
     HavingValid extends Prisma.Has<ByFields, HavingFields>,
-    ByEmpty extends (T["by"] extends never[] ? Prisma.True : Prisma.False),
+    ByEmpty extends (T['by'] extends never[] ? Prisma.True : Prisma.False),
     InputErrors extends (ByEmpty extends Prisma.True
       ? `Error: "by" must not be empty.`
       : HavingValid extends Prisma.False
@@ -1035,15 +980,10 @@ export interface PageDelegate<
               ? never
               : P extends string
                 ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-                : [
-                    Error,
-                    "Field ",
-                    P,
-                    ` in "having" needs to be provided in "by"`,
-                  ];
+                : [Error, 'Field ', P, ` in "having" needs to be provided in "by"`];
           }[HavingFields]
-        : "take" extends Prisma.Keys<T>
-          ? "orderBy" extends Prisma.Keys<T>
+        : 'take' extends Prisma.Keys<T>
+          ? 'orderBy' extends Prisma.Keys<T>
             ? ByValid extends Prisma.True
               ? {}
               : {
@@ -1052,8 +992,8 @@ export interface PageDelegate<
                     : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
                 }[OrderFields]
             : 'Error: If you provide "take", you also need to provide "orderBy"'
-          : "skip" extends Prisma.Keys<T>
-            ? "orderBy" extends Prisma.Keys<T>
+          : 'skip' extends Prisma.Keys<T>
+            ? 'orderBy' extends Prisma.Keys<T>
               ? ByValid extends Prisma.True
                 ? {}
                 : {
@@ -1070,11 +1010,8 @@ export interface PageDelegate<
                     : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
                 }[OrderFields]),
   >(
-    args: Prisma.SubsetIntersection<T, PageGroupByArgs, OrderByArg> &
-      InputErrors,
-  ): {} extends InputErrors
-    ? GetPageGroupByPayload<T>
-    : Prisma.PrismaPromise<InputErrors>;
+    args: Prisma.SubsetIntersection<T, PageGroupByArgs, OrderByArg> & InputErrors
+  ): {} extends InputErrors ? GetPageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
   /**
    * Fields of the Page model
    */
@@ -1090,11 +1027,10 @@ export interface PageDelegate<
 export interface Prisma__PageClient<
   T,
   Null = never,
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
-  readonly [Symbol.toStringTag]: "PrismaPromise";
+  readonly [Symbol.toStringTag]: 'PrismaPromise';
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1102,10 +1038,8 @@ export interface Prisma__PageClient<
    * @returns A Promise for the completion of which ever callback is executed.
    */
   then<TResult1 = T, TResult2 = never>(
-    onfulfilled?:
-      ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
-    onrejected?:
-      ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null,
+    onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null
   ): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
   /**
    * Attaches a callback for only the rejection of the Promise.
@@ -1113,8 +1047,7 @@ export interface Prisma__PageClient<
    * @returns A Promise for the completion of the callback.
    */
   catch<TResult = never>(
-    onrejected?:
-      ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null,
+    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null
   ): runtime.Types.Utils.JsPromise<T | TResult>;
   /**
    * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
@@ -1122,25 +1055,23 @@ export interface Prisma__PageClient<
    * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
    * @returns A Promise for the completion of the callback.
    */
-  finally(
-    onfinally?: (() => void) | undefined | null,
-  ): runtime.Types.Utils.JsPromise<T>;
+  finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
 }
 
 /**
  * Fields of the Page model
  */
 export interface PageFieldRefs {
-  readonly id: Prisma.FieldRef<"Page", "String">;
-  readonly slug: Prisma.FieldRef<"Page", "String">;
-  readonly title: Prisma.FieldRef<"Page", "String">;
-  readonly eyebrow: Prisma.FieldRef<"Page", "String">;
-  readonly description: Prisma.FieldRef<"Page", "String">;
-  readonly seo_title: Prisma.FieldRef<"Page", "String">;
-  readonly seo_description: Prisma.FieldRef<"Page", "String">;
-  readonly og_image_url: Prisma.FieldRef<"Page", "String">;
-  readonly published: Prisma.FieldRef<"Page", "Boolean">;
-  readonly updated_at: Prisma.FieldRef<"Page", "DateTime">;
+  readonly id: Prisma.FieldRef<'Page', 'String'>;
+  readonly slug: Prisma.FieldRef<'Page', 'String'>;
+  readonly title: Prisma.FieldRef<'Page', 'String'>;
+  readonly eyebrow: Prisma.FieldRef<'Page', 'String'>;
+  readonly description: Prisma.FieldRef<'Page', 'String'>;
+  readonly seo_title: Prisma.FieldRef<'Page', 'String'>;
+  readonly seo_description: Prisma.FieldRef<'Page', 'String'>;
+  readonly og_image_url: Prisma.FieldRef<'Page', 'String'>;
+  readonly published: Prisma.FieldRef<'Page', 'Boolean'>;
+  readonly updated_at: Prisma.FieldRef<'Page', 'DateTime'>;
 }
 
 // Custom InputTypes
@@ -1148,8 +1079,7 @@ export interface PageFieldRefs {
  * Page findUnique
  */
 export type PageFindUniqueArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1169,8 +1099,7 @@ export type PageFindUniqueArgs<
  * Page findUniqueOrThrow
  */
 export type PageFindUniqueOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1190,8 +1119,7 @@ export type PageFindUniqueOrThrowArgs<
  * Page findFirst
  */
 export type PageFindFirstArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1210,8 +1138,7 @@ export type PageFindFirstArgs<
    *
    * Determine the order of Pages to fetch.
    */
-  orderBy?:
-    Prisma.PageOrderByWithRelationInput | Prisma.PageOrderByWithRelationInput[];
+  orderBy?: Prisma.PageOrderByWithRelationInput | Prisma.PageOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -1242,8 +1169,7 @@ export type PageFindFirstArgs<
  * Page findFirstOrThrow
  */
 export type PageFindFirstOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1262,8 +1188,7 @@ export type PageFindFirstOrThrowArgs<
    *
    * Determine the order of Pages to fetch.
    */
-  orderBy?:
-    Prisma.PageOrderByWithRelationInput | Prisma.PageOrderByWithRelationInput[];
+  orderBy?: Prisma.PageOrderByWithRelationInput | Prisma.PageOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -1294,8 +1219,7 @@ export type PageFindFirstOrThrowArgs<
  * Page findMany
  */
 export type PageFindManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1314,8 +1238,7 @@ export type PageFindManyArgs<
    *
    * Determine the order of Pages to fetch.
    */
-  orderBy?:
-    Prisma.PageOrderByWithRelationInput | Prisma.PageOrderByWithRelationInput[];
+  orderBy?: Prisma.PageOrderByWithRelationInput | Prisma.PageOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -1346,8 +1269,7 @@ export type PageFindManyArgs<
  * Page create
  */
 export type PageCreateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1367,8 +1289,7 @@ export type PageCreateArgs<
  * Page createMany
  */
 export type PageCreateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * The data used to create many Pages.
@@ -1380,8 +1301,7 @@ export type PageCreateManyArgs<
  * Page createManyAndReturn
  */
 export type PageCreateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1401,8 +1321,7 @@ export type PageCreateManyAndReturnArgs<
  * Page update
  */
 export type PageUpdateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1426,16 +1345,12 @@ export type PageUpdateArgs<
  * Page updateMany
  */
 export type PageUpdateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * The data used to update Pages.
    */
-  data: Prisma.XOR<
-    Prisma.PageUpdateManyMutationInput,
-    Prisma.PageUncheckedUpdateManyInput
-  >;
+  data: Prisma.XOR<Prisma.PageUpdateManyMutationInput, Prisma.PageUncheckedUpdateManyInput>;
   /**
    * Filter which Pages to update
    */
@@ -1450,8 +1365,7 @@ export type PageUpdateManyArgs<
  * Page updateManyAndReturn
  */
 export type PageUpdateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1464,10 +1378,7 @@ export type PageUpdateManyAndReturnArgs<
   /**
    * The data used to update Pages.
    */
-  data: Prisma.XOR<
-    Prisma.PageUpdateManyMutationInput,
-    Prisma.PageUncheckedUpdateManyInput
-  >;
+  data: Prisma.XOR<Prisma.PageUpdateManyMutationInput, Prisma.PageUncheckedUpdateManyInput>;
   /**
    * Filter which Pages to update
    */
@@ -1482,8 +1393,7 @@ export type PageUpdateManyAndReturnArgs<
  * Page upsert
  */
 export type PageUpsertArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1511,8 +1421,7 @@ export type PageUpsertArgs<
  * Page delete
  */
 export type PageDeleteArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page
@@ -1532,8 +1441,7 @@ export type PageDeleteArgs<
  * Page deleteMany
  */
 export type PageDeleteManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Filter which Pages to delete
@@ -1549,8 +1457,7 @@ export type PageDeleteManyArgs<
  * Page without action
  */
 export type PageDefaultArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the Page

@@ -1,11 +1,11 @@
-import { appBaseUrl, sendEmail, type SendEmailResult } from "@/lib/email";
+import { appBaseUrl, sendEmail, type SendEmailResult } from '@/lib/email';
 
 function escapeHtml(value: string): string {
   return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 export async function sendVerificationEmail(params: {
@@ -14,21 +14,21 @@ export async function sendVerificationEmail(params: {
   code: string;
 }): Promise<SendEmailResult> {
   const base = appBaseUrl();
-  const displayName = params.name?.trim() || "there";
-  const subject = "Verify your Nazexa account";
+  const displayName = params.name?.trim() || 'there';
+  const subject = 'Verify your Nazexa account';
   const code = params.code;
 
   const text = [
     `Hi ${displayName},`,
-    "",
-    "Welcome to Nazexa! Please verify your email address by entering this code:",
-    "",
+    '',
+    'Welcome to Nazexa! Please verify your email address by entering this code:',
+    '',
     `    ${code}`,
-    "",
-    "This code expires in 5 minutes.",
-    "",
-    "If you did not create an account, you can ignore this email.",
-  ].join("\n");
+    '',
+    'This code expires in 5 minutes.',
+    '',
+    'If you did not create an account, you can ignore this email.',
+  ].join('\n');
 
   const html = `<!DOCTYPE html>
 <html>

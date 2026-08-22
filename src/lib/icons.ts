@@ -22,7 +22,7 @@ import {
   Wrench,
   Zap,
   type LucideIcon,
-} from "lucide-react";
+} from 'lucide-react';
 
 /** Icon names selectable from the admin panel. */
 export const iconRegistry: Record<string, LucideIcon> = {
@@ -54,7 +54,7 @@ export const iconNames = Object.keys(iconRegistry);
 
 export function getIcon(
   name: string | null | undefined,
-  fallback: LucideIcon = Sparkles,
+  fallback: LucideIcon = Sparkles
 ): LucideIcon {
   return (name && iconRegistry[name]) || fallback;
 }

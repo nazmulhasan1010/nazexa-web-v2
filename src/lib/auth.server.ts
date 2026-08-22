@@ -1,29 +1,28 @@
-"use server";
+'use server';
 
-import { db } from "./db";
+import { db } from './db';
 import {
   verifyPassword,
   createSession as createJwtSession,
   getSession as getJwtSession,
   destroySession,
-} from "./auth";
+} from './auth';
 
 export async function login(data: { email: string; password: string }) {
   try {
     const user = await db.user.findUnique({ where: { email: data.email } });
-    if (!user || !user.password_hash)
-      return { error: "Invalid email or password" };
+    if (!user || !user.password_hash) return { error: 'Invalid email or password' };
 
     const valid = await verifyPassword(data.password, user.password_hash);
-    if (!valid) return { error: "Invalid email or password" };
+    if (!valid) return { error: 'Invalid email or password' };
 
     // Use the same JWT-based session as OAuth routes
     await createJwtSession(user.id);
 
     return { success: true };
   } catch (err: any) {
-    console.error("Login error:", err);
-    return { error: "Server error or database unreachable." };
+    console.error('Login error:', err);
+    return { error: 'Server error or database unreachable.' };
   }
 }
 

@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
 
   // Optional: protect /profile or /admin routes here if they don't already have checks
   // (Assuming they have their own server-side session checks, but adding this is safe)
-  
+
   return NextResponse.next();
 }
 

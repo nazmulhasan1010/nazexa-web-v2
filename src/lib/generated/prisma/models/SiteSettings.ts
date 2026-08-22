@@ -7,16 +7,15 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client";
-import type * as $Enums from "../enums.js";
-import type * as Prisma from "../internal/prismaNamespace.js";
+import type * as runtime from '@prisma/client/runtime/client';
+import type * as $Enums from '../enums.js';
+import type * as Prisma from '../internal/prismaNamespace.js';
 
 /**
  * Model SiteSettings
  *
  */
-export type SiteSettingsModel =
-  runtime.Types.Result.DefaultSelection<Prisma.$SiteSettingsPayload>;
+export type SiteSettingsModel = runtime.Types.Result.DefaultSelection<Prisma.$SiteSettingsPayload>;
 
 export type AggregateSiteSettings = {
   _count: SiteSettingsCountAggregateOutputType | null;
@@ -81,8 +80,7 @@ export type SiteSettingsCountAggregateInputType = {
 };
 
 export type SiteSettingsAggregateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Filter which SiteSettings to aggregate.
@@ -94,8 +92,7 @@ export type SiteSettingsAggregateArgs<
    * Determine the order of SiteSettings to fetch.
    */
   orderBy?:
-    | Prisma.SiteSettingsOrderByWithRelationInput
-    | Prisma.SiteSettingsOrderByWithRelationInput[];
+    Prisma.SiteSettingsOrderByWithRelationInput | Prisma.SiteSettingsOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -134,18 +131,16 @@ export type SiteSettingsAggregateArgs<
   _max?: SiteSettingsMaxAggregateInputType;
 };
 
-export type GetSiteSettingsAggregateType<T extends SiteSettingsAggregateArgs> =
-  {
-    [P in keyof T & keyof AggregateSiteSettings]: P extends "_count" | "count"
-      ? T[P] extends true
-        ? number
-        : Prisma.GetScalarType<T[P], AggregateSiteSettings[P]>
-      : Prisma.GetScalarType<T[P], AggregateSiteSettings[P]>;
-  };
+export type GetSiteSettingsAggregateType<T extends SiteSettingsAggregateArgs> = {
+  [P in keyof T & keyof AggregateSiteSettings]: P extends '_count' | 'count'
+    ? T[P] extends true
+      ? number
+      : Prisma.GetScalarType<T[P], AggregateSiteSettings[P]>
+    : Prisma.GetScalarType<T[P], AggregateSiteSettings[P]>;
+};
 
 export type SiteSettingsGroupByArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   where?: Prisma.SiteSettingsWhereInput;
   orderBy?:
@@ -172,31 +167,28 @@ export type SiteSettingsGroupByOutputType = {
   _max: SiteSettingsMaxAggregateOutputType | null;
 };
 
-export type GetSiteSettingsGroupByPayload<T extends SiteSettingsGroupByArgs> =
-  Prisma.PrismaPromise<
-    Array<
-      Prisma.PickEnumerable<SiteSettingsGroupByOutputType, T["by"]> & {
-        [P in keyof T & keyof SiteSettingsGroupByOutputType]: P extends "_count"
-          ? T[P] extends boolean
-            ? number
-            : Prisma.GetScalarType<T[P], SiteSettingsGroupByOutputType[P]>
-          : Prisma.GetScalarType<T[P], SiteSettingsGroupByOutputType[P]>;
-      }
-    >
-  >;
+export type GetSiteSettingsGroupByPayload<T extends SiteSettingsGroupByArgs> = Prisma.PrismaPromise<
+  Array<
+    Prisma.PickEnumerable<SiteSettingsGroupByOutputType, T['by']> & {
+      [P in keyof T & keyof SiteSettingsGroupByOutputType]: P extends '_count'
+        ? T[P] extends boolean
+          ? number
+          : Prisma.GetScalarType<T[P], SiteSettingsGroupByOutputType[P]>
+        : Prisma.GetScalarType<T[P], SiteSettingsGroupByOutputType[P]>;
+    }
+  >
+>;
 
 export type SiteSettingsWhereInput = {
   AND?: Prisma.SiteSettingsWhereInput | Prisma.SiteSettingsWhereInput[];
   OR?: Prisma.SiteSettingsWhereInput[];
   NOT?: Prisma.SiteSettingsWhereInput | Prisma.SiteSettingsWhereInput[];
-  id?: Prisma.StringFilter<"SiteSettings"> | string;
-  site_name?: Prisma.StringFilter<"SiteSettings"> | string;
-  tagline?: Prisma.StringNullableFilter<"SiteSettings"> | string | null;
-  default_seo_title?:
-    Prisma.StringNullableFilter<"SiteSettings"> | string | null;
-  default_seo_description?:
-    Prisma.StringNullableFilter<"SiteSettings"> | string | null;
-  theme?: Prisma.StringFilter<"SiteSettings"> | string;
+  id?: Prisma.StringFilter<'SiteSettings'> | string;
+  site_name?: Prisma.StringFilter<'SiteSettings'> | string;
+  tagline?: Prisma.StringNullableFilter<'SiteSettings'> | string | null;
+  default_seo_title?: Prisma.StringNullableFilter<'SiteSettings'> | string | null;
+  default_seo_description?: Prisma.StringNullableFilter<'SiteSettings'> | string | null;
+  theme?: Prisma.StringFilter<'SiteSettings'> | string;
 };
 
 export type SiteSettingsOrderByWithRelationInput = {
@@ -214,15 +206,13 @@ export type SiteSettingsWhereUniqueInput = Prisma.AtLeast<
     AND?: Prisma.SiteSettingsWhereInput | Prisma.SiteSettingsWhereInput[];
     OR?: Prisma.SiteSettingsWhereInput[];
     NOT?: Prisma.SiteSettingsWhereInput | Prisma.SiteSettingsWhereInput[];
-    site_name?: Prisma.StringFilter<"SiteSettings"> | string;
-    tagline?: Prisma.StringNullableFilter<"SiteSettings"> | string | null;
-    default_seo_title?:
-      Prisma.StringNullableFilter<"SiteSettings"> | string | null;
-    default_seo_description?:
-      Prisma.StringNullableFilter<"SiteSettings"> | string | null;
-    theme?: Prisma.StringFilter<"SiteSettings"> | string;
+    site_name?: Prisma.StringFilter<'SiteSettings'> | string;
+    tagline?: Prisma.StringNullableFilter<'SiteSettings'> | string | null;
+    default_seo_title?: Prisma.StringNullableFilter<'SiteSettings'> | string | null;
+    default_seo_description?: Prisma.StringNullableFilter<'SiteSettings'> | string | null;
+    theme?: Prisma.StringFilter<'SiteSettings'> | string;
   },
-  "id"
+  'id'
 >;
 
 export type SiteSettingsOrderByWithAggregationInput = {
@@ -245,15 +235,13 @@ export type SiteSettingsScalarWhereWithAggregatesInput = {
   NOT?:
     | Prisma.SiteSettingsScalarWhereWithAggregatesInput
     | Prisma.SiteSettingsScalarWhereWithAggregatesInput[];
-  id?: Prisma.StringWithAggregatesFilter<"SiteSettings"> | string;
-  site_name?: Prisma.StringWithAggregatesFilter<"SiteSettings"> | string;
-  tagline?:
-    Prisma.StringNullableWithAggregatesFilter<"SiteSettings"> | string | null;
-  default_seo_title?:
-    Prisma.StringNullableWithAggregatesFilter<"SiteSettings"> | string | null;
+  id?: Prisma.StringWithAggregatesFilter<'SiteSettings'> | string;
+  site_name?: Prisma.StringWithAggregatesFilter<'SiteSettings'> | string;
+  tagline?: Prisma.StringNullableWithAggregatesFilter<'SiteSettings'> | string | null;
+  default_seo_title?: Prisma.StringNullableWithAggregatesFilter<'SiteSettings'> | string | null;
   default_seo_description?:
-    Prisma.StringNullableWithAggregatesFilter<"SiteSettings"> | string | null;
-  theme?: Prisma.StringWithAggregatesFilter<"SiteSettings"> | string;
+    Prisma.StringNullableWithAggregatesFilter<'SiteSettings'> | string | null;
+  theme?: Prisma.StringWithAggregatesFilter<'SiteSettings'> | string;
 };
 
 export type SiteSettingsCreateInput = {
@@ -278,10 +266,8 @@ export type SiteSettingsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   site_name?: Prisma.StringFieldUpdateOperationsInput | string;
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  default_seo_title?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  default_seo_description?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  default_seo_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  default_seo_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
@@ -289,10 +275,8 @@ export type SiteSettingsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   site_name?: Prisma.StringFieldUpdateOperationsInput | string;
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  default_seo_title?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  default_seo_description?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  default_seo_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  default_seo_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
@@ -309,10 +293,8 @@ export type SiteSettingsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   site_name?: Prisma.StringFieldUpdateOperationsInput | string;
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  default_seo_title?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  default_seo_description?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  default_seo_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  default_seo_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
@@ -320,10 +302,8 @@ export type SiteSettingsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   site_name?: Prisma.StringFieldUpdateOperationsInput | string;
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  default_seo_title?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  default_seo_description?:
-    Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  default_seo_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  default_seo_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
@@ -355,8 +335,7 @@ export type SiteSettingsMinOrderByAggregateInput = {
 };
 
 export type SiteSettingsSelect<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
@@ -366,12 +345,11 @@ export type SiteSettingsSelect<
     default_seo_description?: boolean;
     theme?: boolean;
   },
-  ExtArgs["result"]["siteSettings"]
+  ExtArgs['result']['siteSettings']
 >;
 
 export type SiteSettingsSelectCreateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
@@ -381,12 +359,11 @@ export type SiteSettingsSelectCreateManyAndReturn<
     default_seo_description?: boolean;
     theme?: boolean;
   },
-  ExtArgs["result"]["siteSettings"]
+  ExtArgs['result']['siteSettings']
 >;
 
 export type SiteSettingsSelectUpdateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
@@ -396,7 +373,7 @@ export type SiteSettingsSelectUpdateManyAndReturn<
     default_seo_description?: boolean;
     theme?: boolean;
   },
-  ExtArgs["result"]["siteSettings"]
+  ExtArgs['result']['siteSettings']
 >;
 
 export type SiteSettingsSelectScalar = {
@@ -409,23 +386,16 @@ export type SiteSettingsSelectScalar = {
 };
 
 export type SiteSettingsOmit<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  | "id"
-  | "site_name"
-  | "tagline"
-  | "default_seo_title"
-  | "default_seo_description"
-  | "theme",
-  ExtArgs["result"]["siteSettings"]
+  'id' | 'site_name' | 'tagline' | 'default_seo_title' | 'default_seo_description' | 'theme',
+  ExtArgs['result']['siteSettings']
 >;
 
 export type $SiteSettingsPayload<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-  name: "SiteSettings";
+  name: 'SiteSettings';
   objects: {};
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -436,33 +406,27 @@ export type $SiteSettingsPayload<
       default_seo_description: string | null;
       theme: string;
     },
-    ExtArgs["result"]["siteSettings"]
+    ExtArgs['result']['siteSettings']
   >;
   composites: {};
 };
 
-export type SiteSettingsGetPayload<
-  S extends boolean | null | undefined | SiteSettingsDefaultArgs,
-> = runtime.Types.Result.GetResult<Prisma.$SiteSettingsPayload, S>;
+export type SiteSettingsGetPayload<S extends boolean | null | undefined | SiteSettingsDefaultArgs> =
+  runtime.Types.Result.GetResult<Prisma.$SiteSettingsPayload, S>;
 
 export type SiteSettingsCountArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = Omit<
-  SiteSettingsFindManyArgs,
-  "select" | "include" | "distinct" | "omit"
-> & {
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = Omit<SiteSettingsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
   select?: SiteSettingsCountAggregateInputType | true;
 };
 
 export interface SiteSettingsDelegate<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
   GlobalOmitOptions = {},
 > {
   [K: symbol]: {
-    types: Prisma.TypeMap<ExtArgs>["model"]["SiteSettings"];
-    meta: { name: "SiteSettings" };
+    types: Prisma.TypeMap<ExtArgs>['model']['SiteSettings'];
+    meta: { name: 'SiteSettings' };
   };
   /**
    * Find zero or one SiteSettings that matches the filter.
@@ -476,12 +440,12 @@ export interface SiteSettingsDelegate<
    * })
    */
   findUnique<T extends SiteSettingsFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, SiteSettingsFindUniqueArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, SiteSettingsFindUniqueArgs<ExtArgs>>
   ): Prisma.Prisma__SiteSettingsClient<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "findUnique",
+      'findUnique',
       GlobalOmitOptions
     > | null,
     null,
@@ -502,12 +466,12 @@ export interface SiteSettingsDelegate<
    * })
    */
   findUniqueOrThrow<T extends SiteSettingsFindUniqueOrThrowArgs>(
-    args: Prisma.SelectSubset<T, SiteSettingsFindUniqueOrThrowArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, SiteSettingsFindUniqueOrThrowArgs<ExtArgs>>
   ): Prisma.Prisma__SiteSettingsClient<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "findUniqueOrThrow",
+      'findUniqueOrThrow',
       GlobalOmitOptions
     >,
     never,
@@ -529,12 +493,12 @@ export interface SiteSettingsDelegate<
    * })
    */
   findFirst<T extends SiteSettingsFindFirstArgs>(
-    args?: Prisma.SelectSubset<T, SiteSettingsFindFirstArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, SiteSettingsFindFirstArgs<ExtArgs>>
   ): Prisma.Prisma__SiteSettingsClient<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "findFirst",
+      'findFirst',
       GlobalOmitOptions
     > | null,
     null,
@@ -557,12 +521,12 @@ export interface SiteSettingsDelegate<
    * })
    */
   findFirstOrThrow<T extends SiteSettingsFindFirstOrThrowArgs>(
-    args?: Prisma.SelectSubset<T, SiteSettingsFindFirstOrThrowArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, SiteSettingsFindFirstOrThrowArgs<ExtArgs>>
   ): Prisma.Prisma__SiteSettingsClient<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "findFirstOrThrow",
+      'findFirstOrThrow',
       GlobalOmitOptions
     >,
     never,
@@ -587,12 +551,12 @@ export interface SiteSettingsDelegate<
    *
    */
   findMany<T extends SiteSettingsFindManyArgs>(
-    args?: Prisma.SelectSubset<T, SiteSettingsFindManyArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, SiteSettingsFindManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "findMany",
+      'findMany',
       GlobalOmitOptions
     >
   >;
@@ -610,12 +574,12 @@ export interface SiteSettingsDelegate<
    *
    */
   create<T extends SiteSettingsCreateArgs>(
-    args: Prisma.SelectSubset<T, SiteSettingsCreateArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, SiteSettingsCreateArgs<ExtArgs>>
   ): Prisma.Prisma__SiteSettingsClient<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "create",
+      'create',
       GlobalOmitOptions
     >,
     never,
@@ -636,7 +600,7 @@ export interface SiteSettingsDelegate<
    *
    */
   createMany<T extends SiteSettingsCreateManyArgs>(
-    args?: Prisma.SelectSubset<T, SiteSettingsCreateManyArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, SiteSettingsCreateManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
@@ -662,12 +626,12 @@ export interface SiteSettingsDelegate<
    *
    */
   createManyAndReturn<T extends SiteSettingsCreateManyAndReturnArgs>(
-    args?: Prisma.SelectSubset<T, SiteSettingsCreateManyAndReturnArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, SiteSettingsCreateManyAndReturnArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "createManyAndReturn",
+      'createManyAndReturn',
       GlobalOmitOptions
     >
   >;
@@ -685,12 +649,12 @@ export interface SiteSettingsDelegate<
    *
    */
   delete<T extends SiteSettingsDeleteArgs>(
-    args: Prisma.SelectSubset<T, SiteSettingsDeleteArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, SiteSettingsDeleteArgs<ExtArgs>>
   ): Prisma.Prisma__SiteSettingsClient<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "delete",
+      'delete',
       GlobalOmitOptions
     >,
     never,
@@ -714,12 +678,12 @@ export interface SiteSettingsDelegate<
    *
    */
   update<T extends SiteSettingsUpdateArgs>(
-    args: Prisma.SelectSubset<T, SiteSettingsUpdateArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, SiteSettingsUpdateArgs<ExtArgs>>
   ): Prisma.Prisma__SiteSettingsClient<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "update",
+      'update',
       GlobalOmitOptions
     >,
     never,
@@ -740,7 +704,7 @@ export interface SiteSettingsDelegate<
    *
    */
   deleteMany<T extends SiteSettingsDeleteManyArgs>(
-    args?: Prisma.SelectSubset<T, SiteSettingsDeleteManyArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, SiteSettingsDeleteManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
@@ -761,7 +725,7 @@ export interface SiteSettingsDelegate<
    *
    */
   updateMany<T extends SiteSettingsUpdateManyArgs>(
-    args: Prisma.SelectSubset<T, SiteSettingsUpdateManyArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, SiteSettingsUpdateManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
@@ -793,12 +757,12 @@ export interface SiteSettingsDelegate<
    *
    */
   updateManyAndReturn<T extends SiteSettingsUpdateManyAndReturnArgs>(
-    args: Prisma.SelectSubset<T, SiteSettingsUpdateManyAndReturnArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, SiteSettingsUpdateManyAndReturnArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "updateManyAndReturn",
+      'updateManyAndReturn',
       GlobalOmitOptions
     >
   >;
@@ -821,12 +785,12 @@ export interface SiteSettingsDelegate<
    * })
    */
   upsert<T extends SiteSettingsUpsertArgs>(
-    args: Prisma.SelectSubset<T, SiteSettingsUpsertArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, SiteSettingsUpsertArgs<ExtArgs>>
   ): Prisma.Prisma__SiteSettingsClient<
     runtime.Types.Result.GetResult<
       Prisma.$SiteSettingsPayload<ExtArgs>,
       T,
-      "upsert",
+      'upsert',
       GlobalOmitOptions
     >,
     never,
@@ -848,15 +812,12 @@ export interface SiteSettingsDelegate<
    * })
    **/
   count<T extends SiteSettingsCountArgs>(
-    args?: Prisma.Subset<T, SiteSettingsCountArgs>,
+    args?: Prisma.Subset<T, SiteSettingsCountArgs>
   ): Prisma.PrismaPromise<
-    T extends runtime.Types.Utils.Record<"select", any>
-      ? T["select"] extends true
+    T extends runtime.Types.Utils.Record<'select', any>
+      ? T['select'] extends true
         ? number
-        : Prisma.GetScalarType<
-            T["select"],
-            SiteSettingsCountAggregateOutputType
-          >
+        : Prisma.GetScalarType<T['select'], SiteSettingsCountAggregateOutputType>
       : number
   >;
 
@@ -885,7 +846,7 @@ export interface SiteSettingsDelegate<
    * })
    **/
   aggregate<T extends SiteSettingsAggregateArgs>(
-    args: Prisma.Subset<T, SiteSettingsAggregateArgs>,
+    args: Prisma.Subset<T, SiteSettingsAggregateArgs>
   ): Prisma.PrismaPromise<GetSiteSettingsAggregateType<T>>;
 
   /**
@@ -909,20 +870,20 @@ export interface SiteSettingsDelegate<
   groupBy<
     T extends SiteSettingsGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
-      Prisma.Extends<"skip", Prisma.Keys<T>>,
-      Prisma.Extends<"take", Prisma.Keys<T>>
+      Prisma.Extends<'skip', Prisma.Keys<T>>,
+      Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends (Prisma.True extends HasSelectOrTake
-      ? { orderBy: SiteSettingsGroupByArgs["orderBy"] }
-      : { orderBy?: SiteSettingsGroupByArgs["orderBy"] }),
+      ? { orderBy: SiteSettingsGroupByArgs['orderBy'] }
+      : { orderBy?: SiteSettingsGroupByArgs['orderBy'] }),
     OrderFields extends Prisma.ExcludeUnderscoreKeys<
-      Prisma.Keys<Prisma.MaybeTupleToUnion<T["orderBy"]>>
+      Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>
     >,
-    ByFields extends Prisma.MaybeTupleToUnion<T["by"]>,
+    ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
-    HavingFields extends Prisma.GetHavingFields<T["having"]>,
+    HavingFields extends Prisma.GetHavingFields<T['having']>,
     HavingValid extends Prisma.Has<ByFields, HavingFields>,
-    ByEmpty extends (T["by"] extends never[] ? Prisma.True : Prisma.False),
+    ByEmpty extends (T['by'] extends never[] ? Prisma.True : Prisma.False),
     InputErrors extends (ByEmpty extends Prisma.True
       ? `Error: "by" must not be empty.`
       : HavingValid extends Prisma.False
@@ -931,15 +892,10 @@ export interface SiteSettingsDelegate<
               ? never
               : P extends string
                 ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-                : [
-                    Error,
-                    "Field ",
-                    P,
-                    ` in "having" needs to be provided in "by"`,
-                  ];
+                : [Error, 'Field ', P, ` in "having" needs to be provided in "by"`];
           }[HavingFields]
-        : "take" extends Prisma.Keys<T>
-          ? "orderBy" extends Prisma.Keys<T>
+        : 'take' extends Prisma.Keys<T>
+          ? 'orderBy' extends Prisma.Keys<T>
             ? ByValid extends Prisma.True
               ? {}
               : {
@@ -948,8 +904,8 @@ export interface SiteSettingsDelegate<
                     : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
                 }[OrderFields]
             : 'Error: If you provide "take", you also need to provide "orderBy"'
-          : "skip" extends Prisma.Keys<T>
-            ? "orderBy" extends Prisma.Keys<T>
+          : 'skip' extends Prisma.Keys<T>
+            ? 'orderBy' extends Prisma.Keys<T>
               ? ByValid extends Prisma.True
                 ? {}
                 : {
@@ -966,11 +922,8 @@ export interface SiteSettingsDelegate<
                     : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
                 }[OrderFields]),
   >(
-    args: Prisma.SubsetIntersection<T, SiteSettingsGroupByArgs, OrderByArg> &
-      InputErrors,
-  ): {} extends InputErrors
-    ? GetSiteSettingsGroupByPayload<T>
-    : Prisma.PrismaPromise<InputErrors>;
+    args: Prisma.SubsetIntersection<T, SiteSettingsGroupByArgs, OrderByArg> & InputErrors
+  ): {} extends InputErrors ? GetSiteSettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
   /**
    * Fields of the SiteSettings model
    */
@@ -986,11 +939,10 @@ export interface SiteSettingsDelegate<
 export interface Prisma__SiteSettingsClient<
   T,
   Null = never,
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
-  readonly [Symbol.toStringTag]: "PrismaPromise";
+  readonly [Symbol.toStringTag]: 'PrismaPromise';
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -998,10 +950,8 @@ export interface Prisma__SiteSettingsClient<
    * @returns A Promise for the completion of which ever callback is executed.
    */
   then<TResult1 = T, TResult2 = never>(
-    onfulfilled?:
-      ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
-    onrejected?:
-      ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null,
+    onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null
   ): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
   /**
    * Attaches a callback for only the rejection of the Promise.
@@ -1009,8 +959,7 @@ export interface Prisma__SiteSettingsClient<
    * @returns A Promise for the completion of the callback.
    */
   catch<TResult = never>(
-    onrejected?:
-      ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null,
+    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null
   ): runtime.Types.Utils.JsPromise<T | TResult>;
   /**
    * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
@@ -1018,21 +967,19 @@ export interface Prisma__SiteSettingsClient<
    * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
    * @returns A Promise for the completion of the callback.
    */
-  finally(
-    onfinally?: (() => void) | undefined | null,
-  ): runtime.Types.Utils.JsPromise<T>;
+  finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
 }
 
 /**
  * Fields of the SiteSettings model
  */
 export interface SiteSettingsFieldRefs {
-  readonly id: Prisma.FieldRef<"SiteSettings", "String">;
-  readonly site_name: Prisma.FieldRef<"SiteSettings", "String">;
-  readonly tagline: Prisma.FieldRef<"SiteSettings", "String">;
-  readonly default_seo_title: Prisma.FieldRef<"SiteSettings", "String">;
-  readonly default_seo_description: Prisma.FieldRef<"SiteSettings", "String">;
-  readonly theme: Prisma.FieldRef<"SiteSettings", "String">;
+  readonly id: Prisma.FieldRef<'SiteSettings', 'String'>;
+  readonly site_name: Prisma.FieldRef<'SiteSettings', 'String'>;
+  readonly tagline: Prisma.FieldRef<'SiteSettings', 'String'>;
+  readonly default_seo_title: Prisma.FieldRef<'SiteSettings', 'String'>;
+  readonly default_seo_description: Prisma.FieldRef<'SiteSettings', 'String'>;
+  readonly theme: Prisma.FieldRef<'SiteSettings', 'String'>;
 }
 
 // Custom InputTypes
@@ -1040,8 +987,7 @@ export interface SiteSettingsFieldRefs {
  * SiteSettings findUnique
  */
 export type SiteSettingsFindUniqueArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1061,8 +1007,7 @@ export type SiteSettingsFindUniqueArgs<
  * SiteSettings findUniqueOrThrow
  */
 export type SiteSettingsFindUniqueOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1082,8 +1027,7 @@ export type SiteSettingsFindUniqueOrThrowArgs<
  * SiteSettings findFirst
  */
 export type SiteSettingsFindFirstArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1103,8 +1047,7 @@ export type SiteSettingsFindFirstArgs<
    * Determine the order of SiteSettings to fetch.
    */
   orderBy?:
-    | Prisma.SiteSettingsOrderByWithRelationInput
-    | Prisma.SiteSettingsOrderByWithRelationInput[];
+    Prisma.SiteSettingsOrderByWithRelationInput | Prisma.SiteSettingsOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -1128,16 +1071,14 @@ export type SiteSettingsFindFirstArgs<
    *
    * Filter by unique combinations of SiteSettings.
    */
-  distinct?:
-    Prisma.SiteSettingsScalarFieldEnum | Prisma.SiteSettingsScalarFieldEnum[];
+  distinct?: Prisma.SiteSettingsScalarFieldEnum | Prisma.SiteSettingsScalarFieldEnum[];
 };
 
 /**
  * SiteSettings findFirstOrThrow
  */
 export type SiteSettingsFindFirstOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1157,8 +1098,7 @@ export type SiteSettingsFindFirstOrThrowArgs<
    * Determine the order of SiteSettings to fetch.
    */
   orderBy?:
-    | Prisma.SiteSettingsOrderByWithRelationInput
-    | Prisma.SiteSettingsOrderByWithRelationInput[];
+    Prisma.SiteSettingsOrderByWithRelationInput | Prisma.SiteSettingsOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -1182,16 +1122,14 @@ export type SiteSettingsFindFirstOrThrowArgs<
    *
    * Filter by unique combinations of SiteSettings.
    */
-  distinct?:
-    Prisma.SiteSettingsScalarFieldEnum | Prisma.SiteSettingsScalarFieldEnum[];
+  distinct?: Prisma.SiteSettingsScalarFieldEnum | Prisma.SiteSettingsScalarFieldEnum[];
 };
 
 /**
  * SiteSettings findMany
  */
 export type SiteSettingsFindManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1211,8 +1149,7 @@ export type SiteSettingsFindManyArgs<
    * Determine the order of SiteSettings to fetch.
    */
   orderBy?:
-    | Prisma.SiteSettingsOrderByWithRelationInput
-    | Prisma.SiteSettingsOrderByWithRelationInput[];
+    Prisma.SiteSettingsOrderByWithRelationInput | Prisma.SiteSettingsOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -1236,16 +1173,14 @@ export type SiteSettingsFindManyArgs<
    *
    * Filter by unique combinations of SiteSettings.
    */
-  distinct?:
-    Prisma.SiteSettingsScalarFieldEnum | Prisma.SiteSettingsScalarFieldEnum[];
+  distinct?: Prisma.SiteSettingsScalarFieldEnum | Prisma.SiteSettingsScalarFieldEnum[];
 };
 
 /**
  * SiteSettings create
  */
 export type SiteSettingsCreateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1258,32 +1193,26 @@ export type SiteSettingsCreateArgs<
   /**
    * The data needed to create a SiteSettings.
    */
-  data: Prisma.XOR<
-    Prisma.SiteSettingsCreateInput,
-    Prisma.SiteSettingsUncheckedCreateInput
-  >;
+  data: Prisma.XOR<Prisma.SiteSettingsCreateInput, Prisma.SiteSettingsUncheckedCreateInput>;
 };
 
 /**
  * SiteSettings createMany
  */
 export type SiteSettingsCreateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * The data used to create many SiteSettings.
    */
-  data:
-    Prisma.SiteSettingsCreateManyInput | Prisma.SiteSettingsCreateManyInput[];
+  data: Prisma.SiteSettingsCreateManyInput | Prisma.SiteSettingsCreateManyInput[];
 };
 
 /**
  * SiteSettings createManyAndReturn
  */
 export type SiteSettingsCreateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1296,16 +1225,14 @@ export type SiteSettingsCreateManyAndReturnArgs<
   /**
    * The data used to create many SiteSettings.
    */
-  data:
-    Prisma.SiteSettingsCreateManyInput | Prisma.SiteSettingsCreateManyInput[];
+  data: Prisma.SiteSettingsCreateManyInput | Prisma.SiteSettingsCreateManyInput[];
 };
 
 /**
  * SiteSettings update
  */
 export type SiteSettingsUpdateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1318,10 +1245,7 @@ export type SiteSettingsUpdateArgs<
   /**
    * The data needed to update a SiteSettings.
    */
-  data: Prisma.XOR<
-    Prisma.SiteSettingsUpdateInput,
-    Prisma.SiteSettingsUncheckedUpdateInput
-  >;
+  data: Prisma.XOR<Prisma.SiteSettingsUpdateInput, Prisma.SiteSettingsUncheckedUpdateInput>;
   /**
    * Choose, which SiteSettings to update.
    */
@@ -1332,8 +1256,7 @@ export type SiteSettingsUpdateArgs<
  * SiteSettings updateMany
  */
 export type SiteSettingsUpdateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * The data used to update SiteSettings.
@@ -1356,8 +1279,7 @@ export type SiteSettingsUpdateManyArgs<
  * SiteSettings updateManyAndReturn
  */
 export type SiteSettingsUpdateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1388,8 +1310,7 @@ export type SiteSettingsUpdateManyAndReturnArgs<
  * SiteSettings upsert
  */
 export type SiteSettingsUpsertArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1406,25 +1327,18 @@ export type SiteSettingsUpsertArgs<
   /**
    * In case the SiteSettings found by the `where` argument doesn't exist, create a new SiteSettings with this data.
    */
-  create: Prisma.XOR<
-    Prisma.SiteSettingsCreateInput,
-    Prisma.SiteSettingsUncheckedCreateInput
-  >;
+  create: Prisma.XOR<Prisma.SiteSettingsCreateInput, Prisma.SiteSettingsUncheckedCreateInput>;
   /**
    * In case the SiteSettings was found with the provided `where` argument, update it with this data.
    */
-  update: Prisma.XOR<
-    Prisma.SiteSettingsUpdateInput,
-    Prisma.SiteSettingsUncheckedUpdateInput
-  >;
+  update: Prisma.XOR<Prisma.SiteSettingsUpdateInput, Prisma.SiteSettingsUncheckedUpdateInput>;
 };
 
 /**
  * SiteSettings delete
  */
 export type SiteSettingsDeleteArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings
@@ -1444,8 +1358,7 @@ export type SiteSettingsDeleteArgs<
  * SiteSettings deleteMany
  */
 export type SiteSettingsDeleteManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Filter which SiteSettings to delete
@@ -1461,8 +1374,7 @@ export type SiteSettingsDeleteManyArgs<
  * SiteSettings without action
  */
 export type SiteSettingsDefaultArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the SiteSettings

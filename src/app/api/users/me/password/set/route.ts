@@ -1,21 +1,18 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { getSession, hashPassword } from "@/lib/auth";
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { getSession, hashPassword } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
     const session = await getSession();
     if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { password } = await request.json();
 
     if (!password) {
-      return NextResponse.json(
-        { error: "Password is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Password is required' }, { status: 400 });
     }
 
     // Get the user from db to get current state
@@ -24,20 +21,17 @@ export async function POST(request: Request) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     if (!user.emailVerified) {
-      return NextResponse.json(
-        { error: "Email must be verified first" },
-        { status: 403 },
-      );
+      return NextResponse.json({ error: 'Email must be verified first' }, { status: 403 });
     }
 
     if (user.password_hash) {
       return NextResponse.json(
-        { error: "Password already configured. Use the change password flow." },
-        { status: 400 },
+        { error: 'Password already configured. Use the change password flow.' },
+        { status: 400 }
       );
     }
 
@@ -50,9 +44,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

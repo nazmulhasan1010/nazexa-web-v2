@@ -2,7 +2,7 @@
  * Lightweight animated SVG illustrations for the Nazexa services pages.
  * Pure SVG + existing CSS utilities so they stay small and GPU friendly.
  */
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 function Frame({
   children,
@@ -14,8 +14,8 @@ function Frame({
   return (
     <div
       className={cn(
-        "relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-secondary/30 ring-1 ring-border",
-        className,
+        'bg-secondary/30 ring-border relative aspect-[16/9] w-full overflow-hidden rounded-xl ring-1',
+        className
       )}
     >
       <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_20%_0%,color-mix(in_oklab,var(--primary)_16%,transparent),transparent_60%)]" />
@@ -70,20 +70,13 @@ export function BuildVisual({ className }: { className?: string }) {
             width={w}
             height="6"
             rx="3"
-            fill={i % 3 === 0 ? "var(--primary)" : "currentColor"}
+            fill={i % 3 === 0 ? 'var(--primary)' : 'currentColor'}
             fillOpacity={i % 3 === 0 ? 0.7 : 0.18}
             className="animate-float"
-            style={{ animationDelay: `${i * 0.25}s`, animationDuration: "5s" }}
+            style={{ animationDelay: `${i * 0.25}s`, animationDuration: '5s' }}
           />
         ))}
-        <rect
-          x="40"
-          y="152"
-          width="240"
-          height="1"
-          fill="var(--primary)"
-          fillOpacity="0.25"
-        />
+        <rect x="40" y="152" width="240" height="1" fill="var(--primary)" fillOpacity="0.25" />
         <path
           d="M40 156 H280"
           stroke="var(--primary)"
@@ -107,7 +100,7 @@ export function MobileVisual({ className }: { className?: string }) {
         aria-label="Animated Android app illustration"
       >
         {grid}
-        <g className="animate-float" style={{ animationDuration: "6s" }}>
+        <g className="animate-float" style={{ animationDuration: '6s' }}>
           <rect
             x="128"
             y="22"
@@ -159,7 +152,7 @@ export function MobileVisual({ className }: { className?: string }) {
             stroke="var(--primary)"
             strokeOpacity={0.22 - i * 0.06}
             className="animate-float"
-            style={{ animationDelay: `${i * 0.6}s`, animationDuration: "7s" }}
+            style={{ animationDelay: `${i * 0.6}s`, animationDuration: '7s' }}
           />
         ))}
       </svg>
@@ -209,16 +202,10 @@ export function CloudVisual({ className }: { className?: string }) {
               stroke="currentColor"
               strokeOpacity="0.15"
             />
-            <circle
-              cx={n.x}
-              cy={n.y}
-              r="4"
-              fill="var(--primary)"
-              fillOpacity="0.8"
-            />
+            <circle cx={n.x} cy={n.y} r="4" fill="var(--primary)" fillOpacity="0.8" />
           </g>
         ))}
-        <g className="animate-float" style={{ animationDuration: "6s" }}>
+        <g className="animate-float" style={{ animationDuration: '6s' }}>
           <circle
             cx="160"
             cy="90"
@@ -290,7 +277,7 @@ export function IntegrationVisual({ className }: { className?: string }) {
           strokeWidth="1.6"
           strokeDasharray="130"
           className="animate-draw"
-          style={{ animationDelay: "0.8s" }}
+          style={{ animationDelay: '0.8s' }}
         />
         {[0, 1, 2].map((i) => (
           <circle
@@ -300,7 +287,7 @@ export function IntegrationVisual({ className }: { className?: string }) {
             r="3.5"
             fill="var(--primary)"
             className="animate-float"
-            style={{ animationDelay: `${i * 0.5}s`, animationDuration: "4s" }}
+            style={{ animationDelay: `${i * 0.5}s`, animationDuration: '4s' }}
           />
         ))}
       </svg>
@@ -329,7 +316,7 @@ export function DesignVisual({ className }: { className?: string }) {
           stroke="currentColor"
           strokeOpacity="0.15"
         />
-        <g className="animate-float" style={{ animationDuration: "6.5s" }}>
+        <g className="animate-float" style={{ animationDuration: '6.5s' }}>
           <rect
             x="132"
             y="58"
@@ -375,7 +362,7 @@ export function DesignVisual({ className }: { className?: string }) {
           d="M228 118 l0 22 l6 -6 l5 10 l5 -3 l-5 -10 l8 -1 z"
           fill="var(--primary)"
           className="animate-float"
-          style={{ animationDuration: "3.5s" }}
+          style={{ animationDuration: '3.5s' }}
         />
       </svg>
     </Frame>
@@ -384,16 +371,16 @@ export function DesignVisual({ className }: { className?: string }) {
 
 export function serviceVisual(slug: string) {
   switch (slug) {
-    case "android-app-development":
+    case 'android-app-development':
       return MobileVisual;
-    case "ui-ux-design":
-    case "website-development":
+    case 'ui-ux-design':
+    case 'website-development':
       return DesignVisual;
-    case "cloud-deployment":
-    case "api-backend-development":
+    case 'cloud-deployment':
+    case 'api-backend-development':
       return CloudVisual;
-    case "system-integration":
-    case "database-design-development":
+    case 'system-integration':
+    case 'database-design-development':
       return IntegrationVisual;
     default:
       return BuildVisual;

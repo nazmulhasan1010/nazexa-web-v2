@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 /**
  * GitHub OAuth Initiation — with callback_url support
@@ -20,10 +20,10 @@ import { cookies } from "next/headers";
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const rawCallbackUrl = searchParams.get("callback_url");
-  const authPerformFrom = searchParams.get("auth_perform_from");
-  const host = request.headers.get("host") || "localhost:3000";
-  const protocol = host.includes("localhost") ? "http" : "https";
+  const rawCallbackUrl = searchParams.get('callback_url');
+  const authPerformFrom = searchParams.get('auth_perform_from');
+  const host = request.headers.get('host') || 'localhost:3000';
+  const protocol = host.includes('localhost') ? 'http' : 'https';
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
 
   const clientId = process.env.GITHUB_CLIENT_ID;
@@ -31,17 +31,17 @@ export async function GET(request: NextRequest) {
 
   if (!clientId) {
     return NextResponse.json(
-      { error: "GitHub OAuth not configured in environment" },
-      { status: 500 },
+      { error: 'GitHub OAuth not configured in environment' },
+      { status: 500 }
     );
   }
 
   // Validate callback_url — must be a valid http/https URL
-  let callbackUrl = "";
+  let callbackUrl = '';
   if (rawCallbackUrl) {
     try {
       const parsed = new URL(rawCallbackUrl);
-      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
         callbackUrl = rawCallbackUrl;
       }
     } catch {
@@ -51,12 +51,10 @@ export async function GET(request: NextRequest) {
 
   // Encode callback_url in the OAuth state parameter
   const state = callbackUrl
-    ? Buffer.from(JSON.stringify({ callback_url: callbackUrl })).toString(
-        "base64url",
-      )
-    : "";
+    ? Buffer.from(JSON.stringify({ callback_url: callbackUrl })).toString('base64url')
+    : '';
 
-  const scope = "user:email";
+  const scope = 'user:email';
   const authUrlParams = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
@@ -64,19 +62,19 @@ export async function GET(request: NextRequest) {
   });
 
   if (state) {
-    authUrlParams.set("state", state);
+    authUrlParams.set('state', state);
   }
 
   const authUrl = `https://github.com/login/oauth/authorize?${authUrlParams.toString()}`;
 
   const response = NextResponse.redirect(authUrl);
 
-  if (authPerformFrom === "nazexa-db") {
+  if (authPerformFrom === 'nazexa-db') {
     const cookieStore = await cookies();
-    cookieStore.set("auth_perform_from", "nazexa-db", {
+    cookieStore.set('auth_perform_from', 'nazexa-db', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
       maxAge: 60 * 15,
     });
   }

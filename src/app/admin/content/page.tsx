@@ -1,39 +1,30 @@
-"use client";
+'use client';
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import {
-  ArrowDown,
-  ArrowUp,
-  Eye,
-  EyeOff,
-  Loader2,
-  Plus,
-  Save,
-  Trash2,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { ArrowDown, ArrowUp, Eye, EyeOff, Loader2, Plus, Save, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { saveContentItems, type ContentItem } from "@/lib/cms";
-import { CONTENT_COLLECTIONS } from "@/lib/constants";
-import { CONTENT_SCHEMA } from "@/lib/content-schema";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { saveContentItems, type ContentItem } from '@/lib/cms';
+import { CONTENT_COLLECTIONS } from '@/lib/constants';
+import { CONTENT_SCHEMA } from '@/lib/content-schema';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { adminContentQuery } from "@/lib/queries";
-import { IconPicker } from "@/components/ui/icon-picker";
-import { ImageUploader } from "@/components/ui/image-uploader";
-import { RichTextEditor } from "@/components/ui/rich-text-editor";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dialog';
+import { adminContentQuery } from '@/lib/queries';
+import { IconPicker } from '@/components/ui/icon-picker';
+import { ImageUploader } from '@/components/ui/image-uploader';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { cn } from '@/lib/utils';
 
 export default ContentPage;
 
@@ -50,9 +41,7 @@ function ContentPage() {
   useEffect(() => {
     if (data) {
       setItems((prev) => {
-        const newItems = prev.filter(
-          (i) => i._new && i.collection === collection,
-        );
+        const newItems = prev.filter((i) => i._new && i.collection === collection);
         return [...(data as Draft[]), ...newItems];
       });
     }
@@ -63,14 +52,13 @@ function ContentPage() {
       await saveContentItems(rows);
     },
     onSuccess: () => {
-      toast.success("Content saved");
-      void queryClient.invalidateQueries({ queryKey: ["content_items"] });
+      toast.success('Content saved');
+      void queryClient.invalidateQueries({ queryKey: ['content_items'] });
       void queryClient.invalidateQueries({
-        queryKey: ["content_items_admin", collection],
+        queryKey: ['content_items_admin', collection],
       });
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Could not save"),
+    onError: (e) => toast.error(e instanceof Error ? e.message : 'Could not save'),
   });
 
   function handleSave() {
@@ -79,27 +67,18 @@ function ContentPage() {
       const schema = CONTENT_SCHEMA[item.collection];
       if (!schema) continue;
       for (const field of schema.fields) {
-        const value = field.isData
-          ? item.data?.[field.name]
-          : item[field.name as keyof Draft];
-        if (
-          field.type === "text" ||
-          field.type === "textarea" ||
-          field.type === "rich-text"
-        ) {
-          if (
-            field.name === "title" &&
-            (!value || (value as string).trim() === "")
-          ) {
+        const value = field.isData ? item.data?.[field.name] : item[field.name as keyof Draft];
+        if (field.type === 'text' || field.type === 'textarea' || field.type === 'rich-text') {
+          if (field.name === 'title' && (!value || (value as string).trim() === '')) {
             setOpen(item.id);
             return toast.error(`Title is required for item in ${schema.label}`);
           }
-          if (typeof value === "string") {
-            if (field.type === "text" && value.length > 255) {
+          if (typeof value === 'string') {
+            if (field.type === 'text' && value.length > 255) {
               setOpen(item.id);
               return toast.error(`${field.label} exceeds 255 characters`);
             }
-            if (field.type === "textarea" && value.length > 1000) {
+            if (field.type === 'textarea' && value.length > 1000) {
               setOpen(item.id);
               return toast.error(`${field.label} exceeds 1000 characters`);
             }
@@ -111,9 +90,7 @@ function ContentPage() {
   }
 
   function patch(id: string, changes: Partial<Draft>) {
-    setItems((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, ...changes } : s)),
-    );
+    setItems((prev) => prev.map((s) => (s.id === id ? { ...s, ...changes } : s)));
   }
 
   function move(index: number, dir: -1 | 1) {
@@ -134,14 +111,14 @@ function ContentPage() {
       {
         id,
         collection: targetCollection,
-        slug: "",
+        slug: '',
         position: prev.length,
         published: true,
-        title: "New item",
+        title: 'New item',
         subtitle: null,
         body: null,
         icon: null,
-        tone: "brand-1",
+        tone: 'brand-1',
         category: null,
         image_url: null,
         link_url: null,
@@ -161,9 +138,8 @@ function ContentPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-semibold">Content library</h1>
-          <p className="mt-2 text-muted-foreground">
-            Every homepage and services block — add, edit, reorder, publish or
-            remove without code.
+          <p className="text-muted-foreground mt-2">
+            Every homepage and services block — add, edit, reorder, publish or remove without code.
           </p>
         </div>
         <div className="flex gap-2">
@@ -183,10 +159,10 @@ function ContentPage() {
               setOpen(null);
             }}
             className={cn(
-              "rounded-full border border-border px-3.5 py-1.5 text-sm transition-colors",
+              'border-border rounded-full border px-3.5 py-1.5 text-sm transition-colors',
               collection === c
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground",
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {CONTENT_SCHEMA[c]?.label || c}
@@ -195,38 +171,26 @@ function ContentPage() {
       </div>
 
       {isLoading ? (
-        <Loader2 className="mt-8 h-5 w-5 animate-spin text-muted-foreground" />
+        <Loader2 className="text-muted-foreground mt-8 h-5 w-5 animate-spin" />
       ) : (
         <div className="mt-6 space-y-2">
           {visible.length === 0 && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               No items yet — use “Add item” to create the first one.
             </p>
           )}
           {visible.map((item, index) => (
-            <div
-              key={item.id}
-              className={cn(
-                "surface-card p-4",
-                !item.published && "opacity-60",
-              )}
-            >
+            <div key={item.id} className={cn('surface-card p-4', !item.published && 'opacity-60')}>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-muted-foreground">
-                  {index + 1}
-                </span>
+                <span className="text-muted-foreground font-mono text-xs">{index + 1}</span>
                 <button
                   type="button"
                   className="flex-1 text-left"
                   onClick={() => setOpen(open === item.id ? null : item.id)}
                 >
-                  <span className="font-medium">
-                    {item.title || "Untitled"}
-                  </span>
+                  <span className="font-medium">{item.title || 'Untitled'}</span>
                   {item.category && (
-                    <span className="ml-2 text-xs text-muted-foreground">
-                      {item.category}
-                    </span>
+                    <span className="text-muted-foreground ml-2 text-xs">{item.category}</span>
                   )}
                 </button>
                 <Button
@@ -249,13 +213,9 @@ function ContentPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => patch(item.id, { published: !item.published })}
-                  aria-label={item.published ? "Unpublish" : "Publish"}
+                  aria-label={item.published ? 'Unpublish' : 'Publish'}
                 >
-                  {item.published ? (
-                    <Eye className="h-4 w-4" />
-                  ) : (
-                    <EyeOff className="h-4 w-4" />
-                  )}
+                  {item.published ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                 </Button>
                 <Button
                   variant="ghost"
@@ -263,17 +223,16 @@ function ContentPage() {
                   onClick={() => patch(item.id, { _deleted: true })}
                   aria-label="Delete"
                 >
-                  <Trash2 className="h-4 w-4 text-destructive" />
+                  <Trash2 className="text-destructive h-4 w-4" />
                 </Button>
               </div>
 
               {open === item.id && (
-                <div className="mt-4 grid gap-3 border-t border-border pt-4 sm:grid-cols-2">
+                <div className="border-border mt-4 grid gap-3 border-t pt-4 sm:grid-cols-2">
                   {CONTENT_SCHEMA[collection]?.fields.map((field) => {
                     const value = field.isData
-                      ? ((item.data?.[field.name] as string) ?? "")
-                      : ((item[field.name as keyof typeof item] as string) ??
-                        "");
+                      ? ((item.data?.[field.name] as string) ?? '')
+                      : ((item[field.name as keyof typeof item] as string) ?? '');
 
                     const onChange = (val: string | null) => {
                       if (field.isData) {
@@ -286,12 +245,8 @@ function ContentPage() {
                     };
 
                     return (
-                      <Field
-                        key={field.name}
-                        label={field.label}
-                        className={field.className}
-                      >
-                        {field.type === "text" && (
+                      <Field key={field.name} label={field.label} className={field.className}>
+                        {field.type === 'text' && (
                           <div className="space-y-1">
                             <Input
                               placeholder={field.placeholder}
@@ -299,12 +254,12 @@ function ContentPage() {
                               maxLength={255}
                               onChange={(e) => onChange(e.target.value)}
                             />
-                            <div className="text-[10px] text-muted-foreground text-right">
+                            <div className="text-muted-foreground text-right text-[10px]">
                               {value.length} / 255
                             </div>
                           </div>
                         )}
-                        {field.type === "textarea" && (
+                        {field.type === 'textarea' && (
                           <div className="space-y-1">
                             <Textarea
                               placeholder={field.placeholder}
@@ -313,33 +268,27 @@ function ContentPage() {
                               maxLength={1000}
                               onChange={(e) => onChange(e.target.value)}
                             />
-                            <div className="text-[10px] text-muted-foreground text-right">
+                            <div className="text-muted-foreground text-right text-[10px]">
                               {value.length} / 1000
                             </div>
                           </div>
                         )}
-                        {field.type === "rich-text" && (
+                        {field.type === 'rich-text' && (
                           <RichTextEditor
                             placeholder={field.placeholder}
                             value={value}
                             onChange={onChange}
                           />
                         )}
-                        {field.type === "icon" && (
-                          <IconPicker
-                            value={value || null}
-                            onChange={onChange}
-                          />
+                        {field.type === 'icon' && (
+                          <IconPicker value={value || null} onChange={onChange} />
                         )}
-                        {field.type === "image" && (
-                          <ImageUploader
-                            value={value || null}
-                            onChange={onChange}
-                          />
+                        {field.type === 'image' && (
+                          <ImageUploader value={value || null} onChange={onChange} />
                         )}
-                        {field.type === "tone" && (
+                        {field.type === 'tone' && (
                           <select
-                            className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                            className="border-input bg-background h-10 w-full rounded-md border px-3 text-sm"
                             value={value}
                             onChange={(e) => onChange(e.target.value || null)}
                           >
@@ -349,9 +298,9 @@ function ContentPage() {
                             <option value="brand-3">Brand 3</option>
                           </select>
                         )}
-                        {field.type === "select" && (
+                        {field.type === 'select' && (
                           <select
-                            className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                            className="border-input bg-background h-10 w-full rounded-md border px-3 text-sm"
                             value={value}
                             onChange={(e) => onChange(e.target.value || null)}
                           >
@@ -363,14 +312,9 @@ function ContentPage() {
                             ))}
                           </select>
                         )}
-                        {(field.type === "date" ||
-                          field.type === "datetime") && (
+                        {(field.type === 'date' || field.type === 'datetime') && (
                           <Input
-                            type={
-                              field.type === "datetime"
-                                ? "datetime-local"
-                                : "date"
-                            }
+                            type={field.type === 'datetime' ? 'datetime-local' : 'date'}
                             value={value}
                             onChange={(e) => onChange(e.target.value)}
                           />
@@ -387,16 +331,16 @@ function ContentPage() {
                       onBlur={(e) => {
                         try {
                           patch(item.id, {
-                            data: JSON.parse(e.target.value || "{}"),
+                            data: JSON.parse(e.target.value || '{}'),
                           });
                         } catch {
-                          toast.error("Extra data must be valid JSON");
+                          toast.error('Extra data must be valid JSON');
                         }
                       }}
                     />
                   </Field>
 
-                  <div className="sm:col-span-2 mt-4 flex justify-end border-t border-border pt-4">
+                  <div className="border-border mt-4 flex justify-end border-t pt-4 sm:col-span-2">
                     <Button
                       className="glow-ring min-w-[150px]"
                       onClick={handleSave}
@@ -425,7 +369,7 @@ function ContentPage() {
               Select the type of content you want to add to the library.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 max-h-[60vh] overflow-y-auto p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="mt-4 grid max-h-[60vh] [scrollbar-width:none] grid-cols-2 gap-4 overflow-y-auto p-1 [-ms-overflow-style:none] md:grid-cols-3 [&::-webkit-scrollbar]:hidden">
             {CONTENT_COLLECTIONS.map((c) => {
               const schema = CONTENT_SCHEMA[c];
               if (!schema) return null;
@@ -433,12 +377,10 @@ function ContentPage() {
                 <div
                   key={c}
                   onClick={() => addItem(c)}
-                  className="flex flex-col gap-2 p-4 border rounded-lg cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors"
+                  className="hover:border-primary hover:bg-accent/50 flex cursor-pointer flex-col gap-2 rounded-lg border p-4 transition-colors"
                 >
                   <h3 className="font-medium">{schema.label}</h3>
-                  <p className="text-xs text-muted-foreground line-clamp-2">
-                    {schema.description}
-                  </p>
+                  <p className="text-muted-foreground line-clamp-2 text-xs">{schema.description}</p>
                 </div>
               );
             })}
@@ -459,7 +401,7 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("space-y-1.5", className)}>
+    <div className={cn('space-y-1.5', className)}>
       <Label>{label}</Label>
       {children}
     </div>

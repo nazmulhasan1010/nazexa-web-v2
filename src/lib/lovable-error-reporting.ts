@@ -1,15 +1,14 @@
 type LovableErrorOptions = {
-  mechanism?:
-    "manual" | "onerror" | "unhandledrejection" | "react_error_boundary";
+  mechanism?: 'manual' | 'onerror' | 'unhandledrejection' | 'react_error_boundary';
   handled?: boolean;
-  severity?: "error" | "warning" | "info";
+  severity?: 'error' | 'warning' | 'info';
 };
 
 type LovableEvents = {
   captureException?: (
     error: unknown,
     context?: Record<string, unknown>,
-    options?: LovableErrorOptions,
+    options?: LovableErrorOptions
   ) => void;
 };
 
@@ -24,23 +23,20 @@ declare global {
   }
 }
 
-export function reportLovableError(
-  error: unknown,
-  context: Record<string, unknown> = {},
-) {
-  if (typeof window === "undefined") return;
+export function reportLovableError(error: unknown, context: Record<string, unknown> = {}) {
+  if (typeof window === 'undefined') return;
   window.__lovableEvents?.captureException?.(
     error,
     {
-      source: "react_error_boundary",
+      source: 'react_error_boundary',
       route: window.location.pathname,
       ...context,
     },
     {
-      mechanism: "react_error_boundary",
+      mechanism: 'react_error_boundary',
       handled: false,
-      severity: "error",
-    },
+      severity: 'error',
+    }
   );
   // Prod React does not rethrow boundary-caught errors to window.onerror, so the
   // editor's telemetry never sees them. Forward to lovable.js's reporting hook,
@@ -49,7 +45,7 @@ export function reportLovableError(
   // opaque "[object Response]", so pull out the status and URL instead.
   const message =
     error instanceof Response
-      ? `Response ${error.status}${error.url ? ` at ${error.url}` : ""}`
+      ? `Response ${error.status}${error.url ? ` at ${error.url}` : ''}`
       : error instanceof Error
         ? error.message
         : String(error);

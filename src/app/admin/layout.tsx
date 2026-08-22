@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   Layers,
@@ -13,37 +13,33 @@ import {
   Library,
   MessageSquare,
   PhoneCall,
-} from "lucide-react";
-import { useEffect } from "react";
+} from 'lucide-react';
+import { useEffect } from 'react';
 
-import { Button } from "@/components/ui/button";
-import { useAuth, useRoles, useSignOut } from "@/hooks/useAuth";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import { useAuth, useRoles, useSignOut } from '@/hooks/useAuth';
+import { cn } from '@/lib/utils';
 
 const nav = [
-  { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
-  { to: "/admin/builder", label: "Homepage builder", icon: Layers },
-  { to: "/admin/content", label: "Content library", icon: Library },
-  { to: "/admin/pages", label: "Pages", icon: FileText },
-  { to: "/admin/theme", label: "Theme", icon: Palette },
-  { to: "/admin/seo", label: "SEO", icon: Search },
-  { to: "/admin/messages", label: "Messages", icon: MessageSquare },
-  { to: "/admin/contact-settings", label: "Contact Config", icon: PhoneCall },
+  { to: '/admin', label: 'Overview', icon: LayoutDashboard, exact: true },
+  { to: '/admin/builder', label: 'Homepage builder', icon: Layers },
+  { to: '/admin/content', label: 'Content library', icon: Library },
+  { to: '/admin/pages', label: 'Pages', icon: FileText },
+  { to: '/admin/theme', label: 'Theme', icon: Palette },
+  { to: '/admin/seo', label: 'SEO', icon: Search },
+  { to: '/admin/messages', label: 'Messages', icon: MessageSquare },
+  { to: '/admin/contact-settings', label: 'Contact Config', icon: PhoneCall },
 ];
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const signOut = useSignOut();
   const { data: roles } = useRoles();
-  const pathname = usePathname() || "";
+  const pathname = usePathname() || '';
 
   useEffect(() => {
-    if (!loading && !user && !pathname.startsWith("/auth")) {
+    if (!loading && !user && !pathname.startsWith('/auth')) {
       const nextParam = new URLSearchParams({ next: pathname }).toString();
       router.replace(`/auth?${nextParam}`);
     }
@@ -52,35 +48,30 @@ export default function AdminLayout({
   if (loading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        <Loader2 className="text-muted-foreground h-5 w-5 animate-spin" />
       </div>
     );
   }
 
   return (
     <div className="flex min-h-screen">
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-card/40 p-5 md:flex">
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-display text-lg font-semibold"
-        >
+      <aside className="border-border bg-card/40 sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r p-5 md:flex">
+        <Link href="/" className="font-display flex items-center gap-2 text-lg font-semibold">
           <img src="/logos/logo-sm.svg" alt="Nazexa" className="h-6 w-auto" />
           Nazexa <span className="text-muted-foreground">CMS</span>
         </Link>
         <nav className="mt-8 flex-1 space-y-1">
           {nav.map((item) => {
-            const active = item.exact
-              ? pathname === item.to
-              : pathname.startsWith(item.to);
+            const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
             return (
               <Link
                 key={item.to}
                 href={item.to}
                 className={cn(
-                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors",
+                  'flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors',
                   active
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                 )}
               >
                 <item.icon className="h-4 w-4" />
@@ -89,10 +80,10 @@ export default function AdminLayout({
             );
           })}
         </nav>
-        <div className="border-t border-border pt-4">
-          <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-          <p className="mt-0.5 text-xs text-primary">
-            {roles?.length ? roles.join(", ") : "no role assigned"}
+        <div className="border-border border-t pt-4">
+          <p className="text-muted-foreground truncate text-xs">{user.email}</p>
+          <p className="text-primary mt-0.5 text-xs">
+            {roles?.length ? roles.join(', ') : 'no role assigned'}
           </p>
           <Button
             variant="outline"

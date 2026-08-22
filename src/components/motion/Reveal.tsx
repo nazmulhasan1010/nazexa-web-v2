@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-type Variant = "fade" | "up" | "down" | "left" | "right" | "zoom" | "blur";
+type Variant = 'fade' | 'up' | 'down' | 'left' | 'right' | 'zoom' | 'blur';
 
 const hidden: Record<Variant, string> = {
-  fade: "opacity-0",
-  up: "opacity-0 translate-y-8",
-  down: "opacity-0 -translate-y-8",
-  left: "opacity-0 -translate-x-8",
-  right: "opacity-0 translate-x-8",
-  zoom: "opacity-0 scale-95",
-  blur: "opacity-0 blur-md",
+  fade: 'opacity-0',
+  up: 'opacity-0 translate-y-8',
+  down: 'opacity-0 -translate-y-8',
+  left: 'opacity-0 -translate-x-8',
+  right: 'opacity-0 translate-x-8',
+  zoom: 'opacity-0 scale-95',
+  blur: 'opacity-0 blur-md',
 };
 
 export function useInView<T extends HTMLElement>(threshold = 0.15) {
@@ -32,7 +32,7 @@ export function useInView<T extends HTMLElement>(threshold = 0.15) {
           }
         }
       },
-      { threshold, rootMargin: "0px 0px -8% 0px" },
+      { threshold, rootMargin: '0px 0px -8% 0px' }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -44,16 +44,16 @@ export function useInView<T extends HTMLElement>(threshold = 0.15) {
 /** Scroll-triggered reveal wrapper. */
 export function Reveal({
   children,
-  variant = "up",
+  variant = 'up',
   delay = 0,
   className,
-  as: Tag = "div",
+  as: Tag = 'div',
 }: {
   children: ReactNode;
   variant?: Variant;
   delay?: number;
   className?: string;
-  as?: "div" | "section" | "li" | "span";
+  as?: 'div' | 'section' | 'li' | 'span';
 }) {
   const { ref, inView } = useInView<HTMLDivElement>();
 
@@ -62,11 +62,9 @@ export function Reveal({
       ref={ref as never}
       style={{ transitionDelay: `${delay}ms` }}
       className={cn(
-        "transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform",
-        inView
-          ? "translate-x-0 translate-y-0 scale-100 opacity-100 blur-0"
-          : hidden[variant],
-        className,
+        'transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform',
+        inView ? 'blur-0 translate-x-0 translate-y-0 scale-100 opacity-100' : hidden[variant],
+        className
       )}
     >
       {children}
@@ -78,7 +76,7 @@ export function Reveal({
 export function Stagger({
   children,
   step = 80,
-  variant = "up",
+  variant = 'up',
   className,
 }: {
   children: ReactNode[];
@@ -109,19 +107,17 @@ export function TextReveal({
 }) {
   const { ref, inView } = useInView<HTMLSpanElement>();
   return (
-    <span ref={ref} className={cn("inline-block", className)}>
-      {text.split(" ").map((word, i) => (
+    <span ref={ref} className={cn('inline-block', className)}>
+      {text.split(' ').map((word, i) => (
         <span
           key={`${word}-${i}`}
           className="-mb-[0.16em] inline-block overflow-hidden pb-[0.16em] align-bottom"
         >
           <span
             className={cn(
-              "inline-block transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
-              inView
-                ? "translate-y-0 opacity-100"
-                : "translate-y-full opacity-0",
-              wordClassName,
+              'inline-block transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]',
+              inView ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0',
+              wordClassName
             )}
             style={{ transitionDelay: `${i * 60}ms` }}
           >
@@ -137,8 +133,8 @@ export function TextReveal({
 /** Animated number counter. */
 export function Counter({
   to,
-  suffix = "",
-  prefix = "",
+  suffix = '',
+  prefix = '',
   decimals = 0,
   duration = 1600,
   className,
@@ -176,13 +172,7 @@ export function Counter({
 }
 
 /** Magnetic hover wrapper for buttons/cards. */
-export function Magnetic({
-  children,
-  strength = 14,
-}: {
-  children: ReactNode;
-  strength?: number;
-}) {
+export function Magnetic({ children, strength = 14 }: { children: ReactNode; strength?: number }) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -199,7 +189,7 @@ export function Magnetic({
       }}
       onPointerLeave={() => {
         const el = ref.current;
-        if (el) el.style.transform = "translate3d(0,0,0)";
+        if (el) el.style.transform = 'translate3d(0,0,0)';
       }}
     >
       {children}

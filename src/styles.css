@@ -1,14 +1,14 @@
-@import "tailwindcss" source(none);
-@plugin "@tailwindcss/typography";
-@source "../src";
-@import "tw-animate-css";
+@import 'tailwindcss' source(none);
+@plugin '@tailwindcss/typography';
+@source '../src';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
 /*
@@ -95,19 +95,13 @@
   --brand-1: oklch(0.82 0.15 190);
   --brand-2: oklch(0.68 0.17 265);
   --brand-3: oklch(0.5 0.15 220);
-  --gradient-brand: linear-gradient(
-    120deg,
-    var(--brand-1),
-    var(--brand-2) 55%,
-    var(--brand-3)
-  );
+  --gradient-brand: linear-gradient(120deg, var(--brand-1), var(--brand-2) 55%, var(--brand-3));
   --gradient-aurora: radial-gradient(
     60% 60% at 50% 0%,
     color-mix(in oklab, var(--brand-1) 30%, transparent),
     transparent 70%
   );
-  --shadow-glow: 0 0 60px -12px
-    color-mix(in oklab, var(--brand-1) 55%, transparent);
+  --shadow-glow: 0 0 60px -12px color-mix(in oklab, var(--brand-1) 55%, transparent);
   --shadow-elevate: 0 24px 60px -24px oklch(0 0 0 / 70%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);

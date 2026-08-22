@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { getSession, issueApplicationToken } from "@/lib/auth";
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { getSession, issueApplicationToken } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
@@ -12,27 +12,21 @@ export async function POST(request: Request) {
       where: { clientId: client_id },
     });
 
-    if (!app || app.clientSecret !== client_secret || app.status !== "active") {
-      return NextResponse.json({ error: "invalid_client" }, { status: 401 });
+    if (!app || app.clientSecret !== client_secret || app.status !== 'active') {
+      return NextResponse.json({ error: 'invalid_client' }, { status: 401 });
     }
 
-    if (grant_type === "session_exchange") {
+    if (grant_type === 'session_exchange') {
       const user = await getSession();
       if (!user) {
-        return NextResponse.json(
-          { error: "no_active_session" },
-          { status: 401 },
-        );
+        return NextResponse.json({ error: 'no_active_session' }, { status: 401 });
       }
 
-      if (user.status !== "active") {
-        return NextResponse.json(
-          { error: "account_disabled" },
-          { status: 403 },
-        );
+      if (user.status !== 'active') {
+        return NextResponse.json({ error: 'account_disabled' }, { status: 403 });
       }
 
-      const scopes = "profile email";
+      const scopes = 'profile email';
 
       // Record authorization grant
       await db.authorization.upsert({
@@ -47,17 +41,14 @@ export async function POST(request: Request) {
 
       return NextResponse.json({
         access_token,
-        token_type: "Bearer",
+        token_type: 'Bearer',
         expires_in: 3600,
         user_info: { id: user.id, email: user.email, name: user.name },
       });
     }
 
-    return NextResponse.json(
-      { error: "unsupported_grant_type" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'unsupported_grant_type' }, { status: 400 });
   } catch (error) {
-    return NextResponse.json({ error: "server_error" }, { status: 500 });
+    return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }
 }

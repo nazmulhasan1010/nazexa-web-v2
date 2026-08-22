@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { resolveGeo } from "@/lib/geo-server";
-import { CURRENCIES } from "@/lib/currency";
+import { NextRequest, NextResponse } from 'next/server';
+import { resolveGeo } from '@/lib/geo-server';
+import { CURRENCIES } from '@/lib/currency';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 /**
  * Resolves the visitor's display currency from their IP/CDN geo headers.
@@ -24,8 +24,8 @@ export async function GET(req: NextRequest) {
     {
       headers: {
         // Per-visitor result — cache on the client only, never shared.
-        "Cache-Control": "private, max-age=3600",
+        'Cache-Control': 'private, max-age=3600',
       },
-    },
+    }
   );
 }

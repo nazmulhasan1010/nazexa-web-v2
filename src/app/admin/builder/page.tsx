@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { Eye, EyeOff, GripVertical, Loader2, Save } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { Eye, EyeOff, GripVertical, Loader2, Save } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { saveHomeSections, type HomeSection } from "@/lib/cms";
-import { homeSectionsQuery } from "@/lib/queries";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { saveHomeSections, type HomeSection } from '@/lib/cms';
+import { homeSectionsQuery } from '@/lib/queries';
+import { cn } from '@/lib/utils';
 
 export default BuilderPage;
 
 const SECTION_LABELS: Record<string, string> = {
-  hero: "Hero",
-  trusted: "Trusted by",
-  features: "Feature grid",
-  platform: "Platform overview",
-  stats: "Stats",
-  testimonials: "Testimonials",
-  timeline: "Timeline",
-  techstack: "Tech stack",
-  blog: "Blog preview",
-  faq: "FAQ",
-  cta: "Final CTA",
+  hero: 'Hero',
+  trusted: 'Trusted by',
+  features: 'Feature grid',
+  platform: 'Platform overview',
+  stats: 'Stats',
+  testimonials: 'Testimonials',
+  timeline: 'Timeline',
+  techstack: 'Tech stack',
+  blog: 'Blog preview',
+  faq: 'FAQ',
+  cta: 'Final CTA',
 };
 
 function BuilderPage() {
@@ -46,13 +46,12 @@ function BuilderPage() {
       await saveHomeSections(rows);
     },
     onSuccess: () => {
-      toast.success("Homepage saved");
+      toast.success('Homepage saved');
       void queryClient.invalidateQueries({
         queryKey: homeSectionsQuery.queryKey,
       });
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Could not save"),
+    onError: (e) => toast.error(e instanceof Error ? e.message : 'Could not save'),
   });
 
   function move(from: number, to: number) {
@@ -65,13 +64,11 @@ function BuilderPage() {
   }
 
   function patch(id: string, changes: Partial<HomeSection>) {
-    setItems((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, ...changes } : s)),
-    );
+    setItems((prev) => prev.map((s) => (s.id === id ? { ...s, ...changes } : s)));
   }
 
   if (isLoading) {
-    return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
+    return <Loader2 className="text-muted-foreground h-5 w-5 animate-spin" />;
   }
 
   return (
@@ -79,16 +76,11 @@ function BuilderPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-semibold">Homepage builder</h1>
-          <p className="mt-2 text-muted-foreground">
-            Drag to reorder, toggle visibility, and edit section copy. Changes
-            go live on save.
+          <p className="text-muted-foreground mt-2">
+            Drag to reorder, toggle visibility, and edit section copy. Changes go live on save.
           </p>
         </div>
-        <Button
-          className="glow-ring"
-          onClick={() => save.mutate(items)}
-          disabled={save.isPending}
-        >
+        <Button className="glow-ring" onClick={() => save.mutate(items)} disabled={save.isPending}>
           {save.isPending ? (
             <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
           ) : (
@@ -113,72 +105,56 @@ function BuilderPage() {
             }}
             onDragEnd={() => setDragIndex(null)}
             className={cn(
-              "surface-card p-4 transition-opacity",
-              dragIndex === index && "opacity-60",
-              !section.visible && "opacity-60",
+              'surface-card p-4 transition-opacity',
+              dragIndex === index && 'opacity-60',
+              !section.visible && 'opacity-60'
             )}
           >
             <div className="flex items-center gap-3">
-              <GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-              <span className="font-mono text-xs text-muted-foreground">
-                {index + 1}
-              </span>
+              <GripVertical className="text-muted-foreground h-4 w-4 cursor-grab" />
+              <span className="text-muted-foreground font-mono text-xs">{index + 1}</span>
               <button
                 type="button"
                 className="flex-1 text-left"
-                onClick={() =>
-                  setSelected(selected === section.id ? null : section.id)
-                }
+                onClick={() => setSelected(selected === section.id ? null : section.id)}
               >
-                <span className="font-medium">
-                  {SECTION_LABELS[section.type] ?? section.type}
-                </span>
+                <span className="font-medium">{SECTION_LABELS[section.type] ?? section.type}</span>
                 {section.title && (
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    {section.title}
-                  </span>
+                  <span className="text-muted-foreground ml-2 text-sm">{section.title}</span>
                 )}
               </button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => patch(section.id, { visible: !section.visible })}
-                aria-label={section.visible ? "Hide section" : "Show section"}
+                aria-label={section.visible ? 'Hide section' : 'Show section'}
               >
-                {section.visible ? (
-                  <Eye className="h-4 w-4" />
-                ) : (
-                  <EyeOff className="h-4 w-4" />
-                )}
+                {section.visible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               </Button>
             </div>
 
             {selected === section.id && (
-              <div className="mt-4 grid gap-3 border-t border-border pt-4 sm:grid-cols-2">
+              <div className="border-border mt-4 grid gap-3 border-t pt-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label>Title</Label>
                   <Input
-                    value={section.title ?? ""}
-                    onChange={(e) =>
-                      patch(section.id, { title: e.target.value })
-                    }
+                    value={section.title ?? ''}
+                    onChange={(e) => patch(section.id, { title: e.target.value })}
                   />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Subtitle</Label>
                   <Input
-                    value={section.subtitle ?? ""}
-                    onChange={(e) =>
-                      patch(section.id, { subtitle: e.target.value })
-                    }
+                    value={section.subtitle ?? ''}
+                    onChange={(e) => patch(section.id, { subtitle: e.target.value })}
                   />
                 </div>
-                {section.type === "hero" && (
+                {section.type === 'hero' && (
                   <>
                     <div className="space-y-1.5 sm:col-span-2">
                       <Label>Badge</Label>
                       <Input
-                        value={String(section.content["badge"] ?? "")}
+                        value={String(section.content['badge'] ?? '')}
                         onChange={(e) =>
                           patch(section.id, {
                             content: {
@@ -193,7 +169,7 @@ function BuilderPage() {
                       <Label>Body copy</Label>
                       <Textarea
                         rows={3}
-                        value={String(section.content["body"] ?? "")}
+                        value={String(section.content['body'] ?? '')}
                         onChange={(e) =>
                           patch(section.id, {
                             content: {
@@ -207,7 +183,7 @@ function BuilderPage() {
                     <div className="space-y-1.5">
                       <Label>Primary button</Label>
                       <Input
-                        value={String(section.content["primaryCta"] ?? "")}
+                        value={String(section.content['primaryCta'] ?? '')}
                         onChange={(e) =>
                           patch(section.id, {
                             content: {
@@ -221,7 +197,7 @@ function BuilderPage() {
                     <div className="space-y-1.5">
                       <Label>Secondary button</Label>
                       <Input
-                        value={String(section.content["secondaryCta"] ?? "")}
+                        value={String(section.content['secondaryCta'] ?? '')}
                         onChange={(e) =>
                           patch(section.id, {
                             content: {

@@ -1,0 +1,13 @@
+node_modules
+.next
+.agents
+.claude
+.vscode
+.idea
+out
+dist
+build
+coverage
+public
+*.min.js
+package-lock.json

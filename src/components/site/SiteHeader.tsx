@@ -1,21 +1,13 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import {
-  Menu,
-  X,
-  ChevronDown,
-  Sparkles,
-  User,
-  Settings,
-  LogOut,
-} from "lucide-react";
-import { useEffect, useState } from "react";
+import Link from 'next/link';
+import { Menu, X, ChevronDown, Sparkles, User, Settings, LogOut } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-import { Button } from "@/components/ui/button";
-import { navGroups } from "@/lib/site-content";
-import { cn } from "@/lib/utils";
-import { useAuth, useSignOut } from "@/hooks/useAuth";
+import { Button } from '@/components/ui/button';
+import { navGroups } from '@/lib/site-content';
+import { cn } from '@/lib/utils';
+import { useAuth, useSignOut } from '@/hooks/useAuth';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,9 +15,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { ContentItem } from "@/lib/cms";
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import type { ContentItem } from '@/lib/cms';
 
 export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
   const [scrolled, setScrolled] = useState(false);
@@ -35,8 +27,8 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const { user, loading } = useAuth();
@@ -45,19 +37,15 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        scrolled
-          ? "border-b border-border bg-background/75 backdrop-blur-xl"
-          : "bg-transparent",
+        'fixed inset-x-0 top-0 z-50 transition-all duration-500',
+        scrolled ? 'border-border bg-background/75 border-b backdrop-blur-xl' : 'bg-transparent'
       )}
       onMouseLeave={() => setGroup(null)}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-5">
         <Link href="/" className="group flex items-center gap-2.5">
           <img src="/logos/logo-sm.svg" alt="Nazexa" className="h-8 w-8" />
-          <span className="font-display text-lg font-semibold tracking-tight">
-            Nazexa
-          </span>
+          <span className="font-display text-lg font-semibold tracking-tight">Nazexa</span>
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
@@ -67,32 +55,32 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
               onMouseEnter={() => setGroup(g.label)}
               onFocus={() => setGroup(g.label)}
               className={cn(
-                "flex items-center gap-1 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground",
-                group === g.label && "text-foreground",
+                'text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors',
+                group === g.label && 'text-foreground'
               )}
             >
               {g.label}
               <ChevronDown
                 className={cn(
-                  "h-3.5 w-3.5 transition-transform",
-                  group === g.label && "rotate-180",
+                  'h-3.5 w-3.5 transition-transform',
+                  group === g.label && 'rotate-180'
                 )}
               />
             </button>
           ))}
           <button
-            onMouseEnter={() => setGroup("Pricing")}
-            onFocus={() => setGroup("Pricing")}
+            onMouseEnter={() => setGroup('Pricing')}
+            onFocus={() => setGroup('Pricing')}
             className={cn(
-              "flex items-center gap-1 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground outline-none focus:outline-none",
-              group === "Pricing" && "text-foreground",
+              'text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors outline-none focus:outline-none',
+              group === 'Pricing' && 'text-foreground'
             )}
           >
             Pricing
             <ChevronDown
               className={cn(
-                "h-3.5 w-3.5 transition-transform",
-                group === "Pricing" && "rotate-180",
+                'h-3.5 w-3.5 transition-transform',
+                group === 'Pricing' && 'rotate-180'
               )}
             />
           </button>
@@ -102,47 +90,31 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
           {loading ? null : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
-                >
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={(user as any).image ?? undefined}
-                      alt={user.email}
-                    />
-                    <AvatarFallback>
-                      {user.email?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
+                    <AvatarImage src={(user as any).image ?? undefined} alt={user.email} />
+                    <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {(user as any).name || "User"}
+                    <p className="text-sm leading-none font-medium">
+                      {(user as any).name || 'User'}
                     </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user.email}
-                    </p>
+                    <p className="text-muted-foreground text-xs leading-none">{user.email}</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link
-                    href="/profile"
-                    className="flex items-center cursor-pointer"
-                  >
+                  <Link href="/profile" className="flex cursor-pointer items-center">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link
-                    href="/profile"
-                    className="flex items-center cursor-pointer"
-                  >
+                  <Link href="/profile" className="flex cursor-pointer items-center">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </Link>
@@ -150,7 +122,7 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => signOut()}
-                  className="cursor-pointer text-destructive focus:text-destructive"
+                  className="text-destructive focus:text-destructive cursor-pointer"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
@@ -181,24 +153,22 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
       {/* Mega menu */}
       <div
         className={cn(
-          "hidden overflow-hidden border-border transition-all duration-300 lg:block",
-          group
-            ? "max-h-96 border-b bg-background/95 backdrop-blur-xl"
-            : "max-h-0",
+          'border-border hidden overflow-hidden transition-all duration-300 lg:block',
+          group ? 'bg-background/95 max-h-96 border-b backdrop-blur-xl' : 'max-h-0'
         )}
       >
         <div className="mx-auto grid max-w-7xl grid-cols-3 gap-2 px-5 py-6">
-          {group === "Pricing" ? (
+          {group === 'Pricing' ? (
             <>
               {products.map((p) => (
                 <Link
                   key={p.id}
                   href={`/${p.slug}/pricing`}
                   onClick={() => setGroup(null)}
-                  className="rounded-lg border border-transparent p-3 transition-colors hover:border-border hover:bg-secondary/50"
+                  className="hover:border-border hover:bg-secondary/50 rounded-lg border border-transparent p-3 transition-colors"
                 >
                   <div className="text-sm font-medium">{p.title}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">
+                  <div className="text-muted-foreground mt-1 text-xs">
                     View pricing plans for {p.title}
                   </div>
                 </Link>
@@ -206,10 +176,10 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
               <Link
                 href="/pricing"
                 onClick={() => setGroup(null)}
-                className="rounded-lg border border-transparent p-3 transition-colors hover:border-border hover:bg-secondary/50"
+                className="hover:border-border hover:bg-secondary/50 rounded-lg border border-transparent p-3 transition-colors"
               >
                 <div className="text-sm font-medium">All Pricing</div>
-                <div className="mt-1 text-xs text-muted-foreground">
+                <div className="text-muted-foreground mt-1 text-xs">
                   Compare all plans side-by-side
                 </div>
               </Link>
@@ -222,12 +192,10 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
                   key={item.to}
                   href={item.to}
                   onClick={() => setGroup(null)}
-                  className="rounded-lg border border-transparent p-3 transition-colors hover:border-border hover:bg-secondary/50"
+                  className="hover:border-border hover:bg-secondary/50 rounded-lg border border-transparent p-3 transition-colors"
                 >
                   <div className="text-sm font-medium">{item.title}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">
-                    {item.description}
-                  </div>
+                  <div className="text-muted-foreground mt-1 text-xs">{item.description}</div>
                 </Link>
               ))
           )}
@@ -236,10 +204,10 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
 
       {/* Mobile menu */}
       {open && (
-        <div className="max-h-[80vh] overflow-y-auto border-b border-border bg-background/98 px-5 pb-8 backdrop-blur-xl lg:hidden">
+        <div className="border-border bg-background/98 max-h-[80vh] overflow-y-auto border-b px-5 pb-8 backdrop-blur-xl lg:hidden">
           {navGroups.map((g) => (
             <div key={g.label} className="py-3">
-              <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              <div className="text-muted-foreground mb-2 text-xs font-semibold tracking-widest uppercase">
                 {g.label}
               </div>
               <div className="grid gap-1">
@@ -257,7 +225,7 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
             </div>
           ))}
           <div className="py-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            <div className="text-muted-foreground mb-2 text-xs font-semibold tracking-widest uppercase">
               Pricing
             </div>
             <div className="grid gap-1">

@@ -1,41 +1,29 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { verifyPassword, createSession } from "@/lib/auth";
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { verifyPassword, createSession } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
     if (!email || !password) {
-      return NextResponse.json(
-        { error: "Missing credentials" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Missing credentials' }, { status: 400 });
     }
 
     const user = await db.user.findUnique({ where: { email } });
     if (!user || !user.password_hash) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 },
-      );
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
     const isValid = await verifyPassword(password, user.password_hash);
     if (!isValid) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 },
-      );
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    if (user.status !== "active") {
-      return NextResponse.json(
-        { error: "Account is disabled" },
-        { status: 403 },
-      );
+    if (user.status !== 'active') {
+      return NextResponse.json({ error: 'Account is disabled' }, { status: 403 });
     }
 
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
 
     await db.$transaction(async (tx) => {
       await tx.user.update({
@@ -46,10 +34,10 @@ export async function POST(request: Request) {
         data: {
           eventId: crypto.randomUUID(),
           centralUserId: user.id,
-          source: "nazexa-web-core",
-          eventType: "USER_LOGGED_IN",
+          source: 'nazexa-web-core',
+          eventType: 'USER_LOGGED_IN',
           payload: JSON.stringify({ ip }),
-          status: "pending",
+          status: 'pending',
         },
       });
     });
@@ -67,9 +55,6 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

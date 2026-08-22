@@ -8,9 +8,9 @@
  * Never throws: an unresolved country just means the USD default.
  */
 
-import { currencyForCountry, type CurrencyCode } from "@/lib/currency";
+import { currencyForCountry, type CurrencyCode } from '@/lib/currency';
 
-export type GeoSource = "header" | "lookup" | "language" | "default";
+export type GeoSource = 'header' | 'lookup' | 'language' | 'default';
 
 export interface GeoResult {
   country: string | null;
@@ -19,19 +19,14 @@ export interface GeoResult {
 }
 
 const COUNTRY_HEADERS = [
-  "x-vercel-ip-country",
-  "cf-ipcountry",
-  "x-country-code",
-  "fastly-client-country",
-  "cloudfront-viewer-country",
+  'x-vercel-ip-country',
+  'cf-ipcountry',
+  'x-country-code',
+  'fastly-client-country',
+  'cloudfront-viewer-country',
 ];
 
-const IP_HEADERS = [
-  "x-forwarded-for",
-  "x-real-ip",
-  "cf-connecting-ip",
-  "x-client-ip",
-];
+const IP_HEADERS = ['x-forwarded-for', 'x-real-ip', 'cf-connecting-ip', 'x-client-ip'];
 
 const LOOKUP_TIMEOUT_MS = 1500;
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -43,7 +38,7 @@ function normalizeCountry(value: string | null | undefined): string | null {
   if (!value) return null;
   const code = value.trim().toUpperCase();
   // Cloudflare uses XX for unknown and T1 for Tor exit nodes.
-  if (!/^[A-Z]{2}$/.test(code) || code === "XX" || code === "T1") return null;
+  if (!/^[A-Z]{2}$/.test(code) || code === 'XX' || code === 'T1') return null;
   return code;
 }
 
@@ -51,16 +46,16 @@ export function clientIp(headers: Headers): string | null {
   for (const name of IP_HEADERS) {
     const raw = headers.get(name);
     if (!raw) continue;
-    const first = raw.split(",")[0]?.trim();
-    if (first) return first.replace(/^\[|\]$/g, "");
+    const first = raw.split(',')[0]?.trim();
+    if (first) return first.replace(/^\[|\]$/g, '');
   }
   return null;
 }
 
 /** True for loopback, link-local, and RFC1918-style addresses — not worth a lookup. */
 export function isPrivateIp(ip: string): boolean {
-  if (ip === "::1" || ip === "127.0.0.1" || ip === "localhost") return true;
-  if (ip.startsWith("::ffff:")) return isPrivateIp(ip.slice(7));
+  if (ip === '::1' || ip === '127.0.0.1' || ip === 'localhost') return true;
+  if (ip.startsWith('::ffff:')) return isPrivateIp(ip.slice(7));
   if (/^(10|127)\./.test(ip)) return true;
   if (/^192\.168\./.test(ip)) return true;
   if (/^169\.254\./.test(ip)) return true;
@@ -71,12 +66,12 @@ export function isPrivateIp(ip: string): boolean {
 }
 
 function countryFromLanguage(headers: Headers): string | null {
-  const header = headers.get("accept-language");
+  const header = headers.get('accept-language');
   if (!header) return null;
-  for (const part of header.split(",")) {
-    const tag = part.split(";")[0]?.trim();
+  for (const part of header.split(',')) {
+    const tag = part.split(';')[0]?.trim();
     if (!tag) continue;
-    const region = tag.split("-")[1];
+    const region = tag.split('-')[1];
     const code = normalizeCountry(region);
     if (code) return code;
   }
@@ -108,7 +103,7 @@ function writeCache(ip: string, country: string | null) {
  */
 function externalLookupEnabled(): boolean {
   const flag = process.env.GEO_IP_LOOKUP?.trim().toLowerCase();
-  return flag !== "false" && flag !== "0" && flag !== "off";
+  return flag !== 'false' && flag !== '0' && flag !== 'off';
 }
 
 /** Public view of the same flag, for callers that batch their own lookups. */
@@ -131,14 +126,11 @@ export async function lookupCountry(ip: string): Promise<string | null> {
   const timer = setTimeout(() => controller.abort(), LOOKUP_TIMEOUT_MS);
 
   try {
-    const res = await fetch(
-      `https://ipapi.co/${encodeURIComponent(ip)}/country/`,
-      {
-        signal: controller.signal,
-        headers: { accept: "text/plain" },
-        cache: "no-store",
-      },
-    );
+    const res = await fetch(`https://ipapi.co/${encodeURIComponent(ip)}/country/`, {
+      signal: controller.signal,
+      headers: { accept: 'text/plain' },
+      cache: 'no-store',
+    });
     if (!res.ok) {
       writeCache(ip, null);
       return null;
@@ -164,7 +156,7 @@ export async function resolveGeo(headers: Headers): Promise<GeoResult> {
       return {
         country,
         currency: currencyForCountry(country),
-        source: "header",
+        source: 'header',
       };
     }
   }
@@ -176,7 +168,7 @@ export async function resolveGeo(headers: Headers): Promise<GeoResult> {
       return {
         country,
         currency: currencyForCountry(country),
-        source: "lookup",
+        source: 'lookup',
       };
     }
   }
@@ -186,13 +178,13 @@ export async function resolveGeo(headers: Headers): Promise<GeoResult> {
     return {
       country: fromLanguage,
       currency: currencyForCountry(fromLanguage),
-      source: "language",
+      source: 'language',
     };
   }
 
   return {
     country: null,
     currency: currencyForCountry(null),
-    source: "default",
+    source: 'default',
   };
 }

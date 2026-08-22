@@ -1,7 +1,7 @@
-import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import * as React from 'react';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -9,13 +9,9 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { iconNames, getIcon } from "@/lib/icons";
+} from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { iconNames, getIcon } from '@/lib/icons';
 
 interface IconPickerProps {
   value: string | null;
@@ -49,7 +45,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
       <PopoverContent className="w-[300px] p-0" align="start">
         <Command>
           <CommandInput placeholder="Search icons..." />
-          <CommandList className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <CommandList className="[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             <CommandEmpty>No icon found.</CommandEmpty>
             <CommandGroup>
               <CommandItem
@@ -61,16 +57,11 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
                   setOpen(false);
                 }}
               >
-                <div className="flex items-center gap-2 w-full">
+                <div className="flex w-full items-center gap-2">
                   <div className="h-4 w-4" />
                   <span>None</span>
                 </div>
-                <Check
-                  className={cn(
-                    "ml-auto h-4 w-4",
-                    !value ? "opacity-100" : "opacity-0",
-                  )}
-                />
+                <Check className={cn('ml-auto h-4 w-4', !value ? 'opacity-100' : 'opacity-0')} />
               </CommandItem>
               {iconNames.map((name) => {
                 const Icon = getIcon(name);
@@ -84,14 +75,14 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
                       setOpen(false);
                     }}
                   >
-                    <div className="flex items-center gap-2 w-full">
-                      <Icon className="h-4 w-4 text-muted-foreground" />
+                    <div className="flex w-full items-center gap-2">
+                      <Icon className="text-muted-foreground h-4 w-4" />
                       <span>{name}</span>
                     </div>
                     <Check
                       className={cn(
-                        "ml-auto h-4 w-4",
-                        value === name ? "opacity-100" : "opacity-0",
+                        'ml-auto h-4 w-4',
+                        value === name ? 'opacity-100' : 'opacity-0'
                       )}
                     />
                   </CommandItem>

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Check, Globe, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Check, Globe, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,9 +9,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { CURRENCIES, CURRENCY_CODES, type CurrencyCode } from "@/lib/currency";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dropdown-menu';
+import { CURRENCIES, CURRENCY_CODES, type CurrencyCode } from '@/lib/currency';
+import { cn } from '@/lib/utils';
 
 interface CurrencySwitcherProps {
   currency: CurrencyCode;
@@ -47,12 +47,12 @@ export function CurrencySwitcher({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-60">
-        <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+        <DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
           {isManual
-            ? "Currency set manually"
+            ? 'Currency set manually'
             : country
               ? `Detected from your location (${country})`
-              : "Display currency"}
+              : 'Display currency'}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
@@ -60,26 +60,13 @@ export function CurrencySwitcher({
           const def = CURRENCIES[code];
           const selected = code === currency;
           return (
-            <DropdownMenuItem
-              key={code}
-              onSelect={() => onChange(code)}
-              className="gap-2"
-            >
-              <span className="w-4 text-center text-muted-foreground">
-                {def.symbol}
-              </span>
+            <DropdownMenuItem key={code} onSelect={() => onChange(code)} className="gap-2">
+              <span className="text-muted-foreground w-4 text-center">{def.symbol}</span>
               <span className="flex-1">
                 {def.label}
-                <span className="ml-1.5 text-xs text-muted-foreground">
-                  {def.code}
-                </span>
+                <span className="text-muted-foreground ml-1.5 text-xs">{def.code}</span>
               </span>
-              <Check
-                className={cn(
-                  "h-3.5 w-3.5 text-primary",
-                  !selected && "opacity-0",
-                )}
-              />
+              <Check className={cn('text-primary h-3.5 w-3.5', !selected && 'opacity-0')} />
             </DropdownMenuItem>
           );
         })}
@@ -87,10 +74,7 @@ export function CurrencySwitcher({
         {isManual && onReset && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onSelect={onReset}
-              className="text-xs text-muted-foreground"
-            >
+            <DropdownMenuItem onSelect={onReset} className="text-muted-foreground text-xs">
               Use my location instead
             </DropdownMenuItem>
           </>

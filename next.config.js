@@ -7,13 +7,13 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  serverExternalPackages: ["@prisma/client"],
+  serverExternalPackages: ['@prisma/client'],
   experimental: {
     serverActions: {
-      bodySizeLimit: "5mb",
+      bodySizeLimit: '5mb',
     },
   },
-  output: "standalone",
+  output: 'standalone',
 };
 
 export default nextConfig;

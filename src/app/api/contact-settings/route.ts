@@ -1,16 +1,13 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { getSession } from "@/lib/auth";
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { getSession } from '@/lib/auth';
 
 export async function GET() {
   try {
     const settings = await db.contactSettings.findFirst();
     return NextResponse.json({ settings });
   } catch (err) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -18,8 +15,8 @@ export async function PATCH(request: Request) {
   const user = await getSession();
 
   // Basic role check - only admins/editors can modify settings
-  if (!user || user.status !== "active") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user || user.status !== 'active') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
@@ -41,10 +38,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ settings: created });
     }
   } catch (err) {
-    console.error("Failed to update contact settings", err);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 },
-    );
+    console.error('Failed to update contact settings', err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

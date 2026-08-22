@@ -1,8 +1,8 @@
-import * as React from "react";
-import { Link, Trash2, UploadCloud } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import * as React from 'react';
+import { Link, Trash2, UploadCloud } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface ImageUploaderProps {
   value: string | null;
@@ -10,17 +10,13 @@ interface ImageUploaderProps {
   className?: string;
 }
 
-export function ImageUploader({
-  value,
-  onChange,
-  className,
-}: ImageUploaderProps) {
-  const [url, setUrl] = React.useState(value || "");
+export function ImageUploader({ value, onChange, className }: ImageUploaderProps) {
+  const [url, setUrl] = React.useState(value || '');
   const [isHovered, setIsHovered] = React.useState(false);
 
   // Sync internal state if value changes externally
   React.useEffect(() => {
-    setUrl(value || "");
+    setUrl(value || '');
   }, [value]);
 
   const handleApply = () => {
@@ -28,15 +24,15 @@ export function ImageUploader({
   };
 
   const handleClear = () => {
-    setUrl("");
+    setUrl('');
     onChange(null);
   };
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn('space-y-4', className)}>
       {value ? (
         <div
-          className="relative group rounded-xl overflow-hidden border border-border bg-muted/30 aspect-video flex items-center justify-center"
+          className="group border-border bg-muted/30 relative flex aspect-video items-center justify-center overflow-hidden rounded-xl border"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -44,17 +40,17 @@ export function ImageUploader({
           <img
             src={value}
             alt="Preview"
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             onError={(e) => {
               (e.target as HTMLImageElement).src =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yIDEyaDIwIi8+PHBhdGggZD0iTTIgMmw1IDUiLz48cGF0aCBkPSJNMjIgMmwtNSA1Ii8+PC9zdmc+"; // Broken image
+                'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yIDEyaDIwIi8+PHBhdGggZD0iTTIgMmw1IDUiLz48cGF0aCBkPSJNMjIgMmwtNSA1Ii8+PC9zdmc+'; // Broken image
             }}
           />
 
           <div
             className={cn(
-              "absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center opacity-0 transition-opacity duration-200",
-              isHovered && "opacity-100",
+              'bg-background/60 absolute inset-0 flex items-center justify-center opacity-0 backdrop-blur-sm transition-opacity duration-200',
+              isHovered && 'opacity-100'
             )}
           >
             <Button
@@ -69,13 +65,13 @@ export function ImageUploader({
           </div>
         </div>
       ) : (
-        <div className="relative rounded-xl border-2 border-dashed border-border hover:border-primary/50 transition-colors bg-muted/30 hover:bg-muted/50 p-8 flex flex-col items-center justify-center text-center gap-3">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+        <div className="border-border hover:border-primary/50 bg-muted/30 hover:bg-muted/50 relative flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-colors">
+          <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-full">
             <UploadCloud className="h-6 w-6" />
           </div>
           <div>
             <p className="text-sm font-medium">Image URL</p>
-            <p className="text-xs text-muted-foreground mt-1 max-w-[250px]">
+            <p className="text-muted-foreground mt-1 max-w-[250px] text-xs">
               Provide a direct URL to an image or SVG file.
             </p>
           </div>
@@ -84,14 +80,14 @@ export function ImageUploader({
 
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
-          <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Link className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <Input
             placeholder="https://example.com/image.png"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             className="pl-9"
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 e.preventDefault();
                 handleApply();
               }

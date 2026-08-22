@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { db } from "@/lib/db";
-import { createSessionToken } from "@/lib/auth";
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { db } from '@/lib/db';
+import { createSessionToken } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
-  const code = url.searchParams.get("code");
-  const error = url.searchParams.get("error");
-  const host = request.headers.get("host") || "localhost:3000";
-  const protocol = host.includes("localhost") ? "http" : "https";
+  const code = url.searchParams.get('code');
+  const error = url.searchParams.get('error');
+  const host = request.headers.get('host') || 'localhost:3000';
+  const protocol = host.includes('localhost') ? 'http' : 'https';
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
 
   if (error) {
@@ -24,39 +24,33 @@ export async function GET(request: NextRequest) {
   const redirectUri = `${baseUrl}/api/auth/callback/github`;
 
   if (!clientId || !clientSecret) {
-    return NextResponse.redirect(
-      `${baseUrl}/login?error=github_not_configured`,
-    );
+    return NextResponse.redirect(`${baseUrl}/login?error=github_not_configured`);
   }
 
   try {
     // Exchange code for token
-    const tokenRes = await fetch(
-      "https://github.com/login/oauth/access_token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          client_id: clientId,
-          client_secret: clientSecret,
-          code,
-          redirect_uri: redirectUri,
-        }),
+    const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
-    );
+      body: JSON.stringify({
+        client_id: clientId,
+        client_secret: clientSecret,
+        code,
+        redirect_uri: redirectUri,
+      }),
+    });
 
     const tokenData = await tokenRes.json();
-    if (!tokenData.access_token)
-      throw new Error("No access token returned from GitHub");
+    if (!tokenData.access_token) throw new Error('No access token returned from GitHub');
 
     // Fetch user profile
-    const profileRes = await fetch("https://api.github.com/user", {
+    const profileRes = await fetch('https://api.github.com/user', {
       headers: {
         Authorization: `Bearer ${tokenData.access_token}`,
-        Accept: "application/json",
+        Accept: 'application/json',
       },
     });
     const profileData = await profileRes.json();
@@ -65,10 +59,10 @@ export async function GET(request: NextRequest) {
 
     // If email is null (private), fetch from user/emails
     if (!email) {
-      const emailRes = await fetch("https://api.github.com/user/emails", {
+      const emailRes = await fetch('https://api.github.com/user/emails', {
         headers: {
           Authorization: `Bearer ${tokenData.access_token}`,
-          Accept: "application/json",
+          Accept: 'application/json',
         },
       });
       const emails = await emailRes.json();
@@ -76,9 +70,9 @@ export async function GET(request: NextRequest) {
       email = primaryEmail ? primaryEmail.email : emails[0]?.email;
     }
 
-    if (!email) throw new Error("No verified email returned from GitHub");
+    if (!email) throw new Error('No verified email returned from GitHub');
 
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
 
     let user = await db.user.findUnique({ where: { email } });
 
@@ -100,9 +94,9 @@ export async function GET(request: NextRequest) {
           data: {
             eventId: crypto.randomUUID(),
             centralUserId: user.id,
-            source: "nazexa-web-core",
-            eventType: "USER_CREATED",
-            payload: JSON.stringify({ provider: "github" }),
+            source: 'nazexa-web-core',
+            eventType: 'USER_CREATED',
+            payload: JSON.stringify({ provider: 'github' }),
           },
         });
       } else {
@@ -125,9 +119,9 @@ export async function GET(request: NextRequest) {
         data: {
           eventId: crypto.randomUUID(),
           centralUserId: user.id,
-          source: "nazexa-web-core",
-          eventType: "USER_LOGGED_IN",
-          payload: JSON.stringify({ ip, provider: "github" }),
+          source: 'nazexa-web-core',
+          eventType: 'USER_LOGGED_IN',
+          payload: JSON.stringify({ ip, provider: 'github' }),
         },
       });
 
@@ -135,7 +129,7 @@ export async function GET(request: NextRequest) {
       const account = await tx.account.findUnique({
         where: {
           provider_providerAccountId: {
-            provider: "github",
+            provider: 'github',
             providerAccountId: profileData.id.toString(),
           },
         },
@@ -145,8 +139,8 @@ export async function GET(request: NextRequest) {
         await tx.account.create({
           data: {
             userId: user.id,
-            type: "oauth",
-            provider: "github",
+            type: 'oauth',
+            provider: 'github',
             providerAccountId: profileData.id.toString(),
             access_token: tokenData.access_token,
           },
@@ -154,7 +148,7 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    if (user.status !== "active") {
+    if (user.status !== 'active') {
       return NextResponse.redirect(`${baseUrl}/login?error=account_disabled`);
     }
 
@@ -163,18 +157,16 @@ export async function GET(request: NextRequest) {
 
     let redirectUrl = `${baseUrl}/`;
 
-    const authPerformFrom = request.cookies.get("auth_perform_from")?.value;
+    const authPerformFrom = request.cookies.get('auth_perform_from')?.value;
 
-    if (authPerformFrom === "nazexa-db") {
-      const dbBaseUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || "http://localhost:8000";
-      let ssoPath = "/api/auth/sso";
-      
-      const stateParam = url.searchParams.get("state");
+    if (authPerformFrom === 'nazexa-db') {
+      const dbBaseUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
+      let ssoPath = '/api/auth/sso';
+
+      const stateParam = url.searchParams.get('state');
       if (stateParam) {
         try {
-          const decodedState = JSON.parse(
-            Buffer.from(stateParam, "base64url").toString(),
-          );
+          const decodedState = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
           if (decodedState.callback_url) {
             const parsed = new URL(decodedState.callback_url);
             ssoPath = parsed.pathname + parsed.search;
@@ -191,15 +183,13 @@ export async function GET(request: NextRequest) {
       } else if (!user.password_hash) {
         redirectUrl = `${baseUrl}/set-password`;
       } else {
-        const stateParam = url.searchParams.get("state");
+        const stateParam = url.searchParams.get('state');
         if (stateParam) {
           try {
-            const decodedState = JSON.parse(
-              Buffer.from(stateParam, "base64url").toString(),
-            );
+            const decodedState = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
             if (decodedState.callback_url) {
               const parsed = new URL(decodedState.callback_url);
-              if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+              if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
                 redirectUrl = decodedState.callback_url;
               }
             }
@@ -212,20 +202,20 @@ export async function GET(request: NextRequest) {
 
     const response = NextResponse.redirect(redirectUrl);
 
-    if (request.cookies.get("auth_perform_from")) {
+    if (request.cookies.get('auth_perform_from')) {
       const cookieStore = await cookies();
-      cookieStore.delete("auth_perform_from");
+      cookieStore.delete('auth_perform_from');
     }
 
-    const isProd = process.env.NODE_ENV === "production";
+    const isProd = process.env.NODE_ENV === 'production';
     const domain = process.env.COOKIE_DOMAIN;
 
-    response.cookies.set("nazexa_session", token, {
+    response.cookies.set('nazexa_session', token, {
       httpOnly: true,
       secure: isProd,
       expires: expiresAt,
-      sameSite: "lax",
-      path: "/",
+      sameSite: 'lax',
+      path: '/',
       ...(domain ? { domain } : {}),
     });
     return response;

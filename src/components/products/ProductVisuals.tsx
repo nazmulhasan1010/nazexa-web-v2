@@ -2,9 +2,9 @@
  * Animated SVG illustrations for the Nazexa product pages.
  * Pure SVG + CSS (SMIL-free where possible) so they stay light and GPU friendly.
  */
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-const frame = "h-full w-full";
+const frame = 'h-full w-full';
 
 function Shell({
   children,
@@ -15,10 +15,7 @@ function Shell({
 }) {
   return (
     <div
-      className={cn(
-        "surface-card relative aspect-[16/10] w-full overflow-hidden p-0",
-        className,
-      )}
+      className={cn('surface-card relative aspect-[16/10] w-full overflow-hidden p-0', className)}
     >
       <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_20%_0%,color-mix(in_oklab,var(--primary)_16%,transparent),transparent_60%)]" />
       {children}
@@ -66,19 +63,15 @@ export function ErdVisual({ className }: { className?: string | undefined }) {
           strokeWidth="1.8"
           strokeDasharray="200"
           className="animate-draw"
-          style={{ animationDelay: "0.6s" }}
+          style={{ animationDelay: '0.6s' }}
         />
 
         {[
-          { x: 24, y: 34, label: "users", rows: 3 },
-          { x: 24, y: 118, label: "teams", rows: 2 },
-          { x: 176, y: 78, label: "projects", rows: 3 },
+          { x: 24, y: 34, label: 'users', rows: 3 },
+          { x: 24, y: 118, label: 'teams', rows: 2 },
+          { x: 176, y: 78, label: 'projects', rows: 3 },
         ].map((t, i) => (
-          <g
-            key={t.label}
-            className="animate-float"
-            style={{ animationDelay: `${i * 0.8}s` }}
-          >
+          <g key={t.label} className="animate-float" style={{ animationDelay: `${i * 0.8}s` }}>
             <rect
               x={t.x}
               y={t.y}
@@ -98,13 +91,7 @@ export function ErdVisual({ className }: { className?: string | undefined }) {
               fill="var(--primary)"
               fillOpacity="0.18"
             />
-            <text
-              x={t.x + 7}
-              y={t.y + 10}
-              fontSize="7"
-              fill="currentColor"
-              fontFamily="monospace"
-            >
+            <text x={t.x + 7} y={t.y + 10} fontSize="7" fill="currentColor" fontFamily="monospace">
               {t.label}
             </text>
             {Array.from({ length: t.rows }).map((_, r) => (
@@ -169,11 +156,7 @@ export function ErdVisual({ className }: { className?: string | undefined }) {
 }
 
 /** Thumbnail / hero visual for Nazexa DEV Tools — a tool console cycling through payloads. */
-export function DevToolsVisual({
-  className,
-}: {
-  className?: string | undefined;
-}) {
+export function DevToolsVisual({ className }: { className?: string | undefined }) {
   return (
     <Shell className={className}>
       <svg
@@ -193,7 +176,7 @@ export function DevToolsVisual({
           strokeOpacity="0.14"
         />
         <g>
-          {["JSON", "API", "JWT", "SQL"].map((t, i) => (
+          {['JSON', 'API', 'JWT', 'SQL'].map((t, i) => (
             <g key={t}>
               <rect
                 x={30 + i * 62}
@@ -212,13 +195,7 @@ export function DevToolsVisual({
                   repeatCount="indefinite"
                 />
               </rect>
-              <text
-                x={37 + i * 62}
-                y={43}
-                fontSize="8"
-                fill="currentColor"
-                fontFamily="monospace"
-              >
+              <text x={37 + i * 62} y={43} fontSize="8" fill="currentColor" fontFamily="monospace">
                 {t}
               </text>
             </g>
@@ -226,13 +203,13 @@ export function DevToolsVisual({
         </g>
 
         {[
-          [42, "{"],
+          [42, '{'],
           [56, '  "status": 200,'],
           [70, '  "user": {'],
           [84, '    "id": "usr_91f",'],
           [98, '    "role": "admin"'],
-          [112, "  }"],
-          [126, "}"],
+          [112, '  }'],
+          [126, '}'],
         ].map(([y, text], i) => (
           <text
             key={i}
@@ -340,15 +317,10 @@ export function RelationshipVisual() {
           strokeWidth="1.6"
           strokeDasharray="90"
           className="animate-draw"
-          style={{ animationDelay: "0.5s" }}
+          style={{ animationDelay: '0.5s' }}
         />
         <circle cx="80" cy="44" r="3" fill="var(--primary)">
-          <animate
-            attributeName="r"
-            values="2;4.5;2"
-            dur="2.4s"
-            repeatCount="indefinite"
-          />
+          <animate attributeName="r" values="2;4.5;2" dur="2.4s" repeatCount="indefinite" />
         </circle>
       </g>
     </FeatureFrame>
@@ -364,9 +336,9 @@ export function AutoLayoutVisual() {
         ))}
       </g>
       {[
-        { x: 12, y: 18, d: "0s" },
-        { x: 66, y: 54, d: "0.4s" },
-        { x: 112, y: 22, d: "0.8s" },
+        { x: 12, y: 18, d: '0s' },
+        { x: 66, y: 54, d: '0.4s' },
+        { x: 112, y: 22, d: '0.8s' },
       ].map((b) => (
         <rect
           key={b.d}
@@ -390,7 +362,7 @@ export function AutoLayoutVisual() {
 export function ExportVisual() {
   return (
     <FeatureFrame label="Export to SQL, Laravel, PNG and SVG">
-      {["SQL", "JSON", "PHP", "SVG"].map((t, i) => (
+      {['SQL', 'JSON', 'PHP', 'SVG'].map((t, i) => (
         <g key={t}>
           <rect
             x={10 + i * 38}
@@ -487,28 +459,12 @@ export function ApiVisual() {
         stroke="var(--primary)"
         strokeOpacity="0.4"
       />
-      <text
-        x="18"
-        y="38"
-        fontSize="8"
-        fontFamily="monospace"
-        fill="currentColor"
-      >
+      <text x="18" y="38" fontSize="8" fontFamily="monospace" fill="currentColor">
         GET /v1
       </text>
-      <path
-        d="M76 34 H140"
-        stroke="var(--primary)"
-        strokeWidth="1.6"
-        strokeDasharray="4 4"
-      />
+      <path d="M76 34 H140" stroke="var(--primary)" strokeWidth="1.6" strokeDasharray="4 4" />
       <circle cx="76" cy="34" r="3.5" fill="var(--primary)">
-        <animate
-          attributeName="cx"
-          values="76;140;76"
-          dur="2.6s"
-          repeatCount="indefinite"
-        />
+        <animate attributeName="cx" values="76;140;76" dur="2.6s" repeatCount="indefinite" />
       </circle>
       <rect
         x="12"
@@ -520,13 +476,7 @@ export function ApiVisual() {
         stroke="currentColor"
         strokeOpacity="0.15"
       />
-      <text
-        x="18"
-        y="77"
-        fontSize="8"
-        fontFamily="monospace"
-        fill="var(--primary)"
-      >
+      <text x="18" y="77" fontSize="8" fontFamily="monospace" fill="var(--primary)">
         200 OK · 84 ms
       </text>
     </FeatureFrame>
@@ -537,9 +487,9 @@ export function JwtVisual() {
   return (
     <FeatureFrame label="JWT decoding and inspection">
       {[
-        { x: 10, w: 40, label: "header" },
-        { x: 54, w: 52, label: "payload" },
-        { x: 110, w: 36, label: "sig" },
+        { x: 10, w: 40, label: 'header' },
+        { x: 54, w: 52, label: 'payload' },
+        { x: 110, w: 36, label: 'sig' },
       ].map((s, i) => (
         <g key={s.label}>
           <rect
@@ -595,21 +545,10 @@ export function JwtVisual() {
   );
 }
 
-function FeatureFrame({
-  children,
-  label,
-}: {
-  children: React.ReactNode;
-  label: string;
-}) {
+function FeatureFrame({ children, label }: { children: React.ReactNode; label: string }) {
   return (
-    <div className="relative overflow-hidden rounded-lg border border-border bg-secondary/25">
-      <svg
-        viewBox="0 0 160 104"
-        className="h-28 w-full"
-        role="img"
-        aria-label={label}
-      >
+    <div className="border-border bg-secondary/25 relative overflow-hidden rounded-lg border">
+      <svg viewBox="0 0 160 104" className="h-28 w-full" role="img" aria-label={label}>
         {children}
       </svg>
     </div>

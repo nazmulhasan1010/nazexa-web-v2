@@ -8,7 +8,7 @@
  * Without config, emails are logged in development and reported as skipped.
  */
 
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
 export type SendEmailInput = {
   to: string;
@@ -18,22 +18,14 @@ export type SendEmailInput = {
 };
 
 export type SendEmailResult =
-  | { sent: true; provider: "resend" | "smtp" }
-  | { sent: false; skipped: true; reason: string };
+  { sent: true; provider: 'resend' | 'smtp' } | { sent: false; skipped: true; reason: string };
 
 function getFromAddress(): string {
-  return (
-    process.env.EMAIL_FROM ||
-    process.env.SMTP_FROM ||
-    "Nazexa<noreply@localhost>"
-  );
+  return process.env.EMAIL_FROM || process.env.SMTP_FROM || 'Nazexa<noreply@localhost>';
 }
 
 function getAppBaseUrl(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(
-    /\/$/,
-    "",
-  );
+  return (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '');
 }
 
 export function appBaseUrl(): string {
@@ -42,18 +34,17 @@ export function appBaseUrl(): string {
 
 export function isEmailConfigured(): boolean {
   if (process.env.RESEND_API_KEY) return true;
-  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)
-    return true;
+  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) return true;
   return false;
 }
 
 async function sendViaResend(input: SendEmailInput): Promise<SendEmailResult> {
   const apiKey = process.env.RESEND_API_KEY!;
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       from: getFromAddress(),
@@ -65,11 +56,11 @@ async function sendViaResend(input: SendEmailInput): Promise<SendEmailResult> {
   });
 
   if (!res.ok) {
-    const body = await res.text().catch(() => "");
+    const body = await res.text().catch(() => '');
     throw new Error(`Resend failed (${res.status}): ${body || res.statusText}`);
   }
 
-  return { sent: true, provider: "resend" };
+  return { sent: true, provider: 'resend' };
 }
 
 async function sendViaSmtp(input: SendEmailInput): Promise<SendEmailResult> {
@@ -92,12 +83,10 @@ async function sendViaSmtp(input: SendEmailInput): Promise<SendEmailResult> {
     text: input.text,
   });
 
-  return { sent: true, provider: "smtp" };
+  return { sent: true, provider: 'smtp' };
 }
 
-export async function sendEmail(
-  input: SendEmailInput,
-): Promise<SendEmailResult> {
+export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult> {
   if (process.env.RESEND_API_KEY) {
     return sendViaResend(input);
   }
@@ -107,14 +96,11 @@ export async function sendEmail(
   }
 
   const reason =
-    "Email is not configured. Set RESEND_API_KEY or SMTP_HOST/SMTP_USER/SMTP_PASS + EMAIL_FROM.";
-  console.warn("[email] skipped:", reason);
-  console.warn("[email] would send to:", input.to, "|", input.subject);
-  if (process.env.NODE_ENV !== "production") {
-    console.info(
-      "[email] preview text:\n",
-      input.text || input.html.slice(0, 500),
-    );
+    'Email is not configured. Set RESEND_API_KEY or SMTP_HOST/SMTP_USER/SMTP_PASS + EMAIL_FROM.';
+  console.warn('[email] skipped:', reason);
+  console.warn('[email] would send to:', input.to, '|', input.subject);
+  if (process.env.NODE_ENV !== 'production') {
+    console.info('[email] preview text:\n', input.text || input.html.slice(0, 500));
   }
 
   return { sent: false, skipped: true, reason };

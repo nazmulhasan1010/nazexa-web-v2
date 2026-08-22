@@ -1,12 +1,12 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const routesDir = path.join(__dirname, "src", "routes");
-const appDir = path.join(__dirname, "src", "app");
+const routesDir = path.join(__dirname, 'src', 'routes');
+const appDir = path.join(__dirname, 'src', 'app');
 
 if (!fs.existsSync(appDir)) {
   fs.mkdirSync(appDir, { recursive: true });
@@ -15,11 +15,11 @@ if (!fs.existsSync(appDir)) {
 const files = fs.readdirSync(routesDir);
 
 for (const file of files) {
-  if (file.endsWith(".tsx")) {
-    const slug = file.replace(".tsx", "");
-    const content = fs.readFileSync(path.join(routesDir, file), "utf8");
+  if (file.endsWith('.tsx')) {
+    const slug = file.replace('.tsx', '');
+    const content = fs.readFileSync(path.join(routesDir, file), 'utf8');
 
-    if (content.includes("StandardPage")) {
+    if (content.includes('StandardPage')) {
       const match = content.match(/pages\["([^"]+)"\]/);
       if (match) {
         const pageKey = match[1];
@@ -72,9 +72,9 @@ export default function Page() {
           fs.mkdirSync(targetDir, { recursive: true });
         }
 
-        fs.writeFileSync(path.join(targetDir, "page.tsx"), nextContent, "utf8");
+        fs.writeFileSync(path.join(targetDir, 'page.tsx'), nextContent, 'utf8');
         fs.unlinkSync(path.join(routesDir, file));
-        console.log("Migrated " + file);
+        console.log('Migrated ' + file);
       }
     }
   }

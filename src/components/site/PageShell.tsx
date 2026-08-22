@@ -1,24 +1,24 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import { ArrowRight, Check } from "lucide-react";
-import type { CSSProperties, ReactNode } from "react";
+import { ArrowRight, Check } from 'lucide-react';
+import type { CSSProperties, ReactNode } from 'react';
 
 import {
   AuroraBackground,
   FloatingShapes,
   GridBackground,
-} from "@/components/backgrounds/AnimatedBackground";
-import { Counter, Reveal, TextReveal } from "@/components/motion/Reveal";
+} from '@/components/backgrounds/AnimatedBackground';
+import { Counter, Reveal, TextReveal } from '@/components/motion/Reveal';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import type { PageBlock, PageContent } from "@/lib/site-content";
-import { PricingTiers } from "@/components/pricing/PricingTiers";
+} from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import type { PageBlock, PageContent } from '@/lib/site-content';
+import { PricingTiers } from '@/components/pricing/PricingTiers';
 
 export function PageHero({
   eyebrow,
@@ -32,26 +32,21 @@ export function PageHero({
   children?: ReactNode;
 }) {
   return (
-    <section className="relative isolate overflow-hidden pb-20 pt-36">
+    <section className="relative isolate overflow-hidden pt-36 pb-20">
       <AuroraBackground />
       <GridBackground variant="dots" />
       <FloatingShapes />
       <div className="mx-auto max-w-4xl px-5 text-center">
         <Reveal variant="fade">
-          <Badge
-            variant="outline"
-            className="border-primary/40 bg-primary/10 text-primary"
-          >
+          <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary">
             {eyebrow}
           </Badge>
         </Reveal>
-        <h1 className="mt-6 text-4xl font-semibold leading-[1.05] sm:text-6xl">
+        <h1 className="mt-6 text-4xl leading-[1.05] font-semibold sm:text-6xl">
           <TextReveal text={title} />
         </h1>
         <Reveal variant="up" delay={160}>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            {description}
-          </p>
+          <p className="text-muted-foreground mx-auto mt-6 max-w-2xl text-lg">{description}</p>
         </Reveal>
         {children}
       </div>
@@ -69,9 +64,7 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section
-      className={`relative mx-auto max-w-7xl px-5 py-16 ${className ?? ""}`}
-    >
+    <section className={`relative mx-auto max-w-7xl px-5 py-16 ${className ?? ''}`}>
       {title ? (
         <Reveal>
           <h2 className="mb-10 text-2xl font-semibold sm:text-3xl">{title}</h2>
@@ -84,20 +77,14 @@ export function Section({
 
 export function StandardPage({ page }: { page: PageContent }) {
   const toneStyle = page.tone
-    ? ({ ["--primary" as string]: `var(--${page.tone})` } as CSSProperties)
+    ? ({ ['--primary' as string]: `var(--${page.tone})` } as CSSProperties)
     : undefined;
   return (
     <div style={toneStyle}>
-      <PageHero
-        eyebrow={page.eyebrow}
-        title={page.title}
-        description={page.description}
-      >
+      <PageHero eyebrow={page.eyebrow} title={page.title} description={page.description}>
         {page.intro ? (
           <Reveal variant="up" delay={220}>
-            <p className="mx-auto mt-5 max-w-2xl text-sm text-muted-foreground/80">
-              {page.intro}
-            </p>
+            <p className="text-muted-foreground/80 mx-auto mt-5 max-w-2xl text-sm">{page.intro}</p>
           </Reveal>
         ) : null}
         {page.meta?.length ? (
@@ -105,9 +92,7 @@ export function StandardPage({ page }: { page: PageContent }) {
             <dl className="mx-auto mt-8 grid max-w-3xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {page.meta.map((m) => (
                 <div key={m.label} className="surface-card px-4 py-3 text-left">
-                  <dt className="text-[10px] uppercase tracking-widest text-primary">
-                    {m.label}
-                  </dt>
+                  <dt className="text-primary text-[10px] tracking-widest uppercase">{m.label}</dt>
                   <dd className="mt-1 text-sm font-medium">{m.value}</dd>
                 </div>
               ))}
@@ -137,22 +122,18 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
   return (
     <>
       {blocks.map((block, i) => {
-        if (block.kind === "features") {
+        if (block.kind === 'features') {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-5 md:grid-cols-3">
                 {block.items.map((item, j) => (
                   <Reveal key={item.title} delay={j * 90}>
                     <div className="surface-card hover-lift h-full p-6">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/12 ring-1 ring-primary/30">
-                        <Check className="h-4 w-4 text-primary" />
+                      <div className="bg-primary/12 ring-primary/30 flex h-9 w-9 items-center justify-center rounded-lg ring-1">
+                        <Check className="text-primary h-4 w-4" />
                       </div>
-                      <h3 className="mt-4 text-base font-semibold">
-                        {item.title}
-                      </h3>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {item.body}
-                      </p>
+                      <h3 className="mt-4 text-base font-semibold">{item.title}</h3>
+                      <p className="text-muted-foreground mt-2 text-sm">{item.body}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -161,23 +142,19 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "list") {
+        if (block.kind === 'list') {
           return (
             <Section key={i} title={block.title}>
-              <div className="divide-y divide-border border-y border-border">
+              <div className="divide-border border-border divide-y border-y">
                 {block.items.map((item, j) => (
                   <Reveal key={item.title} delay={j * 80}>
                     <div className="grid gap-2 py-6 md:grid-cols-[180px_1fr]">
-                      <div className="text-xs uppercase tracking-widest text-primary">
+                      <div className="text-primary text-xs tracking-widest uppercase">
                         {item.meta}
                       </div>
                       <div>
-                        <h3 className="text-base font-semibold">
-                          {item.title}
-                        </h3>
-                        <p className="mt-1.5 text-sm text-muted-foreground">
-                          {item.body}
-                        </p>
+                        <h3 className="text-base font-semibold">{item.title}</h3>
+                        <p className="text-muted-foreground mt-1.5 text-sm">{item.body}</p>
                       </div>
                     </div>
                   </Reveal>
@@ -187,7 +164,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "stats") {
+        if (block.kind === 'stats') {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -197,13 +174,11 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                       <div className="text-gradient font-display text-4xl font-semibold">
                         <Counter
                           to={item.value}
-                          suffix={item.suffix ?? ""}
+                          suffix={item.suffix ?? ''}
                           decimals={item.value % 1 ? 2 : 0}
                         />
                       </div>
-                      <div className="mt-2 text-sm text-muted-foreground">
-                        {item.label}
-                      </div>
+                      <div className="text-muted-foreground mt-2 text-sm">{item.label}</div>
                     </div>
                   </Reveal>
                 ))}
@@ -212,19 +187,13 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "faq") {
+        if (block.kind === 'faq') {
           return (
             <Section key={i} title={block.title}>
-              <Accordion
-                type="single"
-                collapsible
-                className="mx-auto max-w-3xl"
-              >
+              <Accordion type="single" collapsible className="mx-auto max-w-3xl">
                 {block.items.map((item) => (
                   <AccordionItem key={item.title} value={item.title}>
-                    <AccordionTrigger className="text-left">
-                      {item.title}
-                    </AccordionTrigger>
+                    <AccordionTrigger className="text-left">{item.title}</AccordionTrigger>
                     <AccordionContent className="text-muted-foreground">
                       {item.body}
                     </AccordionContent>
@@ -235,32 +204,27 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "prose") {
+        if (block.kind === 'prose') {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
                 <div className="space-y-5">
                   {block.paragraphs.map((p, j) => (
                     <Reveal key={j} delay={j * 70}>
-                      <p className="text-base leading-relaxed text-muted-foreground">
-                        {p}
-                      </p>
+                      <p className="text-muted-foreground text-base leading-relaxed">{p}</p>
                     </Reveal>
                   ))}
                 </div>
                 {block.aside ? (
                   <Reveal variant="up" delay={120}>
                     <div className="surface-card h-full p-6">
-                      <div className="text-xs uppercase tracking-widest text-primary">
+                      <div className="text-primary text-xs tracking-widest uppercase">
                         {block.aside.title}
                       </div>
                       <ul className="mt-4 space-y-3">
                         {block.aside.items.map((it) => (
-                          <li
-                            key={it}
-                            className="flex gap-2 text-sm text-muted-foreground"
-                          >
-                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                          <li key={it} className="text-muted-foreground flex gap-2 text-sm">
+                            <Check className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                             <span>{it}</span>
                           </li>
                         ))}
@@ -273,22 +237,18 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "steps") {
+        if (block.kind === 'steps') {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-5 md:grid-cols-3">
                 {block.items.map((item, j) => (
                   <Reveal key={item.title} delay={j * 90}>
                     <div className="surface-card hover-lift h-full p-6">
-                      <div className="font-display text-3xl font-semibold text-primary/70">
-                        {String(j + 1).padStart(2, "0")}
+                      <div className="font-display text-primary/70 text-3xl font-semibold">
+                        {String(j + 1).padStart(2, '0')}
                       </div>
-                      <h3 className="mt-3 text-base font-semibold">
-                        {item.title}
-                      </h3>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {item.body}
-                      </p>
+                      <h3 className="mt-3 text-base font-semibold">{item.title}</h3>
+                      <p className="text-muted-foreground mt-2 text-sm">{item.body}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -297,33 +257,29 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "timeline") {
+        if (block.kind === 'timeline') {
           return (
             <Section key={i} title={block.title}>
-              <div className="relative border-l border-border pl-6">
+              <div className="border-border relative border-l pl-6">
                 {block.items.map((item, j) => (
                   <Reveal key={item.title} delay={j * 80}>
                     <div className="relative pb-10">
-                      <span className="absolute -left-[31px] top-1.5 h-3 w-3 rounded-full bg-primary ring-4 ring-primary/15" />
+                      <span className="bg-primary ring-primary/15 absolute top-1.5 -left-[31px] h-3 w-3 rounded-full ring-4" />
                       <div className="flex flex-wrap items-center gap-3">
-                        <span className="text-xs uppercase tracking-widest text-primary">
+                        <span className="text-primary text-xs tracking-widest uppercase">
                           {item.date}
                         </span>
                         {item.tag ? (
                           <Badge
                             variant="outline"
-                            className="border-border text-xs text-muted-foreground"
+                            className="border-border text-muted-foreground text-xs"
                           >
                             {item.tag}
                           </Badge>
                         ) : null}
                       </div>
-                      <h3 className="mt-2 text-base font-semibold">
-                        {item.title}
-                      </h3>
-                      <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
-                        {item.body}
-                      </p>
+                      <h3 className="mt-2 text-base font-semibold">{item.title}</h3>
+                      <p className="text-muted-foreground mt-1.5 max-w-2xl text-sm">{item.body}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -332,18 +288,18 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "table") {
+        if (block.kind === 'table') {
           return (
             <Section key={i} title={block.title}>
               <Reveal>
                 <div className="surface-card overflow-x-auto">
                   <table className="w-full min-w-[640px] text-left text-sm">
                     <thead>
-                      <tr className="border-b border-border">
+                      <tr className="border-border border-b">
                         {block.columns.map((c) => (
                           <th
                             key={c}
-                            className="px-5 py-4 text-xs uppercase tracking-widest text-primary"
+                            className="text-primary px-5 py-4 text-xs tracking-widest uppercase"
                           >
                             {c}
                           </th>
@@ -352,17 +308,14 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                     </thead>
                     <tbody>
                       {block.rows.map((row, j) => (
-                        <tr
-                          key={j}
-                          className="border-b border-border/60 last:border-0"
-                        >
+                        <tr key={j} className="border-border/60 border-b last:border-0">
                           {row.map((cell, k) => (
                             <td
                               key={k}
                               className={
                                 k === 0
-                                  ? "px-5 py-4 font-medium"
-                                  : "px-5 py-4 text-muted-foreground"
+                                  ? 'px-5 py-4 font-medium'
+                                  : 'text-muted-foreground px-5 py-4'
                               }
                             >
                               {cell}
@@ -378,7 +331,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "quotes") {
+        if (block.kind === 'quotes') {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -390,9 +343,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                       </blockquote>
                       <figcaption className="mt-5 text-sm">
                         <span className="font-semibold">{item.name}</span>
-                        <span className="block text-muted-foreground">
-                          {item.role}
-                        </span>
+                        <span className="text-muted-foreground block">{item.role}</span>
                       </figcaption>
                     </figure>
                   </Reveal>
@@ -402,7 +353,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "people") {
+        if (block.kind === 'people') {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -410,29 +361,23 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                   <Reveal key={item.name} delay={j * 70}>
                     <div className="surface-card hover-lift h-full p-6">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/12 font-display text-sm font-semibold text-primary ring-1 ring-primary/30">
+                        <div className="bg-primary/12 font-display text-primary ring-primary/30 flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold ring-1">
                           {item.name
-                            .split(" ")
+                            .split(' ')
                             .map((n) => n[0])
-                            .join("")
+                            .join('')
                             .slice(0, 2)}
                         </div>
                         <div>
-                          <div className="text-sm font-semibold">
-                            {item.name}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {item.role}
-                          </div>
+                          <div className="text-sm font-semibold">{item.name}</div>
+                          <div className="text-muted-foreground text-xs">{item.role}</div>
                         </div>
                       </div>
                       {item.focus ? (
-                        <p className="mt-4 text-sm text-muted-foreground">
-                          {item.focus}
-                        </p>
+                        <p className="text-muted-foreground mt-4 text-sm">{item.focus}</p>
                       ) : null}
                       {item.location ? (
-                        <div className="mt-3 text-xs uppercase tracking-widest text-primary">
+                        <div className="text-primary mt-3 text-xs tracking-widest uppercase">
                           {item.location}
                         </div>
                       ) : null}
@@ -444,7 +389,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "cards") {
+        if (block.kind === 'cards') {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -454,19 +399,15 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                       {item.tag ? (
                         <Badge
                           variant="outline"
-                          className="w-fit border-primary/40 bg-primary/10 text-primary"
+                          className="border-primary/40 bg-primary/10 text-primary w-fit"
                         >
                           {item.tag}
                         </Badge>
                       ) : null}
-                      <h3 className="mt-4 text-lg font-semibold">
-                        {item.title}
-                      </h3>
-                      <p className="mt-2 flex-1 text-sm text-muted-foreground">
-                        {item.body}
-                      </p>
+                      <h3 className="mt-4 text-lg font-semibold">{item.title}</h3>
+                      <p className="text-muted-foreground mt-2 flex-1 text-sm">{item.body}</p>
                       {item.meta ? (
-                        <div className="mt-5 border-t border-border pt-4 text-xs uppercase tracking-widest text-muted-foreground">
+                        <div className="border-border text-muted-foreground mt-5 border-t pt-4 text-xs tracking-widest uppercase">
                           {item.meta}
                         </div>
                       ) : null}
@@ -478,7 +419,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "checklist") {
+        if (block.kind === 'checklist') {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-5 md:grid-cols-3">
@@ -488,11 +429,8 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                       <h3 className="text-base font-semibold">{col.title}</h3>
                       <ul className="mt-4 space-y-3">
                         {col.items.map((it) => (
-                          <li
-                            key={it}
-                            className="flex gap-2 text-sm text-muted-foreground"
-                          >
-                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                          <li key={it} className="text-muted-foreground flex gap-2 text-sm">
+                            <Check className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                             <span>{it}</span>
                           </li>
                         ))}
@@ -505,30 +443,26 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "code") {
+        if (block.kind === 'code') {
           return (
             <Section key={i} title={block.title}>
               {block.body ? (
                 <Reveal>
-                  <p className="-mt-6 mb-6 max-w-2xl text-sm text-muted-foreground">
-                    {block.body}
-                  </p>
+                  <p className="text-muted-foreground -mt-6 mb-6 max-w-2xl text-sm">{block.body}</p>
                 </Reveal>
               ) : null}
               <Reveal variant="up">
                 <div className="surface-card overflow-hidden">
-                  <div className="flex items-center gap-2 border-b border-border px-5 py-3">
-                    <span className="h-2.5 w-2.5 rounded-full bg-primary/50" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/30" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/20" />
-                    <span className="ml-2 text-xs uppercase tracking-widest text-muted-foreground">
+                  <div className="border-border flex items-center gap-2 border-b px-5 py-3">
+                    <span className="bg-primary/50 h-2.5 w-2.5 rounded-full" />
+                    <span className="bg-muted-foreground/30 h-2.5 w-2.5 rounded-full" />
+                    <span className="bg-muted-foreground/20 h-2.5 w-2.5 rounded-full" />
+                    <span className="text-muted-foreground ml-2 text-xs tracking-widest uppercase">
                       {block.language}
                     </span>
                   </div>
                   <pre className="overflow-x-auto px-5 py-5 text-sm leading-relaxed">
-                    <code className="font-mono text-muted-foreground">
-                      {block.code}
-                    </code>
+                    <code className="text-muted-foreground font-mono">{block.code}</code>
                   </pre>
                 </div>
               </Reveal>
@@ -536,7 +470,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "pricing") {
+        if (block.kind === 'pricing') {
           return (
             <Section key={i} title={block.title}>
               <PricingTiers tiers={block.tiers as any} />
@@ -544,7 +478,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "channels") {
+        if (block.kind === 'channels') {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-5 md:grid-cols-2">
@@ -552,10 +486,8 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                   <Reveal key={item.title} delay={j * 70}>
                     <div className="surface-card hover-lift h-full p-6">
                       <h3 className="text-base font-semibold">{item.title}</h3>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {item.body}
-                      </p>
-                      <div className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                      <p className="text-muted-foreground mt-2 text-sm">{item.body}</p>
+                      <div className="text-primary mt-4 inline-flex items-center gap-1.5 text-sm font-medium">
                         {item.action} <ArrowRight className="h-3.5 w-3.5" />
                       </div>
                     </div>
@@ -566,7 +498,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           );
         }
 
-        if (block.kind === "legal") {
+        if (block.kind === 'legal') {
           return (
             <Section key={i} title={block.title}>
               <div className="mx-auto max-w-3xl space-y-8">
@@ -574,7 +506,7 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                   <Reveal key={sec.heading} delay={j * 60}>
                     <div>
                       <h3 className="text-base font-semibold">{sec.heading}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
                         {sec.body}
                       </p>
                     </div>
@@ -590,12 +522,8 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
             <Reveal variant="zoom">
               <div className="surface-card glow-ring relative overflow-hidden p-10 text-center sm:p-16">
                 <AuroraBackground />
-                <h2 className="text-3xl font-semibold sm:text-4xl">
-                  {block.title}
-                </h2>
-                <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-                  {block.body}
-                </p>
+                <h2 className="text-3xl font-semibold sm:text-4xl">{block.title}</h2>
+                <p className="text-muted-foreground mx-auto mt-4 max-w-xl">{block.body}</p>
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
                   <Button asChild size="lg">
                     <Link href="/pricing">See pricing</Link>

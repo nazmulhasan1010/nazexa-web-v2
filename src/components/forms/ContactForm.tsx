@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 type ContactSettings = {
   title: string;
@@ -19,9 +19,9 @@ type ContactSettings = {
 
 export function ContactForm({ settings }: { settings?: ContactSettings }) {
   const { user, loading } = useAuth();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,26 +29,26 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, message }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to send message");
+        throw new Error(data.error || 'Failed to send message');
       }
 
-      toast.success("Message sent successfully! We will get back to you soon.");
-      setMessage("");
+      toast.success('Message sent successfully! We will get back to you soon.');
+      setMessage('');
       if (!user) {
-        setName("");
-        setEmail("");
+        setName('');
+        setEmail('');
       }
     } catch (error: any) {
-      toast.error(error.message || "An error occurred. Please try again.");
+      toast.error(error.message || 'An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -56,31 +56,29 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
 
   if (loading)
     return (
-      <div className="h-40 flex items-center justify-center">
-        <Loader2 className="animate-spin text-muted-foreground w-6 h-6" />
+      <div className="flex h-40 items-center justify-center">
+        <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
       </div>
     );
 
   const title = settings?.title || "Let's talk about your project";
   const subtitle =
     settings?.subtitle ||
-    "Whether you have a question about features, pricing, need a demo, or anything else, our team is ready to answer all your questions.";
-  const phone = settings?.phone || "+1 (555) 000-0000";
-  const contactEmail = settings?.email || "hello@nazexa.com";
-  const address = settings?.address || "123 Tech Avenue, NY 10001";
+    'Whether you have a question about features, pricing, need a demo, or anything else, our team is ready to answer all your questions.';
+  const phone = settings?.phone || '+1 (555) 000-0000';
+  const contactEmail = settings?.email || 'hello@nazexa.com';
+  const address = settings?.address || '123 Tech Avenue, NY 10001';
 
   return (
-    <div className="max-w-6xl w-full mx-auto mt-12 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+    <div className="mx-auto mt-12 grid w-full max-w-6xl grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
       {/* Left info block */}
       <div className="flex flex-col justify-center">
-        <h2 className="text-3xl lg:text-4xl font-display font-semibold tracking-tight">
-          {title}
-        </h2>
-        <p className="mt-4 text-muted-foreground text-lg">{subtitle}</p>
+        <h2 className="font-display text-3xl font-semibold tracking-tight lg:text-4xl">{title}</h2>
+        <p className="text-muted-foreground mt-4 text-lg">{subtitle}</p>
 
         <div className="mt-10 space-y-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-xl">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -96,13 +94,13 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Call us</h3>
+              <h3 className="text-lg font-semibold">Call us</h3>
               <p className="text-muted-foreground">{phone}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-xl">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -119,13 +117,13 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Email us</h3>
+              <h3 className="text-lg font-semibold">Email us</h3>
               <p className="text-muted-foreground">{contactEmail}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-xl">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -142,7 +140,7 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Visit us</h3>
+              <h3 className="text-lg font-semibold">Visit us</h3>
               <p className="text-muted-foreground">{address}</p>
             </div>
           </div>
@@ -150,13 +148,11 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
       </div>
 
       {/* Right form block */}
-      <div className="p-6 md:p-8 bg-card/50 border border-border/50 rounded-xl backdrop-blur-sm shadow-xl relative z-10">
-        <h2 className="text-2xl font-semibold tracking-tight mb-6">
-          Send us a message
-        </h2>
+      <div className="bg-card/50 border-border/50 relative z-10 rounded-xl border p-6 shadow-xl backdrop-blur-sm md:p-8">
+        <h2 className="mb-6 text-2xl font-semibold tracking-tight">Send us a message</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {!user && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="name">
                   Name <span className="text-destructive">*</span>
@@ -199,17 +195,13 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
             />
           </div>
 
-          <Button
-            type="submit"
-            className="w-full sm:w-auto mt-2"
-            disabled={isSubmitting}
-          >
+          <Button type="submit" className="mt-2 w-full sm:w-auto" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
               </>
             ) : (
-              "Send Message"
+              'Send Message'
             )}
           </Button>
         </form>

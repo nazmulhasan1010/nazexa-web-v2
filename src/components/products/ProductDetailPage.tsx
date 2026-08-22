@@ -1,7 +1,7 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import { ArrowRight, Check } from "lucide-react";
-import type { CSSProperties } from "react";
+import { ArrowRight, Check } from 'lucide-react';
+import type { CSSProperties } from 'react';
 
 import {
   ApiVisual,
@@ -12,16 +12,13 @@ import {
   JsonVisual,
   JwtVisual,
   RelationshipVisual,
-} from "@/components/products/ProductVisuals";
-import { Reveal, TextReveal } from "@/components/motion/Reveal";
-import {
-  AuroraBackground,
-  GridBackground,
-} from "@/components/backgrounds/AnimatedBackground";
-import { PageBlocks, Section } from "@/components/site/PageShell";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import type { ProductDetail } from "@/lib/products";
+} from '@/components/products/ProductVisuals';
+import { Reveal, TextReveal } from '@/components/motion/Reveal';
+import { AuroraBackground, GridBackground } from '@/components/backgrounds/AnimatedBackground';
+import { PageBlocks, Section } from '@/components/site/PageShell';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import type { ProductDetail } from '@/lib/products';
 
 const visuals = {
   erd: RelationshipVisual,
@@ -34,41 +31,33 @@ const visuals = {
 
 export function ProductDetailPage({ product }: { product: ProductDetail }) {
   const toneStyle = {
-    ["--primary" as string]: `var(--${product.tone})`,
+    ['--primary' as string]: `var(--${product.tone})`,
   } as CSSProperties;
-  const Hero = product.slug === "db-design" ? ErdVisual : DevToolsVisual;
+  const Hero = product.slug === 'db-design' ? ErdVisual : DevToolsVisual;
 
   return (
     <div style={toneStyle}>
-      <section className="relative isolate overflow-hidden pb-16 pt-36">
+      <section className="relative isolate overflow-hidden pt-36 pb-16">
         <AuroraBackground />
         <GridBackground variant="dots" />
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 lg:grid-cols-2">
           <div>
             <Reveal variant="fade">
-              <Badge
-                variant="outline"
-                className="border-primary/40 bg-primary/10 text-primary"
-              >
+              <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary">
                 {product.eyebrow}
               </Badge>
             </Reveal>
-            <h1 className="mt-6 text-4xl font-semibold leading-[1.06] sm:text-5xl">
+            <h1 className="mt-6 text-4xl leading-[1.06] font-semibold sm:text-5xl">
               <TextReveal text={product.heroTitle} />
             </h1>
             <Reveal variant="up" delay={140}>
-              <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-                {product.description}
-              </p>
+              <p className="text-muted-foreground mt-6 max-w-xl text-lg">{product.description}</p>
             </Reveal>
             <Reveal variant="up" delay={200}>
               <ul className="mt-6 space-y-2">
                 {product.bullets.map((b) => (
-                  <li
-                    key={b}
-                    className="flex gap-2 text-sm text-muted-foreground"
-                  >
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                  <li key={b} className="text-muted-foreground flex gap-2 text-sm">
+                    <Check className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                     {b}
                   </li>
                 ))}
@@ -96,9 +85,7 @@ export function ProductDetailPage({ product }: { product: ProductDetail }) {
           {product.meta.map((m, i) => (
             <Reveal key={m.label} delay={i * 70}>
               <div className="surface-card px-4 py-3">
-                <div className="text-[10px] uppercase tracking-widest text-primary">
-                  {m.label}
-                </div>
+                <div className="text-primary text-[10px] tracking-widest uppercase">{m.label}</div>
                 <div className="mt-1 text-sm font-medium">{m.value}</div>
               </div>
             </Reveal>
@@ -112,7 +99,7 @@ export function ProductDetailPage({ product }: { product: ProductDetail }) {
             <Reveal key={a.title} delay={i * 90}>
               <div className="surface-card hover-lift h-full p-6">
                 <h3 className="text-base font-semibold">{a.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{a.body}</p>
+                <p className="text-muted-foreground mt-2 text-sm">{a.body}</p>
               </div>
             </Reveal>
           ))}
@@ -128,11 +115,11 @@ export function ProductDetailPage({ product }: { product: ProductDetail }) {
                 <article className="surface-card hover-lift h-full overflow-hidden p-6">
                   <Visual />
                   <h3 className="mt-5 text-lg font-semibold">{g.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{g.body}</p>
+                  <p className="text-muted-foreground mt-2 text-sm">{g.body}</p>
                   <ul className="mt-4 space-y-2">
                     {g.items.map((item) => (
                       <li key={item} className="flex gap-2 text-sm">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                        <Check className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                         <span className="text-muted-foreground">{item}</span>
                       </li>
                     ))}

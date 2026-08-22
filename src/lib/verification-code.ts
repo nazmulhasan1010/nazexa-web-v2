@@ -8,9 +8,9 @@
  * Resend rate limit: 5 per hour per user.
  */
 
-import { randomInt } from "crypto";
-import * as bcrypt from "bcryptjs";
-import { db } from "@/lib/db";
+import { randomInt } from 'crypto';
+import * as bcrypt from 'bcryptjs';
+import { db } from '@/lib/db';
 
 const CODE_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
 const MAX_CODES_PER_HOUR = 5;
@@ -24,10 +24,8 @@ const BCRYPT_COST = 10; // lower than passwords — codes are short-lived
  */
 export async function generateVerificationCode(
   userId: string,
-  email: string,
-): Promise<
-  { code: string; rateLimited: false } | { code: null; rateLimited: true }
-> {
+  email: string
+): Promise<{ code: string; rateLimited: false } | { code: null; rateLimited: true }> {
   // Rate limit: count codes created in the last hour
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
   const recentCount = await db.emailVerificationCode.count({
@@ -41,12 +39,9 @@ export async function generateVerificationCode(
   // Cooldown check: if a code was created less than 60s ago, return existing or skip duplicate generation
   const existingCode = await db.emailVerificationCode.findFirst({
     where: { userId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
-  if (
-    existingCode &&
-    Date.now() - existingCode.createdAt.getTime() < 60 * 1000
-  ) {
+  if (existingCode && Date.now() - existingCode.createdAt.getTime() < 60 * 1000) {
     // A code was sent less than 60 seconds ago — keep existing code valid without re-sending
     return { code: null, rateLimited: false, cooldown: true } as any;
   }
@@ -78,17 +73,17 @@ export async function generateVerificationCode(
  */
 export async function verifyCode(
   userId: string,
-  rawCode: string,
+  rawCode: string
 ): Promise<{ verified: true } | { verified: false; reason: string }> {
   const record = await db.emailVerificationCode.findFirst({
     where: { userId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
 
   if (!record) {
     return {
       verified: false,
-      reason: "No verification code found. Please request a new one.",
+      reason: 'No verification code found. Please request a new one.',
     };
   }
 
@@ -96,7 +91,7 @@ export async function verifyCode(
     await db.emailVerificationCode.deleteMany({ where: { userId } });
     return {
       verified: false,
-      reason: "Verification code has expired. Please request a new one.",
+      reason: 'Verification code has expired. Please request a new one.',
     };
   }
 
@@ -104,7 +99,7 @@ export async function verifyCode(
   if (!valid) {
     return {
       verified: false,
-      reason: "Invalid verification code. Please try again.",
+      reason: 'Invalid verification code. Please try again.',
     };
   }
 

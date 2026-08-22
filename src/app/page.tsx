@@ -1,4 +1,4 @@
-import { fetchHomeSections } from "@/lib/cms";
+import { fetchHomeSections } from '@/lib/cms';
 import {
   BlogPreview,
   FinalCta,
@@ -11,7 +11,7 @@ import {
   Testimonials,
   Timeline,
   TrustedBy,
-} from "@/components/home/HomeSections";
+} from '@/components/home/HomeSections';
 import {
   ClientCta,
   MissionVision,
@@ -21,20 +21,16 @@ import {
   TechnologiesSection,
   WhatWeDo,
   WhyNazexaSection,
-} from "@/components/home/CompanySections";
-import { ServicesShowcase } from "@/components/services/ServicesIndex";
-import {
-  constructMetadata,
-  generateWebPageSchema,
-  generateWebSiteSchema,
-} from "@/lib/seo";
-import { JsonLd } from "@/components/JsonLd";
+} from '@/components/home/CompanySections';
+import { ServicesShowcase } from '@/components/services/ServicesIndex';
+import { constructMetadata, generateWebPageSchema, generateWebSiteSchema } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 export const metadata = constructMetadata({
-  title: "Nazexa — Software Development & Technology Company",
+  title: 'Nazexa — Software Development & Technology Company',
   description:
-    "Nazexa builds custom software, Android apps, web platforms, APIs, databases and cloud solutions — and ships its own developer products. Start your project with a senior engineering team.",
-  url: "/",
+    'Nazexa builds custom software, Android apps, web platforms, APIs, databases and cloud solutions — and ships its own developer products. Start your project with a senior engineering team.',
+  url: '/',
 });
 
 export default async function Index() {
@@ -46,48 +42,39 @@ export default async function Index() {
         <JsonLd schema={generateWebSiteSchema()} />
         <JsonLd
           schema={generateWebPageSchema({
-            name: "Nazexa — Software Development & Technology Company",
+            name: 'Nazexa — Software Development & Technology Company',
             description:
-              "Nazexa builds custom software, Android apps, web platforms, APIs, databases and cloud solutions — and ships its own developer products. Start your project with a senior engineering team.",
-            url: "/",
+              'Nazexa builds custom software, Android apps, web platforms, APIs, databases and cloud solutions — and ships its own developer products. Start your project with a senior engineering team.',
+            url: '/',
           })}
         />
         {data
           .filter((s) => s.visible)
           .map((s) => {
             switch (s.type) {
-              case "hero":
+              case 'hero':
                 return (
                   <Hero
                     key={s.id}
                     title={s.title ?? undefined}
                     subtitle={s.subtitle ?? undefined}
-                    badge={(s.content["badge"] as string) || undefined}
-                    body={(s.content["body"] as string) || undefined}
-                    primaryCta={
-                      (s.content["primaryCta"] as string) || undefined
-                    }
-                    secondaryCta={
-                      (s.content["secondaryCta"] as string) || undefined
-                    }
+                    badge={(s.content['badge'] as string) || undefined}
+                    body={(s.content['body'] as string) || undefined}
+                    primaryCta={(s.content['primaryCta'] as string) || undefined}
+                    secondaryCta={(s.content['secondaryCta'] as string) || undefined}
                   />
                 );
-              case "trusted":
+              case 'trusted':
                 return <TrustedBy key={s.id} />;
-              case "features":
+              case 'features':
                 return <FeatureGrid key={s.id} />;
-              case "services":
+              case 'services':
                 return <ServicesShowcase key={s.id} />;
-              case "whatwedo":
+              case 'whatwedo':
                 return (
-                  <WhatWeDo
-                    key={s.id}
-                    title={s.title}
-                    subtitle={s.subtitle}
-                    content={s.content}
-                  />
+                  <WhatWeDo key={s.id} title={s.title} subtitle={s.subtitle} content={s.content} />
                 );
-              case "servicesfull":
+              case 'servicesfull':
                 return (
                   <ServicesSection
                     key={s.id}
@@ -96,7 +83,7 @@ export default async function Index() {
                     content={s.content}
                   />
                 );
-              case "mission":
+              case 'mission':
                 return (
                   <MissionVision
                     key={s.id}
@@ -105,7 +92,7 @@ export default async function Index() {
                     content={s.content}
                   />
                 );
-              case "technologies":
+              case 'technologies':
                 return (
                   <TechnologiesSection
                     key={s.id}
@@ -114,7 +101,7 @@ export default async function Index() {
                     content={s.content}
                   />
                 );
-              case "why":
+              case 'why':
                 return (
                   <WhyNazexaSection
                     key={s.id}
@@ -123,7 +110,7 @@ export default async function Index() {
                     content={s.content}
                   />
                 );
-              case "process":
+              case 'process':
                 return (
                   <ProcessSection
                     key={s.id}
@@ -132,7 +119,7 @@ export default async function Index() {
                     content={s.content}
                   />
                 );
-              case "ourproducts":
+              case 'ourproducts':
                 return (
                   <OwnProducts
                     key={s.id}
@@ -141,30 +128,25 @@ export default async function Index() {
                     content={s.content}
                   />
                 );
-              case "clientcta":
+              case 'clientcta':
                 return (
-                  <ClientCta
-                    key={s.id}
-                    title={s.title}
-                    subtitle={s.subtitle}
-                    content={s.content}
-                  />
+                  <ClientCta key={s.id} title={s.title} subtitle={s.subtitle} content={s.content} />
                 );
-              case "platform":
+              case 'platform':
                 return <PlatformOverview key={s.id} />;
-              case "stats":
+              case 'stats':
                 return <Stats key={s.id} />;
-              case "testimonials":
+              case 'testimonials':
                 return <Testimonials key={s.id} />;
-              case "timeline":
+              case 'timeline':
                 return <Timeline key={s.id} />;
-              case "techstack":
+              case 'techstack':
                 return <TechStack key={s.id} />;
-              case "blog":
+              case 'blog':
                 return <BlogPreview key={s.id} />;
-              case "faq":
+              case 'faq':
                 return <FaqPreview key={s.id} />;
-              case "cta":
+              case 'cta':
                 return <FinalCta key={s.id} />;
               default:
                 return null;
@@ -179,10 +161,10 @@ export default async function Index() {
       <JsonLd schema={generateWebSiteSchema()} />
       <JsonLd
         schema={generateWebPageSchema({
-          name: "Nazexa — Software Development & Technology Company",
+          name: 'Nazexa — Software Development & Technology Company',
           description:
-            "Nazexa builds custom software, Android apps, web platforms, APIs, databases and cloud solutions — and ships its own developer products. Start your project with a senior engineering team.",
-          url: "/",
+            'Nazexa builds custom software, Android apps, web platforms, APIs, databases and cloud solutions — and ships its own developer products. Start your project with a senior engineering team.',
+          url: '/',
         })}
       />
       <Hero />

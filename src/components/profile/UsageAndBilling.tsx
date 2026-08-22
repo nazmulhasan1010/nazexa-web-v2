@@ -1,11 +1,25 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { CreditCard, ExternalLink, Activity, DollarSign, Database, CheckCircle2 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { useEffect, useState } from 'react';
+import {
+  CreditCard,
+  ExternalLink,
+  Activity,
+  DollarSign,
+  Database,
+  CheckCircle2,
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import {
   Table,
   TableBody,
@@ -13,8 +27,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
+} from '@/components/ui/table';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface OverviewData {
   product: { id: string; name: string };
@@ -57,22 +71,22 @@ export function UsageAndBilling() {
       try {
         setLoading(true);
         const [overviewRes, purchasesRes] = await Promise.all([
-          fetch("/api/products/nazexa-db/overview"),
-          fetch("/api/products/nazexa-db/purchases?page=1&limit=10")
+          fetch('/api/products/nazexa-db/overview'),
+          fetch('/api/products/nazexa-db/purchases?page=1&limit=10'),
         ]);
 
         const overviewData = await overviewRes.json();
         const purchasesData = await purchasesRes.json();
 
         if (overviewData.error) throw new Error(overviewData.error);
-        
+
         setOverview(overviewData.data);
         if (purchasesData.data && purchasesData.data.items) {
           setPurchases(purchasesData.data.items);
         }
       } catch (err: any) {
-        console.error("Failed to load billing info", err);
-        setError(err.message || "Failed to load billing information.");
+        console.error('Failed to load billing info', err);
+        setError(err.message || 'Failed to load billing information.');
       } finally {
         setLoading(false);
       }
@@ -82,7 +96,7 @@ export function UsageAndBilling() {
 
   if (loading) {
     return (
-      <div className="p-8 space-y-8">
+      <div className="space-y-8 p-8">
         <Skeleton className="h-32 w-full rounded-xl" />
         <div className="grid gap-8 md:grid-cols-2">
           <Skeleton className="h-64 rounded-xl" />
@@ -95,10 +109,10 @@ export function UsageAndBilling() {
 
   if (error) {
     return (
-      <div className="p-8 flex flex-col items-center justify-center py-20 text-center">
-        <CreditCard className="h-12 w-12 text-destructive mb-4 opacity-50" />
-        <h3 className="text-lg font-medium text-destructive">Failed to Load Billing</h3>
-        <p className="text-sm text-muted-foreground max-w-sm mt-2">{error}</p>
+      <div className="flex flex-col items-center justify-center p-8 py-20 text-center">
+        <CreditCard className="text-destructive mb-4 h-12 w-12 opacity-50" />
+        <h3 className="text-destructive text-lg font-medium">Failed to Load Billing</h3>
+        <p className="text-muted-foreground mt-2 max-w-sm text-sm">{error}</p>
       </div>
     );
   }
@@ -117,16 +131,16 @@ export function UsageAndBilling() {
   };
 
   return (
-    <div className="p-8 space-y-8">
-      <div className="h-32 w-full bg-linear-to-r from-primary/30 via-primary/10 to-transparent relative -mt-8 -mx-8 mb-8">
-        <div className="absolute inset-0 bg-linear-to-b from-transparent to-background/80" />
+    <div className="space-y-8 p-8">
+      <div className="from-primary/30 via-primary/10 relative -mx-8 -mt-8 mb-8 h-32 w-full bg-linear-to-r to-transparent">
+        <div className="to-background/80 absolute inset-0 bg-linear-to-b from-transparent" />
         <div className="absolute bottom-6 left-8 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 backdrop-blur-md">
-            <CreditCard className="h-6 w-6 text-primary" />
+          <div className="bg-primary/10 border-primary/20 flex h-12 w-12 items-center justify-center rounded-xl border backdrop-blur-md">
+            <CreditCard className="text-primary h-6 w-6" />
           </div>
           <div>
             <h2 className="text-2xl font-bold tracking-tight">Usage & Billing</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Manage subscriptions and track product usage
             </p>
           </div>
@@ -135,32 +149,34 @@ export function UsageAndBilling() {
 
       <div className="grid gap-8 md:grid-cols-2">
         {/* Subscription Overview */}
-        <Card className="shadow-none border-border/50 bg-background/50 backdrop-blur">
+        <Card className="border-border/50 bg-background/50 shadow-none backdrop-blur">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5 text-primary" />
+              <Database className="text-primary h-5 w-5" />
               {overview.product.name}
             </CardTitle>
             <CardDescription>Current subscription details</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex justify-between items-center py-2 border-b border-border/50">
-              <span className="text-sm text-muted-foreground">Plan</span>
-              <Badge variant={overview.subscription.planSlug === "free" ? "secondary" : "default"}>
+            <div className="border-border/50 flex items-center justify-between border-b py-2">
+              <span className="text-muted-foreground text-sm">Plan</span>
+              <Badge variant={overview.subscription.planSlug === 'free' ? 'secondary' : 'default'}>
                 {overview.subscription.planName}
               </Badge>
             </div>
-            <div className="flex justify-between items-center py-2 border-b border-border/50">
-              <span className="text-sm text-muted-foreground">Status</span>
+            <div className="border-border/50 flex items-center justify-between border-b py-2">
+              <span className="text-muted-foreground text-sm">Status</span>
               <div className="flex items-center gap-2">
-                {overview.subscription.status === "active" ? (
+                {overview.subscription.status === 'active' ? (
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
                 ) : null}
-                <span className="text-sm font-medium capitalize">{overview.subscription.status}</span>
+                <span className="text-sm font-medium capitalize">
+                  {overview.subscription.status}
+                </span>
               </div>
             </div>
-            <div className="flex justify-between items-center py-2 border-b border-border/50">
-              <span className="text-sm text-muted-foreground">Renews On</span>
+            <div className="border-border/50 flex items-center justify-between border-b py-2">
+              <span className="text-muted-foreground text-sm">Renews On</span>
               <span className="text-sm font-medium">
                 {new Date(overview.subscription.currentPeriodEnd).toLocaleDateString()}
               </span>
@@ -168,7 +184,11 @@ export function UsageAndBilling() {
           </CardContent>
           <CardFooter>
             <Button variant="outline" className="w-full gap-2" asChild>
-              <a href={`${process.env.NEXT_PUBLIC_NAZEXA_DB_URL || "http://localhost:8000"}/account`} target="_blank" rel="noopener noreferrer">
+              <a
+                href={`${process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000'}/account`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Manage in Nazexa DB <ExternalLink className="h-4 w-4" />
               </a>
             </Button>
@@ -176,10 +196,10 @@ export function UsageAndBilling() {
         </Card>
 
         {/* Usage Limits */}
-        <Card className="shadow-none border-border/50 bg-background/50 backdrop-blur">
+        <Card className="border-border/50 bg-background/50 shadow-none backdrop-blur">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-primary" />
+              <Activity className="text-primary h-5 w-5" />
               Usage Limits
             </CardTitle>
             <CardDescription>Your current billing period usage</CardDescription>
@@ -188,40 +208,64 @@ export function UsageAndBilling() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="font-medium">Projects</span>
-                <span className="text-muted-foreground">{getUsageText(overview.usage.projects.current, overview.usage.projects.limit)}</span>
+                <span className="text-muted-foreground">
+                  {getUsageText(overview.usage.projects.current, overview.usage.projects.limit)}
+                </span>
               </div>
-              <Progress value={getPercentage(overview.usage.projects.current, overview.usage.projects.limit)} className="h-2" />
+              <Progress
+                value={getPercentage(
+                  overview.usage.projects.current,
+                  overview.usage.projects.limit
+                )}
+                className="h-2"
+              />
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="font-medium">Exports</span>
-                <span className="text-muted-foreground">{getUsageText(overview.usage.exports.current, overview.usage.exports.limit)}</span>
+                <span className="text-muted-foreground">
+                  {getUsageText(overview.usage.exports.current, overview.usage.exports.limit)}
+                </span>
               </div>
-              <Progress value={getPercentage(overview.usage.exports.current, overview.usage.exports.limit)} className="h-2" />
+              <Progress
+                value={getPercentage(overview.usage.exports.current, overview.usage.exports.limit)}
+                className="h-2"
+              />
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="font-medium">Team Members</span>
-                <span className="text-muted-foreground">{getUsageText(overview.usage.collaborators.current, overview.usage.collaborators.limit)}</span>
+                <span className="text-muted-foreground">
+                  {getUsageText(
+                    overview.usage.collaborators.current,
+                    overview.usage.collaborators.limit
+                  )}
+                </span>
               </div>
-              <Progress value={getPercentage(overview.usage.collaborators.current, overview.usage.collaborators.limit)} className="h-2" />
+              <Progress
+                value={getPercentage(
+                  overview.usage.collaborators.current,
+                  overview.usage.collaborators.limit
+                )}
+                className="h-2"
+              />
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Purchase History */}
-      <Card className="shadow-none border-border/50 bg-background/50 backdrop-blur">
+      <Card className="border-border/50 bg-background/50 shadow-none backdrop-blur">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-primary" />
+            <DollarSign className="text-primary h-5 w-5" />
             Purchase History
           </CardTitle>
           <CardDescription>Recent transactions across all Nazexa products</CardDescription>
         </CardHeader>
         <CardContent>
           {purchases.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground text-sm">
+            <div className="text-muted-foreground py-8 text-center text-sm">
               No purchase history found.
             </div>
           ) : (
@@ -250,7 +294,16 @@ export function UsageAndBilling() {
                       }).format(Number(purchase.amount))}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={purchase.status === 'completed' ? 'default' : purchase.status === 'pending' ? 'outline' : 'secondary'} className="capitalize">
+                      <Badge
+                        variant={
+                          purchase.status === 'completed'
+                            ? 'default'
+                            : purchase.status === 'pending'
+                              ? 'outline'
+                              : 'secondary'
+                        }
+                        className="capitalize"
+                      >
                         {purchase.status}
                       </Badge>
                     </TableCell>

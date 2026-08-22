@@ -1,9 +1,9 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from 'react';
 
-import { getSession, logout } from "@/lib/auth.server";
+import { getSession, logout } from '@/lib/auth.server';
 
 type AuthContextValue = {
   user: {
@@ -24,14 +24,12 @@ const AuthContext = createContext<AuthContextValue>({
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { data, isLoading } = useQuery({
-    queryKey: ["auth-session"],
+    queryKey: ['auth-session'],
     queryFn: () => getSession(),
   });
 
   return (
-    <AuthContext.Provider
-      value={{ user: data?.user ?? null, loading: isLoading }}
-    >
+    <AuthContext.Provider value={{ user: data?.user ?? null, loading: isLoading }}>
       {children}
     </AuthContext.Provider>
   );
@@ -42,7 +40,7 @@ export function useAuth() {
 }
 
 export function useRoles() {
-  return { data: ["admin"], isLoading: false };
+  return { data: ['admin'], isLoading: false };
 }
 
 export function useSignOut() {
@@ -52,6 +50,6 @@ export function useSignOut() {
     await logout();
     await queryClient.cancelQueries();
     queryClient.clear();
-    router.replace("/login");
+    router.replace('/login');
   };
 }

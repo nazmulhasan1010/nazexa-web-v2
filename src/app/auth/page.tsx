@@ -1,23 +1,20 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
-import {
-  AuroraBackground,
-  GridBackground,
-} from "@/components/backgrounds/AnimatedBackground";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { login } from "@/lib/auth.server";
-import { useAuth } from "@/hooks/useAuth";
+import { AuroraBackground, GridBackground } from '@/components/backgrounds/AnimatedBackground';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { login } from '@/lib/auth.server';
+import { useAuth } from '@/hooks/useAuth';
 
 function safeNext(raw: string | null): string {
-  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return "/admin";
+  if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/admin';
   return raw;
 }
 
@@ -25,15 +22,13 @@ export default function AuthPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user, loading } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!loading && user) {
-      const next = safeNext(
-        new URLSearchParams(window.location.search).get("next"),
-      );
+      const next = safeNext(new URLSearchParams(window.location.search).get('next'));
       router.replace(next);
     }
   }, [loading, user, router]);
@@ -47,13 +42,11 @@ export default function AuthPage() {
         toast.error(res.error);
         return;
       }
-      await queryClient.invalidateQueries({ queryKey: ["auth-session"] });
-      const next = safeNext(
-        new URLSearchParams(window.location.search).get("next"),
-      );
+      await queryClient.invalidateQueries({ queryKey: ['auth-session'] });
+      const next = safeNext(new URLSearchParams(window.location.search).get('next'));
       router.replace(next);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Invalid credentials");
+      toast.error(err instanceof Error ? err.message : 'Invalid credentials');
     } finally {
       setBusy(false);
     }
@@ -64,15 +57,12 @@ export default function AuthPage() {
       <AuroraBackground />
       <GridBackground />
       <div className="surface-card w-full max-w-md p-8">
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-display text-lg font-semibold"
-        >
+        <Link href="/" className="font-display flex items-center gap-2 text-lg font-semibold">
           <img src="/logos/logo-sm.svg" alt="Nazexa" className="h-7 w-auto" />
           Nazexa
         </Link>
         <h1 className="mt-6 text-2xl font-semibold">Sign in to the CMS</h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-1.5 text-sm">
           Manage the homepage, pages, theme and SEO.
         </p>
 
@@ -101,12 +91,8 @@ export default function AuthPage() {
               required
             />
           </div>
-          <Button
-            type="submit"
-            className="glow-ring h-11 w-full"
-            disabled={busy}
-          >
-            {busy ? "Please wait…" : "Sign in"}
+          <Button type="submit" className="glow-ring h-11 w-full" disabled={busy}>
+            {busy ? 'Please wait…' : 'Sign in'}
           </Button>
         </form>
       </div>

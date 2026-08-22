@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { db } from "@/lib/db";
-import { createSessionToken } from "@/lib/auth";
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { db } from '@/lib/db';
+import { createSessionToken } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
-  const code = url.searchParams.get("code");
-  const error = url.searchParams.get("error");
-  const host = request.headers.get("host") || "localhost:3000";
-  const protocol = host.includes("localhost") ? "http" : "https";
+  const code = url.searchParams.get('code');
+  const error = url.searchParams.get('error');
+  const host = request.headers.get('host') || 'localhost:3000';
+  const protocol = host.includes('localhost') ? 'http' : 'https';
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
 
   if (error) {
@@ -24,37 +24,32 @@ export async function GET(request: NextRequest) {
   const redirectUri = `${baseUrl}/api/auth/callback/google`;
 
   if (!clientId || !clientSecret) {
-    return NextResponse.redirect(
-      `${baseUrl}/auth/login?error=google_not_configured`,
-    );
+    return NextResponse.redirect(`${baseUrl}/auth/login?error=google_not_configured`);
   }
 
   try {
-    const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         code,
         client_id: clientId,
         client_secret: clientSecret,
         redirect_uri: redirectUri,
-        grant_type: "authorization_code",
+        grant_type: 'authorization_code',
       }),
     });
     const tokenData = await tokenRes.json();
-    if (!tokenData.access_token) throw new Error("No access token");
+    if (!tokenData.access_token) throw new Error('No access token');
 
-    const profileRes = await fetch(
-      "https://www.googleapis.com/oauth2/v2/userinfo",
-      {
-        headers: { Authorization: `Bearer ${tokenData.access_token}` },
-      },
-    );
+    const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    });
     const profileData = await profileRes.json();
 
-    if (!profileData.email) throw new Error("No email returned from Google");
+    if (!profileData.email) throw new Error('No email returned from Google');
 
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
 
     let user = await db.user.findUnique({
       where: { email: profileData.email },
@@ -78,9 +73,9 @@ export async function GET(request: NextRequest) {
           data: {
             eventId: crypto.randomUUID(),
             centralUserId: user.id,
-            source: "nazexa-web-core",
-            eventType: "USER_CREATED",
-            payload: JSON.stringify({ provider: "google" }),
+            source: 'nazexa-web-core',
+            eventType: 'USER_CREATED',
+            payload: JSON.stringify({ provider: 'google' }),
           },
         });
       } else {
@@ -103,9 +98,9 @@ export async function GET(request: NextRequest) {
         data: {
           eventId: crypto.randomUUID(),
           centralUserId: user.id,
-          source: "nazexa-web-core",
-          eventType: "USER_LOGGED_IN",
-          payload: JSON.stringify({ ip, provider: "google" }),
+          source: 'nazexa-web-core',
+          eventType: 'USER_LOGGED_IN',
+          payload: JSON.stringify({ ip, provider: 'google' }),
         },
       });
 
@@ -113,7 +108,7 @@ export async function GET(request: NextRequest) {
       const account = await tx.account.findUnique({
         where: {
           provider_providerAccountId: {
-            provider: "google",
+            provider: 'google',
             providerAccountId: profileData.id,
           },
         },
@@ -123,8 +118,8 @@ export async function GET(request: NextRequest) {
         await tx.account.create({
           data: {
             userId: user.id,
-            type: "oauth",
-            provider: "google",
+            type: 'oauth',
+            provider: 'google',
             providerAccountId: profileData.id,
             access_token: tokenData.access_token,
             id_token: tokenData.id_token,
@@ -133,7 +128,7 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    if (user.status !== "active") {
+    if (user.status !== 'active') {
       return NextResponse.redirect(`${baseUrl}/login?error=account_disabled`);
     }
 
@@ -142,18 +137,16 @@ export async function GET(request: NextRequest) {
 
     let redirectUrl = `${baseUrl}/`;
 
-    const authPerformFrom = request.cookies.get("auth_perform_from")?.value;
+    const authPerformFrom = request.cookies.get('auth_perform_from')?.value;
 
-    if (authPerformFrom === "nazexa-db") {
-      const dbBaseUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || "http://localhost:8000";
-      let ssoPath = "/api/auth/sso";
-      
-      const stateParam = url.searchParams.get("state");
+    if (authPerformFrom === 'nazexa-db') {
+      const dbBaseUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
+      let ssoPath = '/api/auth/sso';
+
+      const stateParam = url.searchParams.get('state');
       if (stateParam) {
         try {
-          const decodedState = JSON.parse(
-            Buffer.from(stateParam, "base64url").toString(),
-          );
+          const decodedState = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
           if (decodedState.callback_url) {
             const parsed = new URL(decodedState.callback_url);
             ssoPath = parsed.pathname + parsed.search;
@@ -170,15 +163,13 @@ export async function GET(request: NextRequest) {
       } else if (!user.password_hash) {
         redirectUrl = `${baseUrl}/set-password`;
       } else {
-        const stateParam = url.searchParams.get("state");
+        const stateParam = url.searchParams.get('state');
         if (stateParam) {
           try {
-            const decodedState = JSON.parse(
-              Buffer.from(stateParam, "base64url").toString(),
-            );
+            const decodedState = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
             if (decodedState.callback_url) {
               const parsed = new URL(decodedState.callback_url);
-              if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+              if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
                 redirectUrl = decodedState.callback_url;
               }
             }
@@ -191,20 +182,20 @@ export async function GET(request: NextRequest) {
 
     const response = NextResponse.redirect(redirectUrl);
 
-    if (request.cookies.get("auth_perform_from")) {
+    if (request.cookies.get('auth_perform_from')) {
       const cookieStore = await cookies();
-      cookieStore.delete("auth_perform_from");
+      cookieStore.delete('auth_perform_from');
     }
 
-    const isProd = process.env.NODE_ENV === "production";
+    const isProd = process.env.NODE_ENV === 'production';
     const domain = process.env.COOKIE_DOMAIN;
 
-    response.cookies.set("nazexa_session", token, {
+    response.cookies.set('nazexa_session', token, {
       httpOnly: true,
       secure: isProd,
       expires: expiresAt,
-      sameSite: "lax",
-      path: "/",
+      sameSite: 'lax',
+      path: '/',
       ...(domain ? { domain } : {}),
     });
     return response;

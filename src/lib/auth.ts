@@ -1,11 +1,10 @@
-import bcrypt from "bcryptjs";
-import { SignJWT, jwtVerify } from "jose";
-import { cookies, headers } from "next/headers";
-import { db } from "@/lib/db";
+import bcrypt from 'bcryptjs';
+import { SignJWT, jwtVerify } from 'jose';
+import { cookies, headers } from 'next/headers';
+import { db } from '@/lib/db';
 
 const JWT_SECRET =
-  process.env.JWT_SECRET ||
-  "fallback-secret-for-development-only-do-not-use-in-prod";
+  process.env.JWT_SECRET || 'fallback-secret-for-development-only-do-not-use-in-prod';
 const encodedKey = new TextEncoder().encode(JWT_SECRET);
 
 export async function hashPassword(password: string): Promise<string> {
@@ -13,18 +12,14 @@ export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, salt);
 }
 
-export async function verifyPassword(
-  password: string,
-  hash: string,
-): Promise<boolean> {
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
   return bcrypt.compare(password, hash);
 }
 
 export async function createSessionToken(userId: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
   const sessionId =
-    Math.random().toString(36).substring(2, 15) +
-    Math.random().toString(36).substring(2, 15);
+    Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
   await db.session.create({
     data: {
@@ -35,24 +30,24 @@ export async function createSessionToken(userId: string) {
   });
 
   const token = await new SignJWT({ userId, sessionId })
-    .setProtectedHeader({ alg: "HS256" })
+    .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime('7d')
     .sign(encodedKey);
 
   return { token, expiresAt };
 }
 
 export function getCookieOptions(expiresAt?: Date) {
-  const isProd = process.env.NODE_ENV === "production";
+  const isProd = process.env.NODE_ENV === 'production';
   const domain = process.env.COOKIE_DOMAIN;
 
   return {
     httpOnly: true,
     secure: isProd,
     expires: expiresAt,
-    sameSite: "lax" as const,
-    path: "/",
+    sameSite: 'lax' as const,
+    path: '/',
     ...(domain ? { domain } : {}),
   };
 }
@@ -61,21 +56,21 @@ export async function createSession(userId: string) {
   const { token, expiresAt } = await createSessionToken(userId);
 
   const cookieStore = await cookies();
-  cookieStore.set("nazexa_session", token, getCookieOptions(expiresAt));
+  cookieStore.set('nazexa_session', token, getCookieOptions(expiresAt));
 }
 
 export async function getSession() {
   const headersList = await headers();
-  const authHeader = headersList.get("authorization");
+  const authHeader = headersList.get('authorization');
   let token: string | undefined = undefined;
 
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
   }
 
   if (!token) {
     const cookieStore = await cookies();
-    token = cookieStore.get("nazexa_session")?.value;
+    token = cookieStore.get('nazexa_session')?.value;
   }
 
   if (!token) return null;
@@ -111,7 +106,7 @@ export async function getSession() {
 
 export async function destroySession() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("nazexa_session")?.value;
+  const token = cookieStore.get('nazexa_session')?.value;
 
   if (token) {
     try {
@@ -130,22 +125,18 @@ export async function destroySession() {
 
   // To delete a cookie with a domain, we must provide the same domain
   cookieStore.delete({
-    name: "nazexa_session",
+    name: 'nazexa_session',
     ...getCookieOptions(),
   });
 }
 
-export async function issueApplicationToken(
-  userId: string,
-  applicationId: string,
-  scopes: string,
-) {
+export async function issueApplicationToken(userId: string, applicationId: string, scopes: string) {
   // Short lived token (1 hour) for specific application
   return await new SignJWT({ userId, applicationId, scopes })
-    .setProtectedHeader({ alg: "HS256" })
+    .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime("1h")
+    .setExpirationTime('1h')
     .setAudience(applicationId)
-    .setIssuer("nazexa-web-central")
+    .setIssuer('nazexa-web-central')
     .sign(encodedKey);
 }

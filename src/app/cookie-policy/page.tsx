@@ -1,17 +1,14 @@
-import { Metadata } from "next";
-import { constructMetadata } from "@/lib/seo";
-import { StandardPage } from "@/components/site/PageShell";
-import { pages } from "@/lib/site-content";
+import { Metadata } from 'next';
+import { constructMetadata } from '@/lib/seo';
+import { StandardPage } from '@/components/site/PageShell';
+import { pages } from '@/lib/site-content';
 
-const page = pages["cookie-policy"]!;
+const page = pages['cookie-policy']!;
 
 export const metadata = constructMetadata({
-  title: typeof page !== "undefined" && page.title ? page.title : undefined,
-  description:
-    typeof page !== "undefined" && page.description
-      ? page.description
-      : undefined,
-  url: "/cookie-policy",
+  title: typeof page !== 'undefined' && page.title ? page.title : undefined,
+  description: typeof page !== 'undefined' && page.description ? page.description : undefined,
+  url: '/cookie-policy',
 });
 
 export default function Page() {
@@ -21,8 +18,8 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
             name: page.title,
             description: page.description,
           }),

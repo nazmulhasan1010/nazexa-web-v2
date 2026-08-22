@@ -1,46 +1,35 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 /** Aurora + mesh gradient blobs. GPU-accelerated, purely decorative. */
 export function AuroraBackground({ className }: { className?: string }) {
   return (
     <div
-      className={cn(
-        "pointer-events-none absolute inset-0 -z-10 overflow-hidden",
-        className,
-      )}
+      className={cn('pointer-events-none absolute inset-0 -z-10 overflow-hidden', className)}
       aria-hidden
     >
-      <div className="animate-drift-a absolute -top-40 left-1/4 h-[38rem] w-[38rem] rounded-full bg-brand-1/20 blur-[120px]" />
-      <div className="animate-drift-b absolute -right-32 top-24 h-[34rem] w-[34rem] rounded-full bg-brand-2/20 blur-[130px]" />
-      <div className="animate-drift-a absolute -bottom-48 left-0 h-[30rem] w-[30rem] rounded-full bg-brand-3/12 blur-[140px]" />
+      <div className="animate-drift-a bg-brand-1/20 absolute -top-40 left-1/4 h-[38rem] w-[38rem] rounded-full blur-[120px]" />
+      <div className="animate-drift-b bg-brand-2/20 absolute top-24 -right-32 h-[34rem] w-[34rem] rounded-full blur-[130px]" />
+      <div className="animate-drift-a bg-brand-3/12 absolute -bottom-48 left-0 h-[30rem] w-[30rem] rounded-full blur-[140px]" />
     </div>
   );
 }
 
 /** Animated dotted grid with a soft radial fade. */
-export function GridBackground({
-  variant = "lines",
-}: {
-  variant?: "lines" | "dots";
-}) {
+export function GridBackground({ variant = 'lines' }: { variant?: 'lines' | 'dots' }) {
   return (
-    <div
-      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      aria-hidden
-    >
+    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
       <div
         className={cn(
-          "absolute inset-0 opacity-60",
-          variant === "lines" ? "grid-lines" : "dot-grid",
+          'absolute inset-0 opacity-60',
+          variant === 'lines' ? 'grid-lines' : 'dot-grid'
         )}
         style={{
-          maskImage: "radial-gradient(70% 60% at 50% 30%, black, transparent)",
-          WebkitMaskImage:
-            "radial-gradient(70% 60% at 50% 30%, black, transparent)",
+          maskImage: 'radial-gradient(70% 60% at 50% 30%, black, transparent)',
+          WebkitMaskImage: 'radial-gradient(70% 60% at 50% 30%, black, transparent)',
         }}
       />
     </div>
@@ -70,7 +59,7 @@ export function WaveBackground() {
     >
       <svg
         viewBox="0 0 1440 320"
-        className="h-full w-[200%] animate-marquee"
+        className="animate-marquee h-full w-[200%]"
         preserveAspectRatio="none"
       >
         <defs>
@@ -96,9 +85,9 @@ export function ParticleField({ density = 46 }: { density?: number }) {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let frame = 0;
     let width = 0;
@@ -120,7 +109,7 @@ export function ParticleField({ density = 46 }: { density?: number }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
-    window.addEventListener("resize", resize);
+    window.addEventListener('resize', resize);
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
@@ -136,7 +125,7 @@ export function ParticleField({ density = 46 }: { density?: number }) {
         const ay = a.y * height;
         ctx.beginPath();
         ctx.arc(ax, ay, 1.4, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(160, 235, 245, 0.55)";
+        ctx.fillStyle = 'rgba(160, 235, 245, 0.55)';
         ctx.fill();
         for (let j = i + 1; j < points.length; j++) {
           const b = points[j]!;
@@ -159,7 +148,7 @@ export function ParticleField({ density = 46 }: { density?: number }) {
 
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener('resize', resize);
     };
   }, [density]);
 
@@ -180,11 +169,11 @@ export function MouseGlow() {
     const el = ref.current;
     if (!el) return;
     const onMove = (e: PointerEvent) => {
-      el.style.setProperty("--mx", `${e.clientX}px`);
-      el.style.setProperty("--my", `${e.clientY}px`);
+      el.style.setProperty('--mx', `${e.clientX}px`);
+      el.style.setProperty('--my', `${e.clientY}px`);
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    return () => window.removeEventListener("pointermove", onMove);
+    window.addEventListener('pointermove', onMove, { passive: true });
+    return () => window.removeEventListener('pointermove', onMove);
   }, []);
 
   return (
@@ -194,7 +183,7 @@ export function MouseGlow() {
       className="pointer-events-none fixed inset-0 z-0 hidden md:block"
       style={{
         background:
-          "radial-gradient(340px circle at var(--mx, 50%) var(--my, 30%), color-mix(in oklab, var(--brand-1) 12%, transparent), transparent 70%)",
+          'radial-gradient(340px circle at var(--mx, 50%) var(--my, 30%), color-mix(in oklab, var(--brand-1) 12%, transparent), transparent 70%)',
       }}
     />
   );
@@ -203,12 +192,9 @@ export function MouseGlow() {
 /** Floating wireframe / geometric objects. */
 export function FloatingShapes() {
   return (
-    <div
-      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      aria-hidden
-    >
+    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
       <svg
-        className="animate-float absolute left-[8%] top-[18%] h-24 w-24 text-brand-1/40"
+        className="animate-float text-brand-1/40 absolute top-[18%] left-[8%] h-24 w-24"
         viewBox="0 0 100 100"
         fill="none"
       >
@@ -232,7 +218,7 @@ export function FloatingShapes() {
         />
       </svg>
       <svg
-        className="animate-spin-slow absolute right-[10%] top-[30%] h-32 w-32 text-brand-2/35"
+        className="animate-spin-slow text-brand-2/35 absolute top-[30%] right-[10%] h-32 w-32"
         viewBox="0 0 100 100"
         fill="none"
       >
@@ -246,7 +232,7 @@ export function FloatingShapes() {
         />
         <circle cx="50" cy="50" r="26" stroke="currentColor" strokeWidth="1" />
       </svg>
-      <div className="animate-blob absolute bottom-[12%] right-[22%] h-28 w-28 bg-brand-3/15 blur-2xl" />
+      <div className="animate-blob bg-brand-3/15 absolute right-[22%] bottom-[12%] h-28 w-28 blur-2xl" />
     </div>
   );
 }

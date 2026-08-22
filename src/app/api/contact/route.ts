@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { getSession } from "@/lib/auth";
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { getSession } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
@@ -14,16 +14,13 @@ export async function POST(request: Request) {
     }
 
     if (!message) {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
     if (!user && (!name || !email)) {
       return NextResponse.json(
-        { error: "Name and email are required for guests" },
-        { status: 400 },
+        { error: 'Name and email are required for guests' },
+        { status: 400 }
       );
     }
 
@@ -38,10 +35,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, message: contactMessage });
   } catch (err) {
-    console.error("Failed to submit contact message", err);
-    return NextResponse.json(
-      { error: "internal_server_error" },
-      { status: 500 },
-    );
+    console.error('Failed to submit contact message', err);
+    return NextResponse.json({ error: 'internal_server_error' }, { status: 500 });
   }
 }

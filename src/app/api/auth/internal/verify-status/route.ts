@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
 export async function POST(request: Request) {
   try {
@@ -8,7 +8,7 @@ export async function POST(request: Request) {
 
     if (!client_id || !client_secret || !userId) {
       return NextResponse.json(
-        { error: "client_id, client_secret, and userId are required" },
+        { error: 'client_id, client_secret, and userId are required' },
         { status: 400 }
       );
     }
@@ -18,10 +18,7 @@ export async function POST(request: Request) {
     });
 
     if (!app || app.clientSecret !== client_secret) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const user = await db.user.findUnique({
@@ -30,10 +27,7 @@ export async function POST(request: Request) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -42,10 +36,7 @@ export async function POST(request: Request) {
       emailVerified: user.emailVerified,
     });
   } catch (error) {
-    console.error("verify-status check error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('verify-status check error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

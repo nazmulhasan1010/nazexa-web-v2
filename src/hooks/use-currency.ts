@@ -1,13 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
-import {
-  DEFAULT_CURRENCY,
-  isCurrencyCode,
-  type CurrencyCode,
-} from "@/lib/currency";
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import { DEFAULT_CURRENCY, isCurrencyCode, type CurrencyCode } from '@/lib/currency';
 
-const STORAGE_KEY = "cmdc:currency";
+const STORAGE_KEY = 'cmdc:currency';
 
 /**
  * The manual currency choice lives in localStorage, which is an external store:
@@ -42,10 +38,10 @@ const overrideStore = (() => {
         loaded = true;
         emit();
       };
-      window.addEventListener("storage", onStorage);
+      window.addEventListener('storage', onStorage);
       return () => {
         listeners.delete(listener);
-        window.removeEventListener("storage", onStorage);
+        window.removeEventListener('storage', onStorage);
       };
     },
     getSnapshot(): CurrencyCode | null {
@@ -82,7 +78,7 @@ const overrideStore = (() => {
   };
 })();
 
-type DetectionStatus = "pending" | "done";
+type DetectionStatus = 'pending' | 'done';
 
 interface Detection {
   status: DetectionStatus;
@@ -130,17 +126,17 @@ export function useCurrency({
   const override = useSyncExternalStore(
     overrideStore.subscribe,
     overrideStore.getSnapshot,
-    overrideStore.getServerSnapshot,
+    overrideStore.getServerSnapshot
   );
 
   const [detection, setDetection] = useState<Detection>(
     initialCurrency
       ? {
-          status: "done",
+          status: 'done',
           currency: initialCurrency,
           country: initialCountry ?? null,
         }
-      : { status: "pending", currency: null, country: null },
+      : { status: 'pending', currency: null, country: null }
   );
   // Bumped by clearOverride to force a re-detect.
   const [detectNonce, setDetectNonce] = useState(0);
@@ -149,24 +145,23 @@ export function useCurrency({
 
   useEffect(() => {
     // A manual choice makes detection pointless — skip the request entirely.
-    if (hasOverride || detection.status === "done") return;
+    if (hasOverride || detection.status === 'done') return;
 
     let cancelled = false;
 
-    fetch("/api/geo/currency")
+    fetch('/api/geo/currency')
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (cancelled) return;
         setDetection({
-          status: "done",
+          status: 'done',
           currency: isCurrencyCode(data?.currency) ? data.currency : null,
-          country: typeof data?.country === "string" ? data.country : null,
+          country: typeof data?.country === 'string' ? data.country : null,
         });
       })
       .catch(() => {
         // Best-effort — fall back to the default currency.
-        if (!cancelled)
-          setDetection({ status: "done", currency: null, country: null });
+        if (!cancelled) setDetection({ status: 'done', currency: null, country: null });
       });
 
     return () => {
@@ -180,7 +175,7 @@ export function useCurrency({
 
   const clearOverride = useCallback(() => {
     overrideStore.clear();
-    setDetection({ status: "pending", currency: null, country: null });
+    setDetection({ status: 'pending', currency: null, country: null });
     setDetectNonce((n) => n + 1);
   }, []);
 
@@ -189,7 +184,7 @@ export function useCurrency({
     setCurrency,
     clearOverride,
     country: detection.country,
-    isDetecting: !hasOverride && detection.status === "pending",
+    isDetecting: !hasOverride && detection.status === 'pending',
     isManual: hasOverride,
   };
 }

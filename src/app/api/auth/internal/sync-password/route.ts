@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { hashPassword, verifyPassword } from "@/lib/auth";
-import { createEventPayload } from "@/lib/events";
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { hashPassword, verifyPassword } from '@/lib/auth';
+import { createEventPayload } from '@/lib/events';
 
 export async function POST(request: Request) {
   try {
@@ -10,7 +10,9 @@ export async function POST(request: Request) {
 
     if (!client_id || !client_secret || !userId || !newPassword) {
       return NextResponse.json(
-        { error: "client_id, client_secret, userId, and newPassword are required" },
+        {
+          error: 'client_id, client_secret, userId, and newPassword are required',
+        },
         { status: 400 }
       );
     }
@@ -21,10 +23,7 @@ export async function POST(request: Request) {
     });
 
     if (!app || app.clientSecret !== client_secret) {
-      return NextResponse.json(
-        { error: "Unauthorized client" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized client' }, { status: 401 });
     }
 
     // Find the user
@@ -33,27 +32,18 @@ export async function POST(request: Request) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Verify current password if user has one
     if (user.password_hash) {
       if (!currentPassword) {
-        return NextResponse.json(
-          { error: "Current password is required" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: 'Current password is required' }, { status: 400 });
       }
-      
+
       const isValid = await verifyPassword(currentPassword, user.password_hash);
       if (!isValid) {
-        return NextResponse.json(
-          { error: "Incorrect current password" },
-          { status: 401 }
-        );
+        return NextResponse.json({ error: 'Incorrect current password' }, { status: 401 });
       }
     }
 
@@ -67,16 +57,13 @@ export async function POST(request: Request) {
       });
 
       await tx.userEvent.create({
-        data: createEventPayload(user.id, "PASSWORD_CHANGED", {}),
+        data: createEventPayload(user.id, 'PASSWORD_CHANGED', {}),
       });
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("sync-password error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('sync-password error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

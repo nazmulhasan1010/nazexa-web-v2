@@ -14,23 +14,17 @@
  * model files in the `model` directory!
  */
 
-import * as runtime from "@prisma/client/runtime/index-browser";
+import * as runtime from '@prisma/client/runtime/index-browser';
 
-export type * from "../models.js";
-export type * from "./prismaNamespace.js";
+export type * from '../models.js';
+export type * from './prismaNamespace.js';
 
 export const Decimal = runtime.Decimal;
 
 export const NullTypes = {
-  DbNull: runtime.NullTypes.DbNull as new (
-    secret: never,
-  ) => typeof runtime.DbNull,
-  JsonNull: runtime.NullTypes.JsonNull as new (
-    secret: never,
-  ) => typeof runtime.JsonNull,
-  AnyNull: runtime.NullTypes.AnyNull as new (
-    secret: never,
-  ) => typeof runtime.AnyNull,
+  DbNull: runtime.NullTypes.DbNull as new (secret: never) => typeof runtime.DbNull,
+  JsonNull: runtime.NullTypes.JsonNull as new (secret: never) => typeof runtime.JsonNull,
+  AnyNull: runtime.NullTypes.AnyNull as new (secret: never) => typeof runtime.AnyNull,
 };
 /**
  * Helper for filtering JSON entries that have `null` on the database (empty on the db)
@@ -54,12 +48,12 @@ export const JsonNull = runtime.JsonNull;
 export const AnyNull = runtime.AnyNull;
 
 export const ModelName = {
-  HomeSection: "HomeSection",
-  SiteSettings: "SiteSettings",
-  Page: "Page",
-  ContentItem: "ContentItem",
-  User: "User",
-  Session: "Session",
+  HomeSection: 'HomeSection',
+  SiteSettings: 'SiteSettings',
+  Page: 'Page',
+  ContentItem: 'ContentItem',
+  User: 'User',
+  Session: 'Session',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -69,102 +63,100 @@ export type ModelName = (typeof ModelName)[keyof typeof ModelName];
  */
 
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
-  Serializable: "Serializable",
+  Serializable: 'Serializable',
 } as const);
 
 export type TransactionIsolationLevel =
   (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
 
 export const HomeSectionScalarFieldEnum = {
-  id: "id",
-  type: "type",
-  position: "position",
-  visible: "visible",
-  title: "title",
-  subtitle: "subtitle",
-  content: "content",
+  id: 'id',
+  type: 'type',
+  position: 'position',
+  visible: 'visible',
+  title: 'title',
+  subtitle: 'subtitle',
+  content: 'content',
 } as const;
 
 export type HomeSectionScalarFieldEnum =
   (typeof HomeSectionScalarFieldEnum)[keyof typeof HomeSectionScalarFieldEnum];
 
 export const SiteSettingsScalarFieldEnum = {
-  id: "id",
-  site_name: "site_name",
-  tagline: "tagline",
-  default_seo_title: "default_seo_title",
-  default_seo_description: "default_seo_description",
-  theme: "theme",
+  id: 'id',
+  site_name: 'site_name',
+  tagline: 'tagline',
+  default_seo_title: 'default_seo_title',
+  default_seo_description: 'default_seo_description',
+  theme: 'theme',
 } as const;
 
 export type SiteSettingsScalarFieldEnum =
   (typeof SiteSettingsScalarFieldEnum)[keyof typeof SiteSettingsScalarFieldEnum];
 
 export const PageScalarFieldEnum = {
-  id: "id",
-  slug: "slug",
-  title: "title",
-  eyebrow: "eyebrow",
-  description: "description",
-  seo_title: "seo_title",
-  seo_description: "seo_description",
-  og_image_url: "og_image_url",
-  published: "published",
-  updated_at: "updated_at",
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  eyebrow: 'eyebrow',
+  description: 'description',
+  seo_title: 'seo_title',
+  seo_description: 'seo_description',
+  og_image_url: 'og_image_url',
+  published: 'published',
+  updated_at: 'updated_at',
 } as const;
 
-export type PageScalarFieldEnum =
-  (typeof PageScalarFieldEnum)[keyof typeof PageScalarFieldEnum];
+export type PageScalarFieldEnum = (typeof PageScalarFieldEnum)[keyof typeof PageScalarFieldEnum];
 
 export const ContentItemScalarFieldEnum = {
-  id: "id",
-  collection: "collection",
-  slug: "slug",
-  position: "position",
-  published: "published",
-  title: "title",
-  subtitle: "subtitle",
-  body: "body",
-  icon: "icon",
-  tone: "tone",
-  category: "category",
-  image_url: "image_url",
-  link_url: "link_url",
-  link_label: "link_label",
-  data: "data",
+  id: 'id',
+  collection: 'collection',
+  slug: 'slug',
+  position: 'position',
+  published: 'published',
+  title: 'title',
+  subtitle: 'subtitle',
+  body: 'body',
+  icon: 'icon',
+  tone: 'tone',
+  category: 'category',
+  image_url: 'image_url',
+  link_url: 'link_url',
+  link_label: 'link_label',
+  data: 'data',
 } as const;
 
 export type ContentItemScalarFieldEnum =
   (typeof ContentItemScalarFieldEnum)[keyof typeof ContentItemScalarFieldEnum];
 
 export const UserScalarFieldEnum = {
-  id: "id",
-  email: "email",
-  password_hash: "password_hash",
+  id: 'id',
+  email: 'email',
+  password_hash: 'password_hash',
 } as const;
 
-export type UserScalarFieldEnum =
-  (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 
 export const SessionScalarFieldEnum = {
-  id: "id",
-  userId: "userId",
-  expiresAt: "expiresAt",
+  id: 'id',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
 } as const;
 
 export type SessionScalarFieldEnum =
   (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum];
 
 export const SortOrder = {
-  asc: "asc",
-  desc: "desc",
+  asc: 'asc',
+  desc: 'desc',
 } as const;
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
 
 export const NullsOrder = {
-  first: "first",
-  last: "last",
+  first: 'first',
+  last: 'last',
 } as const;
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];

@@ -7,16 +7,15 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client";
-import type * as $Enums from "../enums.js";
-import type * as Prisma from "../internal/prismaNamespace.js";
+import type * as runtime from '@prisma/client/runtime/client';
+import type * as $Enums from '../enums.js';
+import type * as Prisma from '../internal/prismaNamespace.js';
 
 /**
  * Model ContentItem
  *
  */
-export type ContentItemModel =
-  runtime.Types.Result.DefaultSelection<Prisma.$ContentItemPayload>;
+export type ContentItemModel = runtime.Types.Result.DefaultSelection<Prisma.$ContentItemPayload>;
 
 export type AggregateContentItem = {
   _count: ContentItemCountAggregateOutputType | null;
@@ -153,8 +152,7 @@ export type ContentItemCountAggregateInputType = {
 };
 
 export type ContentItemAggregateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Filter which ContentItem to aggregate.
@@ -166,8 +164,7 @@ export type ContentItemAggregateArgs<
    * Determine the order of ContentItems to fetch.
    */
   orderBy?:
-    | Prisma.ContentItemOrderByWithRelationInput
-    | Prisma.ContentItemOrderByWithRelationInput[];
+    Prisma.ContentItemOrderByWithRelationInput | Prisma.ContentItemOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -219,7 +216,7 @@ export type ContentItemAggregateArgs<
 };
 
 export type GetContentItemAggregateType<T extends ContentItemAggregateArgs> = {
-  [P in keyof T & keyof AggregateContentItem]: P extends "_count" | "count"
+  [P in keyof T & keyof AggregateContentItem]: P extends '_count' | 'count'
     ? T[P] extends true
       ? number
       : Prisma.GetScalarType<T[P], AggregateContentItem[P]>
@@ -227,13 +224,11 @@ export type GetContentItemAggregateType<T extends ContentItemAggregateArgs> = {
 };
 
 export type ContentItemGroupByArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   where?: Prisma.ContentItemWhereInput;
   orderBy?:
-    | Prisma.ContentItemOrderByWithAggregationInput
-    | Prisma.ContentItemOrderByWithAggregationInput[];
+    Prisma.ContentItemOrderByWithAggregationInput | Prisma.ContentItemOrderByWithAggregationInput[];
   by: Prisma.ContentItemScalarFieldEnum[] | Prisma.ContentItemScalarFieldEnum;
   having?: Prisma.ContentItemScalarWhereWithAggregatesInput;
   take?: number;
@@ -268,38 +263,37 @@ export type ContentItemGroupByOutputType = {
   _max: ContentItemMaxAggregateOutputType | null;
 };
 
-export type GetContentItemGroupByPayload<T extends ContentItemGroupByArgs> =
-  Prisma.PrismaPromise<
-    Array<
-      Prisma.PickEnumerable<ContentItemGroupByOutputType, T["by"]> & {
-        [P in keyof T & keyof ContentItemGroupByOutputType]: P extends "_count"
-          ? T[P] extends boolean
-            ? number
-            : Prisma.GetScalarType<T[P], ContentItemGroupByOutputType[P]>
-          : Prisma.GetScalarType<T[P], ContentItemGroupByOutputType[P]>;
-      }
-    >
-  >;
+export type GetContentItemGroupByPayload<T extends ContentItemGroupByArgs> = Prisma.PrismaPromise<
+  Array<
+    Prisma.PickEnumerable<ContentItemGroupByOutputType, T['by']> & {
+      [P in keyof T & keyof ContentItemGroupByOutputType]: P extends '_count'
+        ? T[P] extends boolean
+          ? number
+          : Prisma.GetScalarType<T[P], ContentItemGroupByOutputType[P]>
+        : Prisma.GetScalarType<T[P], ContentItemGroupByOutputType[P]>;
+    }
+  >
+>;
 
 export type ContentItemWhereInput = {
   AND?: Prisma.ContentItemWhereInput | Prisma.ContentItemWhereInput[];
   OR?: Prisma.ContentItemWhereInput[];
   NOT?: Prisma.ContentItemWhereInput | Prisma.ContentItemWhereInput[];
-  id?: Prisma.StringFilter<"ContentItem"> | string;
-  collection?: Prisma.StringFilter<"ContentItem"> | string;
-  slug?: Prisma.StringFilter<"ContentItem"> | string;
-  position?: Prisma.IntFilter<"ContentItem"> | number;
-  published?: Prisma.BoolFilter<"ContentItem"> | boolean;
-  title?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-  subtitle?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-  body?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-  icon?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-  tone?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-  category?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-  image_url?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-  link_url?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-  link_label?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-  data?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
+  id?: Prisma.StringFilter<'ContentItem'> | string;
+  collection?: Prisma.StringFilter<'ContentItem'> | string;
+  slug?: Prisma.StringFilter<'ContentItem'> | string;
+  position?: Prisma.IntFilter<'ContentItem'> | number;
+  published?: Prisma.BoolFilter<'ContentItem'> | boolean;
+  title?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+  subtitle?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+  body?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+  icon?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+  tone?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+  category?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+  image_url?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+  link_url?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+  link_label?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+  data?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
 };
 
 export type ContentItemOrderByWithRelationInput = {
@@ -326,22 +320,22 @@ export type ContentItemWhereUniqueInput = Prisma.AtLeast<
     AND?: Prisma.ContentItemWhereInput | Prisma.ContentItemWhereInput[];
     OR?: Prisma.ContentItemWhereInput[];
     NOT?: Prisma.ContentItemWhereInput | Prisma.ContentItemWhereInput[];
-    collection?: Prisma.StringFilter<"ContentItem"> | string;
-    slug?: Prisma.StringFilter<"ContentItem"> | string;
-    position?: Prisma.IntFilter<"ContentItem"> | number;
-    published?: Prisma.BoolFilter<"ContentItem"> | boolean;
-    title?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-    subtitle?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-    body?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-    icon?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-    tone?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-    category?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-    image_url?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-    link_url?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-    link_label?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
-    data?: Prisma.StringNullableFilter<"ContentItem"> | string | null;
+    collection?: Prisma.StringFilter<'ContentItem'> | string;
+    slug?: Prisma.StringFilter<'ContentItem'> | string;
+    position?: Prisma.IntFilter<'ContentItem'> | number;
+    published?: Prisma.BoolFilter<'ContentItem'> | boolean;
+    title?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+    subtitle?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+    body?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+    icon?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+    tone?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+    category?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+    image_url?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+    link_url?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+    link_label?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
+    data?: Prisma.StringNullableFilter<'ContentItem'> | string | null;
   },
-  "id"
+  'id'
 >;
 
 export type ContentItemOrderByWithAggregationInput = {
@@ -375,31 +369,21 @@ export type ContentItemScalarWhereWithAggregatesInput = {
   NOT?:
     | Prisma.ContentItemScalarWhereWithAggregatesInput
     | Prisma.ContentItemScalarWhereWithAggregatesInput[];
-  id?: Prisma.StringWithAggregatesFilter<"ContentItem"> | string;
-  collection?: Prisma.StringWithAggregatesFilter<"ContentItem"> | string;
-  slug?: Prisma.StringWithAggregatesFilter<"ContentItem"> | string;
-  position?: Prisma.IntWithAggregatesFilter<"ContentItem"> | number;
-  published?: Prisma.BoolWithAggregatesFilter<"ContentItem"> | boolean;
-  title?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
-  subtitle?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
-  body?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
-  icon?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
-  tone?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
-  category?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
-  image_url?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
-  link_url?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
-  link_label?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
-  data?:
-    Prisma.StringNullableWithAggregatesFilter<"ContentItem"> | string | null;
+  id?: Prisma.StringWithAggregatesFilter<'ContentItem'> | string;
+  collection?: Prisma.StringWithAggregatesFilter<'ContentItem'> | string;
+  slug?: Prisma.StringWithAggregatesFilter<'ContentItem'> | string;
+  position?: Prisma.IntWithAggregatesFilter<'ContentItem'> | number;
+  published?: Prisma.BoolWithAggregatesFilter<'ContentItem'> | boolean;
+  title?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
+  subtitle?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
+  body?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
+  icon?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
+  tone?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
+  category?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
+  image_url?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
+  link_url?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
+  link_label?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
+  data?: Prisma.StringNullableWithAggregatesFilter<'ContentItem'> | string | null;
 };
 
 export type ContentItemCreateInput = {
@@ -591,8 +575,7 @@ export type ContentItemSumOrderByAggregateInput = {
 };
 
 export type ContentItemSelect<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
@@ -611,12 +594,11 @@ export type ContentItemSelect<
     link_label?: boolean;
     data?: boolean;
   },
-  ExtArgs["result"]["contentItem"]
+  ExtArgs['result']['contentItem']
 >;
 
 export type ContentItemSelectCreateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
@@ -635,12 +617,11 @@ export type ContentItemSelectCreateManyAndReturn<
     link_label?: boolean;
     data?: boolean;
   },
-  ExtArgs["result"]["contentItem"]
+  ExtArgs['result']['contentItem']
 >;
 
 export type ContentItemSelectUpdateManyAndReturn<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean;
@@ -659,7 +640,7 @@ export type ContentItemSelectUpdateManyAndReturn<
     link_label?: boolean;
     data?: boolean;
   },
-  ExtArgs["result"]["contentItem"]
+  ExtArgs['result']['contentItem']
 >;
 
 export type ContentItemSelectScalar = {
@@ -681,32 +662,30 @@ export type ContentItemSelectScalar = {
 };
 
 export type ContentItemOmit<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  | "id"
-  | "collection"
-  | "slug"
-  | "position"
-  | "published"
-  | "title"
-  | "subtitle"
-  | "body"
-  | "icon"
-  | "tone"
-  | "category"
-  | "image_url"
-  | "link_url"
-  | "link_label"
-  | "data",
-  ExtArgs["result"]["contentItem"]
+  | 'id'
+  | 'collection'
+  | 'slug'
+  | 'position'
+  | 'published'
+  | 'title'
+  | 'subtitle'
+  | 'body'
+  | 'icon'
+  | 'tone'
+  | 'category'
+  | 'image_url'
+  | 'link_url'
+  | 'link_label'
+  | 'data',
+  ExtArgs['result']['contentItem']
 >;
 
 export type $ContentItemPayload<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-  name: "ContentItem";
+  name: 'ContentItem';
   objects: {};
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -726,33 +705,27 @@ export type $ContentItemPayload<
       link_label: string | null;
       data: string | null;
     },
-    ExtArgs["result"]["contentItem"]
+    ExtArgs['result']['contentItem']
   >;
   composites: {};
 };
 
-export type ContentItemGetPayload<
-  S extends boolean | null | undefined | ContentItemDefaultArgs,
-> = runtime.Types.Result.GetResult<Prisma.$ContentItemPayload, S>;
+export type ContentItemGetPayload<S extends boolean | null | undefined | ContentItemDefaultArgs> =
+  runtime.Types.Result.GetResult<Prisma.$ContentItemPayload, S>;
 
 export type ContentItemCountArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = Omit<
-  ContentItemFindManyArgs,
-  "select" | "include" | "distinct" | "omit"
-> & {
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = Omit<ContentItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
   select?: ContentItemCountAggregateInputType | true;
 };
 
 export interface ContentItemDelegate<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
   GlobalOmitOptions = {},
 > {
   [K: symbol]: {
-    types: Prisma.TypeMap<ExtArgs>["model"]["ContentItem"];
-    meta: { name: "ContentItem" };
+    types: Prisma.TypeMap<ExtArgs>['model']['ContentItem'];
+    meta: { name: 'ContentItem' };
   };
   /**
    * Find zero or one ContentItem that matches the filter.
@@ -766,12 +739,12 @@ export interface ContentItemDelegate<
    * })
    */
   findUnique<T extends ContentItemFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, ContentItemFindUniqueArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, ContentItemFindUniqueArgs<ExtArgs>>
   ): Prisma.Prisma__ContentItemClient<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "findUnique",
+      'findUnique',
       GlobalOmitOptions
     > | null,
     null,
@@ -792,12 +765,12 @@ export interface ContentItemDelegate<
    * })
    */
   findUniqueOrThrow<T extends ContentItemFindUniqueOrThrowArgs>(
-    args: Prisma.SelectSubset<T, ContentItemFindUniqueOrThrowArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, ContentItemFindUniqueOrThrowArgs<ExtArgs>>
   ): Prisma.Prisma__ContentItemClient<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "findUniqueOrThrow",
+      'findUniqueOrThrow',
       GlobalOmitOptions
     >,
     never,
@@ -819,12 +792,12 @@ export interface ContentItemDelegate<
    * })
    */
   findFirst<T extends ContentItemFindFirstArgs>(
-    args?: Prisma.SelectSubset<T, ContentItemFindFirstArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, ContentItemFindFirstArgs<ExtArgs>>
   ): Prisma.Prisma__ContentItemClient<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "findFirst",
+      'findFirst',
       GlobalOmitOptions
     > | null,
     null,
@@ -847,12 +820,12 @@ export interface ContentItemDelegate<
    * })
    */
   findFirstOrThrow<T extends ContentItemFindFirstOrThrowArgs>(
-    args?: Prisma.SelectSubset<T, ContentItemFindFirstOrThrowArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, ContentItemFindFirstOrThrowArgs<ExtArgs>>
   ): Prisma.Prisma__ContentItemClient<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "findFirstOrThrow",
+      'findFirstOrThrow',
       GlobalOmitOptions
     >,
     never,
@@ -877,12 +850,12 @@ export interface ContentItemDelegate<
    *
    */
   findMany<T extends ContentItemFindManyArgs>(
-    args?: Prisma.SelectSubset<T, ContentItemFindManyArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, ContentItemFindManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "findMany",
+      'findMany',
       GlobalOmitOptions
     >
   >;
@@ -900,12 +873,12 @@ export interface ContentItemDelegate<
    *
    */
   create<T extends ContentItemCreateArgs>(
-    args: Prisma.SelectSubset<T, ContentItemCreateArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, ContentItemCreateArgs<ExtArgs>>
   ): Prisma.Prisma__ContentItemClient<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "create",
+      'create',
       GlobalOmitOptions
     >,
     never,
@@ -926,7 +899,7 @@ export interface ContentItemDelegate<
    *
    */
   createMany<T extends ContentItemCreateManyArgs>(
-    args?: Prisma.SelectSubset<T, ContentItemCreateManyArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, ContentItemCreateManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
@@ -952,12 +925,12 @@ export interface ContentItemDelegate<
    *
    */
   createManyAndReturn<T extends ContentItemCreateManyAndReturnArgs>(
-    args?: Prisma.SelectSubset<T, ContentItemCreateManyAndReturnArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, ContentItemCreateManyAndReturnArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "createManyAndReturn",
+      'createManyAndReturn',
       GlobalOmitOptions
     >
   >;
@@ -975,12 +948,12 @@ export interface ContentItemDelegate<
    *
    */
   delete<T extends ContentItemDeleteArgs>(
-    args: Prisma.SelectSubset<T, ContentItemDeleteArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, ContentItemDeleteArgs<ExtArgs>>
   ): Prisma.Prisma__ContentItemClient<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "delete",
+      'delete',
       GlobalOmitOptions
     >,
     never,
@@ -1004,12 +977,12 @@ export interface ContentItemDelegate<
    *
    */
   update<T extends ContentItemUpdateArgs>(
-    args: Prisma.SelectSubset<T, ContentItemUpdateArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, ContentItemUpdateArgs<ExtArgs>>
   ): Prisma.Prisma__ContentItemClient<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "update",
+      'update',
       GlobalOmitOptions
     >,
     never,
@@ -1030,7 +1003,7 @@ export interface ContentItemDelegate<
    *
    */
   deleteMany<T extends ContentItemDeleteManyArgs>(
-    args?: Prisma.SelectSubset<T, ContentItemDeleteManyArgs<ExtArgs>>,
+    args?: Prisma.SelectSubset<T, ContentItemDeleteManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
@@ -1051,7 +1024,7 @@ export interface ContentItemDelegate<
    *
    */
   updateMany<T extends ContentItemUpdateManyArgs>(
-    args: Prisma.SelectSubset<T, ContentItemUpdateManyArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, ContentItemUpdateManyArgs<ExtArgs>>
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
@@ -1083,12 +1056,12 @@ export interface ContentItemDelegate<
    *
    */
   updateManyAndReturn<T extends ContentItemUpdateManyAndReturnArgs>(
-    args: Prisma.SelectSubset<T, ContentItemUpdateManyAndReturnArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, ContentItemUpdateManyAndReturnArgs<ExtArgs>>
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "updateManyAndReturn",
+      'updateManyAndReturn',
       GlobalOmitOptions
     >
   >;
@@ -1111,12 +1084,12 @@ export interface ContentItemDelegate<
    * })
    */
   upsert<T extends ContentItemUpsertArgs>(
-    args: Prisma.SelectSubset<T, ContentItemUpsertArgs<ExtArgs>>,
+    args: Prisma.SelectSubset<T, ContentItemUpsertArgs<ExtArgs>>
   ): Prisma.Prisma__ContentItemClient<
     runtime.Types.Result.GetResult<
       Prisma.$ContentItemPayload<ExtArgs>,
       T,
-      "upsert",
+      'upsert',
       GlobalOmitOptions
     >,
     never,
@@ -1138,12 +1111,12 @@ export interface ContentItemDelegate<
    * })
    **/
   count<T extends ContentItemCountArgs>(
-    args?: Prisma.Subset<T, ContentItemCountArgs>,
+    args?: Prisma.Subset<T, ContentItemCountArgs>
   ): Prisma.PrismaPromise<
-    T extends runtime.Types.Utils.Record<"select", any>
-      ? T["select"] extends true
+    T extends runtime.Types.Utils.Record<'select', any>
+      ? T['select'] extends true
         ? number
-        : Prisma.GetScalarType<T["select"], ContentItemCountAggregateOutputType>
+        : Prisma.GetScalarType<T['select'], ContentItemCountAggregateOutputType>
       : number
   >;
 
@@ -1172,7 +1145,7 @@ export interface ContentItemDelegate<
    * })
    **/
   aggregate<T extends ContentItemAggregateArgs>(
-    args: Prisma.Subset<T, ContentItemAggregateArgs>,
+    args: Prisma.Subset<T, ContentItemAggregateArgs>
   ): Prisma.PrismaPromise<GetContentItemAggregateType<T>>;
 
   /**
@@ -1196,20 +1169,20 @@ export interface ContentItemDelegate<
   groupBy<
     T extends ContentItemGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
-      Prisma.Extends<"skip", Prisma.Keys<T>>,
-      Prisma.Extends<"take", Prisma.Keys<T>>
+      Prisma.Extends<'skip', Prisma.Keys<T>>,
+      Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends (Prisma.True extends HasSelectOrTake
-      ? { orderBy: ContentItemGroupByArgs["orderBy"] }
-      : { orderBy?: ContentItemGroupByArgs["orderBy"] }),
+      ? { orderBy: ContentItemGroupByArgs['orderBy'] }
+      : { orderBy?: ContentItemGroupByArgs['orderBy'] }),
     OrderFields extends Prisma.ExcludeUnderscoreKeys<
-      Prisma.Keys<Prisma.MaybeTupleToUnion<T["orderBy"]>>
+      Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>
     >,
-    ByFields extends Prisma.MaybeTupleToUnion<T["by"]>,
+    ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
-    HavingFields extends Prisma.GetHavingFields<T["having"]>,
+    HavingFields extends Prisma.GetHavingFields<T['having']>,
     HavingValid extends Prisma.Has<ByFields, HavingFields>,
-    ByEmpty extends (T["by"] extends never[] ? Prisma.True : Prisma.False),
+    ByEmpty extends (T['by'] extends never[] ? Prisma.True : Prisma.False),
     InputErrors extends (ByEmpty extends Prisma.True
       ? `Error: "by" must not be empty.`
       : HavingValid extends Prisma.False
@@ -1218,15 +1191,10 @@ export interface ContentItemDelegate<
               ? never
               : P extends string
                 ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-                : [
-                    Error,
-                    "Field ",
-                    P,
-                    ` in "having" needs to be provided in "by"`,
-                  ];
+                : [Error, 'Field ', P, ` in "having" needs to be provided in "by"`];
           }[HavingFields]
-        : "take" extends Prisma.Keys<T>
-          ? "orderBy" extends Prisma.Keys<T>
+        : 'take' extends Prisma.Keys<T>
+          ? 'orderBy' extends Prisma.Keys<T>
             ? ByValid extends Prisma.True
               ? {}
               : {
@@ -1235,8 +1203,8 @@ export interface ContentItemDelegate<
                     : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
                 }[OrderFields]
             : 'Error: If you provide "take", you also need to provide "orderBy"'
-          : "skip" extends Prisma.Keys<T>
-            ? "orderBy" extends Prisma.Keys<T>
+          : 'skip' extends Prisma.Keys<T>
+            ? 'orderBy' extends Prisma.Keys<T>
               ? ByValid extends Prisma.True
                 ? {}
                 : {
@@ -1253,11 +1221,8 @@ export interface ContentItemDelegate<
                     : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
                 }[OrderFields]),
   >(
-    args: Prisma.SubsetIntersection<T, ContentItemGroupByArgs, OrderByArg> &
-      InputErrors,
-  ): {} extends InputErrors
-    ? GetContentItemGroupByPayload<T>
-    : Prisma.PrismaPromise<InputErrors>;
+    args: Prisma.SubsetIntersection<T, ContentItemGroupByArgs, OrderByArg> & InputErrors
+  ): {} extends InputErrors ? GetContentItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
   /**
    * Fields of the ContentItem model
    */
@@ -1273,11 +1238,10 @@ export interface ContentItemDelegate<
 export interface Prisma__ContentItemClient<
   T,
   Null = never,
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
-  readonly [Symbol.toStringTag]: "PrismaPromise";
+  readonly [Symbol.toStringTag]: 'PrismaPromise';
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1285,10 +1249,8 @@ export interface Prisma__ContentItemClient<
    * @returns A Promise for the completion of which ever callback is executed.
    */
   then<TResult1 = T, TResult2 = never>(
-    onfulfilled?:
-      ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
-    onrejected?:
-      ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null,
+    onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null
   ): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
   /**
    * Attaches a callback for only the rejection of the Promise.
@@ -1296,8 +1258,7 @@ export interface Prisma__ContentItemClient<
    * @returns A Promise for the completion of the callback.
    */
   catch<TResult = never>(
-    onrejected?:
-      ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null,
+    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null
   ): runtime.Types.Utils.JsPromise<T | TResult>;
   /**
    * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
@@ -1305,30 +1266,28 @@ export interface Prisma__ContentItemClient<
    * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
    * @returns A Promise for the completion of the callback.
    */
-  finally(
-    onfinally?: (() => void) | undefined | null,
-  ): runtime.Types.Utils.JsPromise<T>;
+  finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
 }
 
 /**
  * Fields of the ContentItem model
  */
 export interface ContentItemFieldRefs {
-  readonly id: Prisma.FieldRef<"ContentItem", "String">;
-  readonly collection: Prisma.FieldRef<"ContentItem", "String">;
-  readonly slug: Prisma.FieldRef<"ContentItem", "String">;
-  readonly position: Prisma.FieldRef<"ContentItem", "Int">;
-  readonly published: Prisma.FieldRef<"ContentItem", "Boolean">;
-  readonly title: Prisma.FieldRef<"ContentItem", "String">;
-  readonly subtitle: Prisma.FieldRef<"ContentItem", "String">;
-  readonly body: Prisma.FieldRef<"ContentItem", "String">;
-  readonly icon: Prisma.FieldRef<"ContentItem", "String">;
-  readonly tone: Prisma.FieldRef<"ContentItem", "String">;
-  readonly category: Prisma.FieldRef<"ContentItem", "String">;
-  readonly image_url: Prisma.FieldRef<"ContentItem", "String">;
-  readonly link_url: Prisma.FieldRef<"ContentItem", "String">;
-  readonly link_label: Prisma.FieldRef<"ContentItem", "String">;
-  readonly data: Prisma.FieldRef<"ContentItem", "String">;
+  readonly id: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly collection: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly slug: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly position: Prisma.FieldRef<'ContentItem', 'Int'>;
+  readonly published: Prisma.FieldRef<'ContentItem', 'Boolean'>;
+  readonly title: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly subtitle: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly body: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly icon: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly tone: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly category: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly image_url: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly link_url: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly link_label: Prisma.FieldRef<'ContentItem', 'String'>;
+  readonly data: Prisma.FieldRef<'ContentItem', 'String'>;
 }
 
 // Custom InputTypes
@@ -1336,8 +1295,7 @@ export interface ContentItemFieldRefs {
  * ContentItem findUnique
  */
 export type ContentItemFindUniqueArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1357,8 +1315,7 @@ export type ContentItemFindUniqueArgs<
  * ContentItem findUniqueOrThrow
  */
 export type ContentItemFindUniqueOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1378,8 +1335,7 @@ export type ContentItemFindUniqueOrThrowArgs<
  * ContentItem findFirst
  */
 export type ContentItemFindFirstArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1399,8 +1355,7 @@ export type ContentItemFindFirstArgs<
    * Determine the order of ContentItems to fetch.
    */
   orderBy?:
-    | Prisma.ContentItemOrderByWithRelationInput
-    | Prisma.ContentItemOrderByWithRelationInput[];
+    Prisma.ContentItemOrderByWithRelationInput | Prisma.ContentItemOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -1424,16 +1379,14 @@ export type ContentItemFindFirstArgs<
    *
    * Filter by unique combinations of ContentItems.
    */
-  distinct?:
-    Prisma.ContentItemScalarFieldEnum | Prisma.ContentItemScalarFieldEnum[];
+  distinct?: Prisma.ContentItemScalarFieldEnum | Prisma.ContentItemScalarFieldEnum[];
 };
 
 /**
  * ContentItem findFirstOrThrow
  */
 export type ContentItemFindFirstOrThrowArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1453,8 +1406,7 @@ export type ContentItemFindFirstOrThrowArgs<
    * Determine the order of ContentItems to fetch.
    */
   orderBy?:
-    | Prisma.ContentItemOrderByWithRelationInput
-    | Prisma.ContentItemOrderByWithRelationInput[];
+    Prisma.ContentItemOrderByWithRelationInput | Prisma.ContentItemOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -1478,16 +1430,14 @@ export type ContentItemFindFirstOrThrowArgs<
    *
    * Filter by unique combinations of ContentItems.
    */
-  distinct?:
-    Prisma.ContentItemScalarFieldEnum | Prisma.ContentItemScalarFieldEnum[];
+  distinct?: Prisma.ContentItemScalarFieldEnum | Prisma.ContentItemScalarFieldEnum[];
 };
 
 /**
  * ContentItem findMany
  */
 export type ContentItemFindManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1507,8 +1457,7 @@ export type ContentItemFindManyArgs<
    * Determine the order of ContentItems to fetch.
    */
   orderBy?:
-    | Prisma.ContentItemOrderByWithRelationInput
-    | Prisma.ContentItemOrderByWithRelationInput[];
+    Prisma.ContentItemOrderByWithRelationInput | Prisma.ContentItemOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
@@ -1532,16 +1481,14 @@ export type ContentItemFindManyArgs<
    *
    * Filter by unique combinations of ContentItems.
    */
-  distinct?:
-    Prisma.ContentItemScalarFieldEnum | Prisma.ContentItemScalarFieldEnum[];
+  distinct?: Prisma.ContentItemScalarFieldEnum | Prisma.ContentItemScalarFieldEnum[];
 };
 
 /**
  * ContentItem create
  */
 export type ContentItemCreateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1554,18 +1501,14 @@ export type ContentItemCreateArgs<
   /**
    * The data needed to create a ContentItem.
    */
-  data: Prisma.XOR<
-    Prisma.ContentItemCreateInput,
-    Prisma.ContentItemUncheckedCreateInput
-  >;
+  data: Prisma.XOR<Prisma.ContentItemCreateInput, Prisma.ContentItemUncheckedCreateInput>;
 };
 
 /**
  * ContentItem createMany
  */
 export type ContentItemCreateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * The data used to create many ContentItems.
@@ -1577,8 +1520,7 @@ export type ContentItemCreateManyArgs<
  * ContentItem createManyAndReturn
  */
 export type ContentItemCreateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1598,8 +1540,7 @@ export type ContentItemCreateManyAndReturnArgs<
  * ContentItem update
  */
 export type ContentItemUpdateArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1612,10 +1553,7 @@ export type ContentItemUpdateArgs<
   /**
    * The data needed to update a ContentItem.
    */
-  data: Prisma.XOR<
-    Prisma.ContentItemUpdateInput,
-    Prisma.ContentItemUncheckedUpdateInput
-  >;
+  data: Prisma.XOR<Prisma.ContentItemUpdateInput, Prisma.ContentItemUncheckedUpdateInput>;
   /**
    * Choose, which ContentItem to update.
    */
@@ -1626,8 +1564,7 @@ export type ContentItemUpdateArgs<
  * ContentItem updateMany
  */
 export type ContentItemUpdateManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * The data used to update ContentItems.
@@ -1650,8 +1587,7 @@ export type ContentItemUpdateManyArgs<
  * ContentItem updateManyAndReturn
  */
 export type ContentItemUpdateManyAndReturnArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1682,8 +1618,7 @@ export type ContentItemUpdateManyAndReturnArgs<
  * ContentItem upsert
  */
 export type ContentItemUpsertArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1700,25 +1635,18 @@ export type ContentItemUpsertArgs<
   /**
    * In case the ContentItem found by the `where` argument doesn't exist, create a new ContentItem with this data.
    */
-  create: Prisma.XOR<
-    Prisma.ContentItemCreateInput,
-    Prisma.ContentItemUncheckedCreateInput
-  >;
+  create: Prisma.XOR<Prisma.ContentItemCreateInput, Prisma.ContentItemUncheckedCreateInput>;
   /**
    * In case the ContentItem was found with the provided `where` argument, update it with this data.
    */
-  update: Prisma.XOR<
-    Prisma.ContentItemUpdateInput,
-    Prisma.ContentItemUncheckedUpdateInput
-  >;
+  update: Prisma.XOR<Prisma.ContentItemUpdateInput, Prisma.ContentItemUncheckedUpdateInput>;
 };
 
 /**
  * ContentItem delete
  */
 export type ContentItemDeleteArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem
@@ -1738,8 +1666,7 @@ export type ContentItemDeleteArgs<
  * ContentItem deleteMany
  */
 export type ContentItemDeleteManyArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Filter which ContentItems to delete
@@ -1755,8 +1682,7 @@ export type ContentItemDeleteManyArgs<
  * ContentItem without action
  */
 export type ContentItemDefaultArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
    * Select specific fields to fetch from the ContentItem

@@ -1,43 +1,37 @@
-import js from "@eslint/js";
-import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
-import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
+import nextPlugin from '@next/eslint-plugin-next';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import tseslint from 'typescript-eslint';
+import prettierConfig from 'eslint-config-prettier';
 
-export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi"] },
+export default [
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["**/*.{ts,tsx}"],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
+    ignores: ['.next/**', 'node_modules/**', 'out/**', 'build/**', 'dist/**', 'next-env.d.ts'],
+  },
+
+  ...tseslint.configs.recommended,
+
+  {
+    files: ['**/*.{js,mjs,cjs,ts,tsx,jsx}'],
+
     plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
+      '@next/next': nextPlugin,
+      react: reactPlugin,
+      'react-hooks': reactHooks,
     },
+
     rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
       ...reactHooks.configs.recommended.rules,
-      "no-restricted-imports": [
-        "error",
-        {
-          paths: [
-            {
-              name: "server-only",
-              message:
-                "TanStack Start does not use the Next.js `server-only` package. Rename the module to `*.server.ts` or mark it with `@tanstack/react-start/server-only`.",
-            },
-          ],
-        },
-      ],
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
-      "@typescript-eslint/no-unused-vars": "off",
+    },
+
+    settings: {
+      react: {
+        version: 'detect',
+      },
     },
   },
-  eslintPluginPrettier,
-);
+
+  prettierConfig,
+];

@@ -8,9 +8,9 @@
  * 🟢 You can import this file directly.
  */
 
-import type * as runtime from "@prisma/client/runtime/client";
-import * as $Enums from "./enums.js";
-import type * as Prisma from "./internal/prismaNamespace.js";
+import type * as runtime from '@prisma/client/runtime/client';
+import * as $Enums from './enums.js';
+import type * as Prisma from './internal/prismaNamespace.js';
 
 export type StringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>;
@@ -113,10 +113,7 @@ export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
   contains?: string | Prisma.StringFieldRefInput<$PrismaModel>;
   startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>;
   endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>;
-  not?:
-    | Prisma.NestedStringNullableWithAggregatesFilter<$PrismaModel>
-    | string
-    | null;
+  not?: Prisma.NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null;
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
   _min?: Prisma.NestedStringNullableFilter<$PrismaModel>;
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>;
@@ -254,10 +251,7 @@ export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
   contains?: string | Prisma.StringFieldRefInput<$PrismaModel>;
   startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>;
   endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>;
-  not?:
-    | Prisma.NestedStringNullableWithAggregatesFilter<$PrismaModel>
-    | string
-    | null;
+  not?: Prisma.NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null;
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
   _min?: Prisma.NestedStringNullableFilter<$PrismaModel>;
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>;

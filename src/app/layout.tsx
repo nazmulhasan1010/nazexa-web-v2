@@ -1,28 +1,21 @@
-import type { Metadata } from "next";
-import { Providers } from "./Providers";
-import { constructMetadata, generateOrganizationSchema } from "@/lib/seo";
-import { JsonLd } from "@/components/JsonLd";
-import { fetchContentItems } from "@/lib/cms";
-import "../styles.css";
+import type { Metadata } from 'next';
+import { Providers } from './Providers';
+import { constructMetadata, generateOrganizationSchema } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
+import { fetchContentItems } from '@/lib/cms';
+import '../styles.css';
 
 export const metadata: Metadata = {
   ...constructMetadata({
     description:
-      "Nazexa unifies databases, edge compute, auth, AI and observability into one premium developer platform.",
+      'Nazexa unifies databases, edge compute, auth, AI and observability into one premium developer platform.',
   }),
   title: {
-    template: "%s | Nazexa",
-    default: "Nazexa — The developer platform for teams who ship",
+    template: '%s | Nazexa',
+    default: 'Nazexa — The developer platform for teams who ship',
   },
-  authors: [{ name: "Nazexa" }],
-  keywords: [
-    "nazexa",
-    "developer platform",
-    "database",
-    "edge compute",
-    "AI",
-    "observability",
-  ],
+  authors: [{ name: 'Nazexa' }],
+  keywords: ['nazexa', 'developer platform', 'database', 'edge compute', 'AI', 'observability'],
 };
 
 export default async function RootLayout({
@@ -30,17 +23,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const dynamicProducts = await fetchContentItems("products");
+  const dynamicProducts = await fetchContentItems('products');
 
   return (
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=JetBrains+Mono:wght@400;500&display=swap"

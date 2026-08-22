@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { createEventPayload } from "@/lib/events";
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { createEventPayload } from '@/lib/events';
 
 export async function POST(request: Request) {
   try {
@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!client_id || !client_secret || !userId) {
       return NextResponse.json(
-        { error: "client_id, client_secret, and userId are required" },
+        { error: 'client_id, client_secret, and userId are required' },
         { status: 400 }
       );
     }
@@ -19,18 +19,12 @@ export async function POST(request: Request) {
     });
 
     if (!app || app.clientSecret !== client_secret) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const user = await db.user.findUnique({ where: { id: userId } });
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     const updateData: any = {};
@@ -38,10 +32,7 @@ export async function POST(request: Request) {
     if (image !== undefined) updateData.image = image;
 
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json(
-        { error: "no_valid_fields_provided" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'no_valid_fields_provided' }, { status: 400 });
     }
 
     const updatedUser = await db.$transaction(async (tx) => {
@@ -52,7 +43,7 @@ export async function POST(request: Request) {
 
       if (name !== undefined && name !== user.name) {
         await tx.userEvent.create({
-          data: createEventPayload(user.id, "USER_NAME_CHANGED", {
+          data: createEventPayload(user.id, 'USER_NAME_CHANGED', {
             oldName: user.name,
             newName: name,
           }),
@@ -61,7 +52,7 @@ export async function POST(request: Request) {
 
       if (image !== undefined && image !== user.image) {
         await tx.userEvent.create({
-          data: createEventPayload(user.id, "USER_IMAGE_CHANGED", {
+          data: createEventPayload(user.id, 'USER_IMAGE_CHANGED', {
             oldImage: user.image,
             newImage: image,
           }),
@@ -69,7 +60,7 @@ export async function POST(request: Request) {
       }
 
       await tx.userEvent.create({
-        data: createEventPayload(user.id, "USER_UPDATED", updateData),
+        data: createEventPayload(user.id, 'USER_UPDATED', updateData),
       });
 
       return u;
@@ -77,10 +68,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, user: updatedUser });
   } catch (error) {
-    console.error("sync-profile error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('sync-profile error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
