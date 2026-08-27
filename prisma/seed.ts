@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { defs, genericFaq } from '../src/lib/site-content';
-import { pageOverrides } from '../src/lib/page-blocks';
-import { products } from '../src/lib/products';
+import { defs, genericFaq } from '@/lib/site-content';
+import { pageOverrides } from '@/lib/page-blocks';
+import { products } from '@/lib/products';
 
 const prisma = new PrismaClient();
 
