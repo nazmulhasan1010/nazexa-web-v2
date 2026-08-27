@@ -34,4 +34,3 @@ dist-ssr
 *.sw?
 
 /src/generated/prisma
-.env
