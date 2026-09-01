@@ -176,6 +176,23 @@ export async function GET(request: NextRequest) {
         }
       }
       redirectUrl = `${dbBaseUrl.replace(/\/$/, '')}${ssoPath}`;
+    } else if (authPerformFrom === 'nazexa-socket-platform') {
+      const socketBaseUrl = process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000';
+      let ssoPath = '/api/auth/sso';
+
+      const stateParam = url.searchParams.get('state');
+      if (stateParam) {
+        try {
+          const decodedState = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
+          if (decodedState.callback_url) {
+            const parsed = new URL(decodedState.callback_url);
+            ssoPath = parsed.pathname + parsed.search;
+          }
+        } catch (e) {
+          // ignore invalid state
+        }
+      }
+      redirectUrl = `${socketBaseUrl.replace(/\/$/, '')}${ssoPath}`;
     } else {
       // Enforce Email Verification and Password Setup flows
       if (!user.emailVerified) {

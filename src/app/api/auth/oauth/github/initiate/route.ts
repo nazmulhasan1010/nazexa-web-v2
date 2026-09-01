@@ -69,9 +69,9 @@ export async function GET(request: NextRequest) {
 
   const response = NextResponse.redirect(authUrl);
 
-  if (authPerformFrom === 'nazexa-db') {
+  if (authPerformFrom) {
     const cookieStore = await cookies();
-    cookieStore.set('auth_perform_from', 'nazexa-db', {
+    cookieStore.set('auth_perform_from', authPerformFrom, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
