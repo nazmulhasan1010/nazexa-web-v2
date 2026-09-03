@@ -84,9 +84,9 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now()) @updatedAt
 
-  sessions       Session[]
-  accounts       Account[]
-  authorizations Authorization[]
+  sessions               Session[]
+  accounts               Account[]
+  authorizations         Authorization[]
   emailVerificationCodes EmailVerificationCode[]
 
   @@map("users")
@@ -113,10 +113,10 @@ model Account {
 }
 
 model Session {
-  id           String   @id
-  userId       String
-  expiresAt    DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
@@ -134,11 +134,11 @@ model EmailVerificationCode {
   id        String   @id @default(cuid())
   userId    String
   email     String
-  code      String   /// 6-digit numeric code (stored as bcrypt hash)
+  code      String /// 6-digit numeric code (stored as bcrypt hash)
   expiresAt DateTime
   createdAt DateTime @default(now())
-  
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([email])
@@ -211,4 +211,24 @@ model ContactSettings {
   address  String
 
   @@map("contact_settings")
+}
+
+model aiproviderconfig {
+  id             String  @id @default("global")
+  activeProvider String // "openai" | "google"
+  googleApiKey   String? @db.Text
+  googleModel    String?
+
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model aiagent {
+  id        String   @id @default(cuid())
+  name      String
+  baseUrl   String?
+  model     String
+  apiKey    String   @db.Text
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }

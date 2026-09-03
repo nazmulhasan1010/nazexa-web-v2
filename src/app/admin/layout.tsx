@@ -13,6 +13,7 @@ import {
   Library,
   MessageSquare,
   PhoneCall,
+  Bot,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -29,6 +30,7 @@ const nav = [
   { to: '/admin/seo', label: 'SEO', icon: Search },
   { to: '/admin/messages', label: 'Messages', icon: MessageSquare },
   { to: '/admin/contact-settings', label: 'Contact Config', icon: PhoneCall },
+  { to: '/admin/ai-management', label: 'AI Management', icon: Bot },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
