@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth';
 import { createEventPayload } from '@/lib/events';
 
 export async function GET() {
-  const user = await getSession();
+  const user = await getSession({ requiredScope: 'profile' });
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -22,7 +22,7 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
-  const user = await getSession();
+  const user = await getSession({ requiredScope: 'profile' });
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

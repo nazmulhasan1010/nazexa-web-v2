@@ -1,13 +1,41 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { db } from '@/lib/db';
-import { getSession, issueApplicationToken } from '@/lib/auth';
+import { issueApplicationToken } from '@/lib/auth';
+import { jwtVerify } from 'jose';
+
+const JWT_SECRET =
+  process.env.JWT_SECRET || 'fallback-secret-for-development-only-do-not-use-in-prod';
+const encodedKey = new TextEncoder().encode(JWT_SECRET);
+
+/**
+ * Resolve the central user from either:
+ * - Cookie: nazexa_session (browser / forwarded Cookie header)
+ * - Body: session_token / handoff (cross-origin SSO handoff)
+ */
+async function resolveUserFromSessionToken(sessionToken: string | undefined | null) {
+  if (!sessionToken) return null;
+  try {
+    const { payload } = await jwtVerify(sessionToken, encodedKey);
+    if (!payload.userId || !payload.sessionId) return null;
+
+    const session = await db.session.findUnique({
+      where: { id: payload.sessionId as string },
+      include: { user: true },
+    });
+
+    if (!session || session.expiresAt < new Date()) return null;
+    return session.user;
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = await request.json().catch(() => ({}));
     const { client_id, client_secret, grant_type } = body;
 
-    // Validate Application Client
     const app = await db.application.findUnique({
       where: { clientId: client_id },
     });
@@ -17,7 +45,14 @@ export async function POST(request: Request) {
     }
 
     if (grant_type === 'session_exchange') {
-      const user = await getSession();
+      const cookieStore = await cookies();
+      const fromCookie = cookieStore.get('nazexa_session')?.value;
+      const fromBody =
+        (typeof body.session_token === 'string' && body.session_token) ||
+        (typeof body.handoff === 'string' && body.handoff) ||
+        null;
+
+      const user = await resolveUserFromSessionToken(fromBody || fromCookie);
       if (!user) {
         return NextResponse.json({ error: 'no_active_session' }, { status: 401 });
       }
@@ -28,7 +63,6 @@ export async function POST(request: Request) {
 
       const scopes = 'profile email';
 
-      // Record authorization grant
       await db.authorization.upsert({
         where: {
           userId_applicationId: { userId: user.id, applicationId: app.id },
@@ -49,6 +83,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ error: 'unsupported_grant_type' }, { status: 400 });
   } catch (error) {
+    console.error('[oauth/token]', error);
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }
 }

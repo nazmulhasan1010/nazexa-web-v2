@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import { defs, genericFaq } from '@/lib/site-content';
 import { pageOverrides } from '@/lib/page-blocks';
 import { products } from '@/lib/products';
@@ -219,21 +220,148 @@ async function main() {
     },
   });
 
-  // 5. Seed Applications for SSO
+  // 5. Seed Applications for SSO + Central Payment
+  await prisma.application.upsert({
+    where: { clientId: 'nazexa-db' },
+    create: {
+      clientId: 'nazexa-db',
+      clientSecret: process.env.NAZEXA_DB_CLIENT_SECRET || 'secret-db-design-123',
+      name: 'Nazexa Database Platform',
+      status: 'active',
+      redirectUris: 'http://localhost:8000/api/auth/sso',
+      allowedOrigins: 'http://localhost:8000',
+      paymentWebhookUrl: 'http://localhost:8000/api/webhooks/payments',
+    },
+    update: {
+      name: 'Nazexa Database Platform',
+      status: 'active',
+      redirectUris: 'http://localhost:8000/api/auth/sso',
+      allowedOrigins: 'http://localhost:8000',
+      paymentWebhookUrl: 'http://localhost:8000/api/webhooks/payments',
+    },
+  });
+
+  // Keep legacy client id in sync if it already exists in older installs
   await prisma.application.upsert({
     where: { clientId: 'nazexa-db-design' },
     create: {
       clientId: 'nazexa-db-design',
-      clientSecret: 'secret-db-design-123',
-      name: 'Nazexa DB Design',
-      redirectUris: 'http://localhost:3001/api/auth/sso/callback',
-      allowedOrigins: 'http://localhost:3001',
+      clientSecret: process.env.NAZEXA_DB_CLIENT_SECRET || 'secret-db-design-123',
+      name: 'Nazexa DB Design (legacy)',
+      status: 'active',
+      redirectUris: 'http://localhost:8000/api/auth/sso',
+      allowedOrigins: 'http://localhost:8000',
+      paymentWebhookUrl: 'http://localhost:8000/api/webhooks/payments',
     },
     update: {
-      clientSecret: 'secret-db-design-123',
-      redirectUris: 'http://localhost:3001/api/auth/sso/callback',
+      status: 'active',
+      redirectUris: 'http://localhost:8000/api/auth/sso',
+      allowedOrigins: 'http://localhost:8000',
+      paymentWebhookUrl: 'http://localhost:8000/api/webhooks/payments',
     },
   });
+
+  // 6. Seed AdminUser from environment variables
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@nazexa.com';
+  const adminPassword = process.env.ADMIN_PASSWORD || '15697908nazexa';
+  const adminName = process.env.ADMIN_NAME || 'Nazexa';
+
+  const existingAdmin = await prisma.adminUser.findUnique({ where: { email: adminEmail } });
+  if (!existingAdmin) {
+    const salt = await bcrypt.genSalt(12);
+    const password_hash = await bcrypt.hash(adminPassword, salt);
+    await prisma.adminUser.create({
+      data: {
+        email: adminEmail,
+        name: adminName,
+        password_hash,
+        role: 'super_admin',
+        status: 'active',
+      },
+    });
+    console.log(`Seeded admin user: ${adminEmail}`);
+  } else {
+    // Optionally update the password if it's explicitly provided and already exists
+    const salt = await bcrypt.genSalt(12);
+    const password_hash = await bcrypt.hash(adminPassword, salt);
+    await prisma.adminUser.update({
+      where: { email: adminEmail },
+      data: {
+        password_hash,
+        name: adminName,
+      }
+    });
+    console.log(`Admin user ${adminEmail} updated with new password.`);
+  }
+
+  // Payment product plans (authoritative pricing for central payment)
+  const plans = [
+    { productCode: 'nazexa-db', planCode: 'starter', planName: 'Starter', currency: 'USD', amount: 9, interval: 'monthly' },
+    { productCode: 'nazexa-db', planCode: 'starter', planName: 'Starter', currency: 'BDT', amount: 999, interval: 'monthly' },
+    { productCode: 'nazexa-db', planCode: 'pro', planName: 'Pro', currency: 'USD', amount: 19, interval: 'monthly' },
+    { productCode: 'nazexa-db', planCode: 'pro', planName: 'Pro', currency: 'BDT', amount: 1999, interval: 'monthly' },
+    { productCode: 'nazexa-db', planCode: 'business', planName: 'Business', currency: 'USD', amount: 49, interval: 'monthly' },
+    { productCode: 'nazexa-db', planCode: 'business', planName: 'Business', currency: 'BDT', amount: 4999, interval: 'monthly' },
+    { productCode: 'nazexa-db', planCode: 'team', planName: 'Team', currency: 'USD', amount: 99, interval: 'monthly' },
+    { productCode: 'nazexa-db', planCode: 'team', planName: 'Team', currency: 'BDT', amount: 9999, interval: 'monthly' },
+  ];
+  for (const plan of plans) {
+    await prisma.paymentProductPlan.upsert({
+      where: {
+        productCode_planCode_currency: {
+          productCode: plan.productCode,
+          planCode: plan.planCode,
+          currency: plan.currency,
+        },
+      },
+      create: { ...plan, isActive: true },
+      update: { planName: plan.planName, amount: plan.amount, interval: plan.interval, isActive: true },
+    });
+  }
+  console.log(`Seeded ${plans.length} payment product plans`);
+
+  // Enable bank_transfer for local/sandbox purchases (manual proof + sandbox auto-approve)
+  await prisma.paymentGateway.upsert({
+    where: { code: 'bank_transfer' },
+    create: {
+      code: 'bank_transfer',
+      displayName: 'Bank Transfer',
+      type: 'manual',
+      isEnabled: true,
+      environment: 'sandbox',
+      sortOrder: 10,
+      priority: 10,
+      supportsRefund: false,
+      supportsWebhook: false,
+      supportsManualReview: true,
+      supportedCurrencies: 'USD,BDT',
+      allowedProducts: 'nazexa-db',
+      instructions:
+        'Transfer the exact amount, then submit your slip/reference. In sandbox, proof is auto-approved.',
+      config: {
+        bankName: 'Nazexa Sandbox Bank',
+        accountName: 'Nazexa Payments',
+        accountNumber: '1234567890',
+        branch: 'Local Dev',
+      },
+    },
+    update: {
+      displayName: 'Bank Transfer',
+      isEnabled: true,
+      environment: 'sandbox',
+      supportedCurrencies: 'USD,BDT',
+      allowedProducts: 'nazexa-db',
+      instructions:
+        'Transfer the exact amount, then submit your slip/reference. In sandbox, proof is auto-approved.',
+      config: {
+        bankName: 'Nazexa Sandbox Bank',
+        accountName: 'Nazexa Payments',
+        accountNumber: '1234567890',
+        branch: 'Local Dev',
+      },
+    },
+  });
+  console.log('Seeded bank_transfer gateway (enabled, sandbox)');
 
   console.log('Database seeded successfully!');
 }
@@ -246,3 +374,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+

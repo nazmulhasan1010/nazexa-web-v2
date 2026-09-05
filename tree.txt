@@ -1,0 +1,509 @@
+Folder PATH listing for volume Documents
+Volume serial number is 000001D6 5690:AC7B
+P:\PROJECTS\NAZEXA-WEB\SRC
+|   middleware.ts
+|   styles.css
+|   
++---app
+|   |   layout.tsx
+|   |   page.tsx
+|   |   Providers.tsx
+|   |   robots.ts
+|   |   sitemap.ts
+|   |   
+|   +---about
+|   |       page.tsx
+|   |       
+|   +---admin
+|   |   |   layout.tsx
+|   |   |   page.tsx
+|   |   |   
+|   |   +---ai-management
+|   |   |       page.tsx
+|   |   |       
+|   |   +---builder
+|   |   |       page.tsx
+|   |   |       
+|   |   +---contact-settings
+|   |   |       page.tsx
+|   |   |       
+|   |   +---content
+|   |   |       page.tsx
+|   |   |       
+|   |   +---messages
+|   |   |       page.tsx
+|   |   |       
+|   |   +---pages
+|   |   |       page.tsx
+|   |   |       
+|   |   +---payments
+|   |   |   |   page.tsx
+|   |   |   |   
+|   |   |   \---gateways
+|   |   +---seo
+|   |   |       page.tsx
+|   |   |       
+|   |   +---team
+|   |   |       actions.ts
+|   |   |       page.tsx
+|   |   |       
+|   |   \---theme
+|   |           page.tsx
+|   |           
+|   +---api
+|   |   +---admin
+|   |   |   +---ai-management
+|   |   |   |   |   route.ts
+|   |   |   |   |   
+|   |   |   |   \---agent
+|   |   |   |       \---[id]
+|   |   |   |               route.ts
+|   |   |   |               
+|   |   |   \---payments
+|   |   |       +---contact
+|   |   |       |       route.ts
+|   |   |       |       
+|   |   |       +---gateways
+|   |   |       |       route.ts
+|   |   |       |       
+|   |   |       \---requests
+|   |   |               route.ts
+|   |   |               
+|   |   +---auth
+|   |   |   +---callback
+|   |   |   |   +---github
+|   |   |   |   |       route.ts
+|   |   |   |   |       
+|   |   |   |   \---google
+|   |   |   |           route.ts
+|   |   |   |           
+|   |   |   +---github
+|   |   |   |   \---login
+|   |   |   |           route.ts
+|   |   |   |           
+|   |   |   +---google
+|   |   |   |   \---login
+|   |   |   |           route.ts
+|   |   |   |           
+|   |   |   +---internal
+|   |   |   |   +---confirm-verification
+|   |   |   |   |       route.ts
+|   |   |   |   |       
+|   |   |   |   +---get-profile
+|   |   |   |   |       route.ts
+|   |   |   |   |       
+|   |   |   |   +---send-verification
+|   |   |   |   |       route.ts
+|   |   |   |   |       
+|   |   |   |   +---sync-password
+|   |   |   |   |       route.ts
+|   |   |   |   |       
+|   |   |   |   +---sync-profile
+|   |   |   |   |       route.ts
+|   |   |   |   |       
+|   |   |   |   +---sync-verification
+|   |   |   |   |       route.ts
+|   |   |   |   |       
+|   |   |   |   \---verify-status
+|   |   |   |           route.ts
+|   |   |   |           
+|   |   |   +---login
+|   |   |   |       route.ts
+|   |   |   |       
+|   |   |   +---logout
+|   |   |   |       route.ts
+|   |   |   |       
+|   |   |   +---oauth
+|   |   |   |   +---github
+|   |   |   |   |   \---initiate
+|   |   |   |   |           route.ts
+|   |   |   |   |           
+|   |   |   |   +---google
+|   |   |   |   |   \---initiate
+|   |   |   |   |           route.ts
+|   |   |   |   |           
+|   |   |   |   \---token
+|   |   |   |           route.ts
+|   |   |   |           
+|   |   |   +---register
+|   |   |   |       route.ts
+|   |   |   |       
+|   |   |   +---verify
+|   |   |   |   +---confirm
+|   |   |   |   |       route.ts
+|   |   |   |   |       
+|   |   |   |   \---send
+|   |   |   |           route.ts
+|   |   |   |           
+|   |   |   \---verify-email
+|   |   |           route.ts
+|   |   |           
+|   |   +---contact
+|   |   |       route.ts
+|   |   |       
+|   |   +---contact-settings
+|   |   |       route.ts
+|   |   |       
+|   |   +---geo
+|   |   |   \---currency
+|   |   |           route.ts
+|   |   |           
+|   |   +---internal
+|   |   |   +---ai
+|   |   |   |   \---request
+|   |   |   |           route.ts
+|   |   |   |           
+|   |   |   \---ai-config
+|   |   |           route.ts
+|   |   |           
+|   |   +---messages
+|   |   |       route.ts
+|   |   |       
+|   |   +---payments
+|   |   |   +---create
+|   |   |   |       route.ts
+|   |   |   |       
+|   |   |   \---submit
+|   |   |           route.ts
+|   |   |           
+|   |   +---products
+|   |   |   \---nazexa-db
+|   |   |       +---overview
+|   |   |       |       route.ts
+|   |   |       |       
+|   |   |       +---purchase
+|   |   |       |       route.ts
+|   |   |       |       
+|   |   |       \---purchases
+|   |   |               route.ts
+|   |   |               
+|   |   +---upload
+|   |   |       route.ts
+|   |   |       
+|   |   \---users
+|   |       \---me
+|   |           |   route.ts
+|   |           |   
+|   |           \---password
+|   |               |   route.ts
+|   |               |   
+|   |               \---set
+|   |                       route.ts
+|   |                       
+|   +---api-documentation
+|   |       page.tsx
+|   |       
+|   +---auth
+|   |       page.tsx
+|   |       
+|   +---blog
+|   |       page.tsx
+|   |       
+|   +---careers
+|   |       page.tsx
+|   |       
+|   +---case-studies
+|   |       page.tsx
+|   |       
+|   +---changelog
+|   |       page.tsx
+|   |       
+|   +---checkout
+|   |   \---[id]
+|   |           CheckoutClient.tsx
+|   |           page.tsx
+|   |           
+|   +---community
+|   |       page.tsx
+|   |       
+|   +---contact
+|   |       page.tsx
+|   |       
+|   +---cookie-policy
+|   |       page.tsx
+|   |       
+|   +---customers
+|   |       page.tsx
+|   |       
+|   +---db-design
+|   |       page.tsx
+|   |       
+|   +---dev-tools
+|   |       page.tsx
+|   |       
+|   +---developer-blog
+|   |       page.tsx
+|   |       
+|   +---documentation
+|   |       page.tsx
+|   |       
+|   +---download-center
+|   |       page.tsx
+|   |       
+|   +---events
+|   |       page.tsx
+|   |       
+|   +---faq
+|   |       page.tsx
+|   |       
+|   +---feature-requests
+|   |       page.tsx
+|   |       
+|   +---industries
+|   |       page.tsx
+|   |       
+|   +---integrations
+|   |       page.tsx
+|   |       
+|   +---learning-center
+|   |       page.tsx
+|   |       
+|   +---login
+|   |       page.tsx
+|   |       
+|   +---news
+|   |       page.tsx
+|   |       
+|   +---partners
+|   |       page.tsx
+|   |       
+|   +---portfolio
+|   |       page.tsx
+|   |       
+|   +---press-kit
+|   |       page.tsx
+|   |       
+|   +---pricing
+|   |       page.tsx
+|   |       
+|   +---privacy
+|   |       page.tsx
+|   |       
+|   +---product-details
+|   |       page.tsx
+|   |       
+|   +---products
+|   |       page.tsx
+|   |       
+|   +---profile
+|   |       page.tsx
+|   |       
+|   +---register
+|   |       page.tsx
+|   |       
+|   +---release-notes
+|   |       page.tsx
+|   |       
+|   +---resources
+|   |       page.tsx
+|   |       
+|   +---roadmap
+|   |       page.tsx
+|   |       
+|   +---security
+|   |       page.tsx
+|   |       
+|   +---service-details
+|   |       page.tsx
+|   |       
+|   +---services
+|   |   |   page.tsx
+|   |   |   
+|   |   \---[slug]
+|   |           page.tsx
+|   |           
+|   +---set-password
+|   |       page.tsx
+|   |       
+|   +---solutions
+|   |       page.tsx
+|   |       
+|   +---status
+|   |       page.tsx
+|   |       
+|   +---support
+|   |       page.tsx
+|   |       
+|   +---team
+|   |       page.tsx
+|   |       
+|   +---terms
+|   |       page.tsx
+|   |       
+|   +---tutorials
+|   |       page.tsx
+|   |       
+|   +---verify
+|   |       page.tsx
+|   |       
+|   \---[slug]
+|       \---pricing
+|               page.tsx
+|               
++---components
+|   |   JsonLd.tsx
+|   |   
+|   +---admin
+|   |   |   AdminPagination.tsx
+|   |   |   
+|   |   \---payments
+|   |           GatewayCard.tsx
+|   |           PaymentRequestsTable.tsx
+|   |           
+|   +---backgrounds
+|   |       AnimatedBackground.tsx
+|   |       
+|   +---forms
+|   |       ContactForm.tsx
+|   |       
+|   +---home
+|   |       CompanySections.tsx
+|   |       HomeSections.tsx
+|   |       
+|   +---motion
+|   |       Reveal.tsx
+|   |       
+|   +---pricing
+|   |       CurrencySwitcher.tsx
+|   |       PricingTiers.tsx
+|   |       
+|   +---products
+|   |       ProductDetailPage.tsx
+|   |       ProductsIndex.tsx
+|   |       ProductVisuals.tsx
+|   |       
+|   +---profile
+|   |       ProfileDashboard.tsx
+|   |       ProfileForm.tsx
+|   |       SecurityForm.tsx
+|   |       UsageAndBilling.tsx
+|   |       
+|   +---services
+|   |       ServiceDetail.tsx
+|   |       ServicesIndex.tsx
+|   |       ServiceVisuals.tsx
+|   |       
+|   +---site
+|   |       PageShell.tsx
+|   |       SiteFooter.tsx
+|   |       SiteHeader.tsx
+|   |       ThemeSync.tsx
+|   |       
+|   \---ui
+|           accordion.tsx
+|           alert-dialog.tsx
+|           alert.tsx
+|           aspect-ratio.tsx
+|           avatar.tsx
+|           badge.tsx
+|           breadcrumb.tsx
+|           button.tsx
+|           calendar.tsx
+|           card.tsx
+|           carousel.tsx
+|           chart.tsx
+|           checkbox.tsx
+|           collapsible.tsx
+|           command.tsx
+|           context-menu.tsx
+|           dialog.tsx
+|           drawer.tsx
+|           dropdown-menu.tsx
+|           form.tsx
+|           hover-card.tsx
+|           icon-picker.tsx
+|           image-uploader.tsx
+|           input-otp.tsx
+|           input.tsx
+|           label.tsx
+|           menubar.tsx
+|           navigation-menu.tsx
+|           pagination.tsx
+|           popover.tsx
+|           progress.tsx
+|           radio-group.tsx
+|           resizable.tsx
+|           rich-text-editor.tsx
+|           scroll-area.tsx
+|           select.tsx
+|           separator.tsx
+|           sheet.tsx
+|           sidebar.tsx
+|           skeleton.tsx
+|           slider.tsx
+|           sonner.tsx
+|           switch.tsx
+|           table.tsx
+|           tabs.tsx
+|           textarea.tsx
+|           toggle-group.tsx
+|           toggle.tsx
+|           tooltip.tsx
+|           
++---hooks
+|       use-currency.ts
+|       use-mobile.tsx
+|       useAdminAuth.tsx
+|       useAuth.tsx
+|       
++---integrations
+\---lib
+    |   admin-auth.server.ts
+    |   admin-auth.ts
+    |   ai-config.ts
+    |   auth.server.ts
+    |   auth.ts
+    |   cms.ts
+    |   constants.ts
+    |   content-schema.ts
+    |   currency.ts
+    |   db.ts
+    |   email.ts
+    |   error-capture.ts
+    |   error-page.ts
+    |   events.ts
+    |   geo-server.ts
+    |   icons.ts
+    |   lovable-error-reporting.ts
+    |   page-blocks.ts
+    |   products.ts
+    |   queries.ts
+    |   seo.ts
+    |   services.ts
+    |   site-content.ts
+    |   utils.ts
+    |   verification-code.ts
+    |   verification-email.ts
+    |   
+    +---admin
+    |       api.ts
+    |       
+    +---ai
+    |       queue.ts
+    |       
+    +---generated
+    |   \---prisma
+    |       |   browser.ts
+    |       |   client.ts
+    |       |   commonInputTypes.ts
+    |       |   enums.ts
+    |       |   models.ts
+    |       |   
+    |       +---internal
+    |       |       class.ts
+    |       |       prismaNamespace.ts
+    |       |       prismaNamespaceBrowser.ts
+    |       |       
+    |       \---models
+    |               ContentItem.ts
+    |               HomeSection.ts
+    |               Page.ts
+    |               Session.ts
+    |               SiteSettings.ts
+    |               User.ts
+    |               
+    \---payments
+            client.ts
+            registry.ts
+            server.ts
+            

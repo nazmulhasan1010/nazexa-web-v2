@@ -1,8 +1,13 @@
+import { rateLimit } from '@/lib/rate-limit';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { verifyPassword, createSession } from '@/lib/auth';
 
 export async function POST(request: Request) {
+  const ip = request.headers.get('x-forwarded-for') || 'unknown';
+  if (!rateLimit(ip + '_login', 10, 60 * 1000)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
   try {
     const { email, password } = await request.json();
     if (!email || !password) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { User, Shield, Key, Bell, CreditCard } from 'lucide-react';
+import { User, Shield, Bell, CreditCard } from 'lucide-react';
 import { ProfileForm } from '@/components/profile/ProfileForm';
 import { SecurityForm } from '@/components/profile/SecurityForm';
 import { UsageAndBilling } from '@/components/profile/UsageAndBilling';
@@ -9,7 +9,7 @@ import { Section } from '@/components/site/PageShell';
 
 export function ProfileDashboard() {
   const [activeTab, setActiveTab] = useState<
-    'profile' | 'security' | 'apikeys' | 'notifications' | 'billing'
+    'profile' | 'security' | 'notifications' | 'billing'
   >('profile');
 
   return (
@@ -45,17 +45,7 @@ export function ProfileDashboard() {
                 <Shield className="h-4 w-4" />
                 Security
               </button>
-              <button
-                onClick={() => setActiveTab('apikeys')}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  activeTab === 'apikeys'
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
-              >
-                <Key className="h-4 w-4" />
-                API Keys
-              </button>
+
               <button
                 onClick={() => setActiveTab('notifications')}
                 className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
@@ -87,56 +77,9 @@ export function ProfileDashboard() {
           <div className="surface-card border-border/50 overflow-hidden rounded-2xl border shadow-sm backdrop-blur-xl">
             {activeTab === 'profile' && <ProfileForm />}
 
-            {activeTab === 'security' && (
-              <div className="p-8">
-                <div className="from-primary/30 via-primary/10 relative -mx-8 -mt-8 mb-8 h-32 w-full bg-linear-to-r to-transparent">
-                  <div className="to-background/80 absolute inset-0 bg-linear-to-b from-transparent" />
-                  <div className="absolute bottom-6 left-8 flex items-center gap-4">
-                    <div className="bg-primary/10 border-primary/20 flex h-12 w-12 items-center justify-center rounded-xl border backdrop-blur-md">
-                      <Shield className="text-primary h-6 w-6" />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold tracking-tight">Security</h2>
-                      <p className="text-muted-foreground text-sm">
-                        Manage passwords and authentication methods
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            {activeTab === 'security' && <SecurityForm />}
 
-                <div className="p-8">
-                  <SecurityForm />
-                </div>
-              </div>
-            )}
 
-            {activeTab === 'apikeys' && (
-              <div className="p-8">
-                <div className="from-primary/30 via-primary/10 relative -mx-8 -mt-8 mb-8 h-32 w-full bg-linear-to-r to-transparent">
-                  <div className="to-background/80 absolute inset-0 bg-linear-to-b from-transparent" />
-                  <div className="absolute bottom-6 left-8 flex items-center gap-4">
-                    <div className="bg-primary/10 border-primary/20 flex h-12 w-12 items-center justify-center rounded-xl border backdrop-blur-md">
-                      <Key className="text-primary h-6 w-6" />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold tracking-tight">API Keys</h2>
-                      <p className="text-muted-foreground text-sm">
-                        Manage your developer access tokens
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <Key className="text-muted-foreground mb-4 h-12 w-12 opacity-50" />
-                  <h3 className="text-lg font-medium">Developer API Keys</h3>
-                  <p className="text-muted-foreground mt-2 max-w-sm text-sm">
-                    API Key generation module is coming soon. You'll be able to issue tokens for
-                    programmatic access to the Nazexa API.
-                  </p>
-                </div>
-              </div>
-            )}
 
             {activeTab === 'notifications' && (
               <div className="p-8">

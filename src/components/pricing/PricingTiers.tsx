@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Reveal } from '@/components/motion/Reveal';
 import { useCurrency } from '@/hooks/use-currency';
-import { formatPrice } from '@/lib/currency';
+import { formatPrice, formatMoney } from '@/lib/currency';
 import { CurrencySwitcher } from './CurrencySwitcher';
 
 export interface PricingTierData {
   id?: string;
   name: string;
   price: string | number;
+  prices?: Record<string, number>;
   cadence?: string;
   body: string;
   features: string[];
@@ -36,7 +37,7 @@ export function PricingTiers({ tiers }: { tiers: PricingTierData[] }) {
       const res = await fetch('/api/products/nazexa-db/purchase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planId }),
+        body: JSON.stringify({ planId, currency }),
       });
 
       const data = await res.json();
@@ -54,8 +55,13 @@ export function PricingTiers({ tiers }: { tiers: PricingTierData[] }) {
       }
 
       if (data.data?.status === 'checkout_required') {
-        const dbUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
-        window.location.href = `${dbUrl}${data.data.checkoutUrl}`;
+        const checkoutUrl = String(data.data.checkoutUrl || '');
+        if (/^https?:\/\//i.test(checkoutUrl)) {
+          window.location.href = checkoutUrl;
+        } else {
+          const dbUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
+          window.location.href = `${dbUrl}${checkoutUrl.startsWith('/') ? '' : '/'}${checkoutUrl}`;
+        }
       } else if (data.data?.status === 'active') {
         const dbUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
         window.location.href = `${dbUrl}/account`;
@@ -93,7 +99,7 @@ export function PricingTiers({ tiers }: { tiers: PricingTierData[] }) {
               </div>
               <div className="mt-4 flex items-baseline gap-2">
                 <span className="text-gradient font-display text-4xl font-semibold">
-                  {typeof tier.price === 'number' ? formatPrice(tier.price, currency) : tier.price}
+                  {typeof tier.price === 'number' ? (tier.prices?.[currency] !== undefined ? formatMoney(tier.prices[currency], currency) : formatPrice(tier.price, currency)) : tier.price}
                 </span>
                 {tier.cadence ? (
                   <span className="text-muted-foreground text-xs">/{tier.cadence}</span>

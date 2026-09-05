@@ -2,11 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { db } from '@/lib/db';
 import { createSessionToken } from '@/lib/auth';
+import { appendSsoHandoff, isExternalProductRedirect } from '@/lib/sso-handoff';
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   const error = url.searchParams.get('error');
+  const stateParam = url.searchParams.get('state');
   const host = request.headers.get('host') || 'localhost:3000';
   const protocol = host.includes('localhost') ? 'http' : 'https';
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
@@ -18,6 +20,28 @@ export async function GET(request: NextRequest) {
   if (!code) {
     return NextResponse.redirect(`${baseUrl}/login?error=no_code`);
   }
+
+  const cookieStore = await cookies();
+  const storedNonce = cookieStore.get('oauth_state')?.value;
+
+  if (!storedNonce || !stateParam) {
+    return NextResponse.redirect(`${baseUrl}/login?error=invalid_state`);
+  }
+
+  let decodedState: { callback_url?: string; nonce?: string; auth_perform_from?: string } = {};
+  try {
+    decodedState = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
+  } catch (e) {
+    return NextResponse.redirect(`${baseUrl}/login?error=invalid_state`);
+  }
+
+  if (decodedState.nonce !== storedNonce) {
+    return NextResponse.redirect(`${baseUrl}/login?error=invalid_state`);
+  }
+
+  // State is valid, clear the cookie
+  const isProd = process.env.NODE_ENV === 'production';
+  cookieStore.delete('oauth_state');
 
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
@@ -57,7 +81,6 @@ export async function GET(request: NextRequest) {
 
     let email = profileData.email;
 
-    // If email is null (private), fetch from user/emails
     if (!email) {
       const emailRes = await fetch('https://api.github.com/user/emails', {
         headers: {
@@ -77,7 +100,6 @@ export async function GET(request: NextRequest) {
     let user = await db.user.findUnique({ where: { email } });
 
     await db.$transaction(async (tx) => {
-      // Create user if not exists
       if (!user) {
         user = await tx.user.create({
           data: {
@@ -100,7 +122,6 @@ export async function GET(request: NextRequest) {
           },
         });
       } else {
-        // Update user
         const updateData: any = {
           lastLoginAt: new Date(),
           lastLoginIp: ip,
@@ -125,7 +146,6 @@ export async function GET(request: NextRequest) {
         },
       });
 
-      // Link account
       const account = await tx.account.findUnique({
         where: {
           provider_providerAccountId: {
@@ -152,79 +172,49 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${baseUrl}/login?error=account_disabled`);
     }
 
-    // Create session token and set cookie on the redirect response
     const { token, expiresAt } = await createSessionToken(user.id);
 
     let redirectUrl = `${baseUrl}/`;
 
-    const authPerformFrom = request.cookies.get('auth_perform_from')?.value;
+    const authPerformFrom =
+      decodedState.auth_perform_from || request.cookies.get('auth_perform_from')?.value || '';
 
-    if (authPerformFrom === 'nazexa-db') {
-      const dbBaseUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
-      let ssoPath = '/api/auth/sso';
-
-      const stateParam = url.searchParams.get('state');
-      if (stateParam) {
-        try {
-          const decodedState = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
-          if (decodedState.callback_url) {
-            const parsed = new URL(decodedState.callback_url);
-            ssoPath = parsed.pathname + parsed.search;
-          }
-        } catch (e) {
-          // ignore invalid state
+    // Prefer explicit product callback from OAuth state (survives cookie loss)
+    if (decodedState.callback_url) {
+      try {
+        const parsed = new URL(decodedState.callback_url);
+        const allowedOrigins = [
+          baseUrl,
+          process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000',
+          process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000',
+        ].filter(Boolean) as string[];
+        const isValidOrigin = allowedOrigins.some(
+          (origin) => parsed.origin === new URL(origin).origin,
+        );
+        if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && isValidOrigin) {
+          redirectUrl = decodedState.callback_url;
         }
+      } catch {
+        // ignore
       }
-      redirectUrl = `${dbBaseUrl.replace(/\/$/, '')}${ssoPath}`;
+    } else if (authPerformFrom === 'nazexa-db') {
+      redirectUrl = `${(process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000').replace(/\/$/, '')}/api/auth/sso?redirect=${encodeURIComponent('/dashboard')}`;
     } else if (authPerformFrom === 'nazexa-socket-platform') {
-      const socketBaseUrl = process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000';
-      let ssoPath = '/api/auth/sso';
-
-      const stateParam = url.searchParams.get('state');
-      if (stateParam) {
-        try {
-          const decodedState = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
-          if (decodedState.callback_url) {
-            const parsed = new URL(decodedState.callback_url);
-            ssoPath = parsed.pathname + parsed.search;
-          }
-        } catch (e) {
-          // ignore invalid state
-        }
-      }
-      redirectUrl = `${socketBaseUrl.replace(/\/$/, '')}${ssoPath}`;
-    } else {
-      // Enforce Email Verification and Password Setup flows
-      if (!user.emailVerified) {
-        redirectUrl = `${baseUrl}/verify`;
-      } else if (!user.password_hash) {
-        redirectUrl = `${baseUrl}/set-password`;
-      } else {
-        const stateParam = url.searchParams.get('state');
-        if (stateParam) {
-          try {
-            const decodedState = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
-            if (decodedState.callback_url) {
-              const parsed = new URL(decodedState.callback_url);
-              if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-                redirectUrl = decodedState.callback_url;
-              }
-            }
-          } catch (e) {
-            // ignore invalid state
-          }
-        }
-      }
+      redirectUrl = `${(process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000').replace(/\/$/, '')}/api/auth/sso?redirect=${encodeURIComponent('/dashboard')}`;
+    } else if (!user.emailVerified) {
+      redirectUrl = `${baseUrl}/verify`;
+    } else if (!user.password_hash) {
+      redirectUrl = `${baseUrl}/set-password`;
     }
 
-    const response = NextResponse.redirect(redirectUrl);
+    const response = NextResponse.redirect(
+      isExternalProductRedirect(redirectUrl, baseUrl)
+        ? appendSsoHandoff(redirectUrl, token)
+        : redirectUrl,
+    );
 
-    if (request.cookies.get('auth_perform_from')) {
-      const cookieStore = await cookies();
-      cookieStore.delete('auth_perform_from');
-    }
+    response.cookies.delete('auth_perform_from');
 
-    const isProd = process.env.NODE_ENV === 'production';
     const domain = process.env.COOKIE_DOMAIN;
 
     response.cookies.set('nazexa_session', token, {

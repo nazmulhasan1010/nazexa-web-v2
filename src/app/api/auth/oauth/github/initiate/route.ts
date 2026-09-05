@@ -1,23 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import crypto from 'crypto';
 
-/**
- * GitHub OAuth Initiation — with callback_url support
- *
- * GET /api/auth/oauth/github/initiate?callback_url=<url>
- *
- * Used by registered Nazexa products to initiate GitHub OAuth through
- * Nazexa Central Auth. After the user authenticates with GitHub, the
- * nazexa_session cookie is set and the user is redirected to callback_url
- * (typically the product's SSO endpoint).
- *
- * The callback_url is passed through the OAuth `state` parameter so it
- * survives the GitHub redirect roundtrip.
- *
- * SECURITY:
- *  - callback_url is validated to be a safe URL (http/https only)
- *  - state is base64url encoded and decoded in the callback handler
- */
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const rawCallbackUrl = searchParams.get('callback_url');
@@ -32,50 +15,74 @@ export async function GET(request: NextRequest) {
   if (!clientId) {
     return NextResponse.json(
       { error: 'GitHub OAuth not configured in environment' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
-  // Validate callback_url — must be a valid http/https URL
   let callbackUrl = '';
   if (rawCallbackUrl) {
     try {
       const parsed = new URL(rawCallbackUrl);
-      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      const allowedOrigins = [
+        baseUrl,
+        process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000',
+        process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000',
+      ].filter(Boolean) as string[];
+
+      const isValidOrigin = allowedOrigins.some((origin) => {
+        try {
+          return parsed.origin === new URL(origin).origin;
+        } catch {
+          return false;
+        }
+      });
+
+      if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && isValidOrigin) {
         callbackUrl = rawCallbackUrl;
       }
     } catch {
-      // Invalid URL — ignore and use default
+      // ignore
     }
   }
 
-  // Encode callback_url in the OAuth state parameter
-  const state = callbackUrl
-    ? Buffer.from(JSON.stringify({ callback_url: callbackUrl })).toString('base64url')
-    : '';
+  const nonce = crypto.randomBytes(32).toString('hex');
+  const state = Buffer.from(
+    JSON.stringify({
+      callback_url: callbackUrl || undefined,
+      nonce,
+      auth_perform_from: authPerformFrom || undefined,
+    }),
+  ).toString('base64url');
 
-  const scope = 'user:email';
   const authUrlParams = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
-    scope,
+    scope: 'user:email',
+    state,
   });
 
-  if (state) {
-    authUrlParams.set('state', state);
-  }
+  const response = NextResponse.redirect(
+    `https://github.com/login/oauth/authorize?${authUrlParams.toString()}`,
+  );
 
-  const authUrl = `https://github.com/login/oauth/authorize?${authUrlParams.toString()}`;
+  const isProd = process.env.NODE_ENV === 'production';
+  const maxAge = 60 * 15;
 
-  const response = NextResponse.redirect(authUrl);
+  response.cookies.set('oauth_state', nonce, {
+    httpOnly: true,
+    secure: isProd,
+    path: '/',
+    maxAge,
+    sameSite: 'lax',
+  });
 
   if (authPerformFrom) {
-    const cookieStore = await cookies();
-    cookieStore.set('auth_perform_from', authPerformFrom, {
+    response.cookies.set('auth_perform_from', authPerformFrom, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProd,
       path: '/',
-      maxAge: 60 * 15,
+      maxAge,
+      sameSite: 'lax',
     });
   }
 

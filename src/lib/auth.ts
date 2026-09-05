@@ -59,7 +59,7 @@ export async function createSession(userId: string) {
   cookieStore.set('nazexa_session', token, getCookieOptions(expiresAt));
 }
 
-export async function getSession() {
+export async function getSession(options?: { requiredScope?: string }) {
   const headersList = await headers();
   const authHeader = headersList.get('authorization');
   let token: string | undefined = undefined;
@@ -80,6 +80,17 @@ export async function getSession() {
 
     // If it's an Application Token (OAuth SSO)
     if (payload.applicationId && payload.userId) {
+      // Application token verification
+      if (!options?.requiredScope) {
+        // If no required scope is requested, this endpoint does not accept application tokens.
+        return null;
+      }
+      
+      const tokenScopes = (payload.scopes as string || '').split(' ');
+      if (!tokenScopes.includes(options.requiredScope)) {
+        return null;
+      }
+
       const user = await db.user.findUnique({
         where: { id: payload.userId as string },
       });
@@ -99,7 +110,7 @@ export async function getSession() {
     }
 
     return session.user;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
@@ -118,7 +129,7 @@ export async function destroySession() {
           })
           .catch(() => {});
       }
-    } catch (e) {
+    } catch (_e) {
       // Ignore
     }
   }

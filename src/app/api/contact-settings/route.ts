@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { requireAdmin } from '@/lib/admin/require-admin';
 
 export async function GET() {
   try {
@@ -12,11 +12,10 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
-  const user = await getSession();
-
-  // Basic role check - only admins/editors can modify settings
-  if (!user || user.status !== 'active') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // Only admins/editors can modify settings
+  const { error, user } = await requireAdmin();
+  if (error || !user) {
+    return error || NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {

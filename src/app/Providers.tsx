@@ -11,6 +11,8 @@ import { MouseGlow, NoiseOverlay } from '@/components/backgrounds/AnimatedBackgr
 import { Toaster } from '@/components/ui/sonner';
 import type { ContentItem } from '@/lib/cms';
 
+import { AdminAuthProvider } from '@/hooks/useAdminAuth';
+
 export function Providers({
   children,
   products,
@@ -25,13 +27,15 @@ export function Providers({
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ThemeSync />
-        {!bare && <MouseGlow />}
-        <NoiseOverlay />
-        {!bare && <SiteHeader products={products} />}
-        <main className="relative z-10">{children}</main>
-        {!bare && <SiteFooter />}
-        <Toaster />
+        <AdminAuthProvider>
+          <ThemeSync />
+          {!bare && <MouseGlow />}
+          <NoiseOverlay />
+          {!bare && <SiteHeader products={products} />}
+          <main className="relative z-10">{children}</main>
+          {!bare && <SiteFooter />}
+          <Toaster />
+        </AdminAuthProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

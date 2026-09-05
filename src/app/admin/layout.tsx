@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
+  CreditCard,
   Layers,
   FileText,
   Palette,
@@ -14,11 +15,12 @@ import {
   MessageSquare,
   PhoneCall,
   Bot,
+  Users,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { useAuth, useRoles, useSignOut } from '@/hooks/useAuth';
+import { useAdminAuth, useAdminSignOut } from '@/hooks/useAdminAuth';
 import { cn } from '@/lib/utils';
 
 const nav = [
@@ -31,19 +33,30 @@ const nav = [
   { to: '/admin/messages', label: 'Messages', icon: MessageSquare },
   { to: '/admin/contact-settings', label: 'Contact Config', icon: PhoneCall },
   { to: '/admin/ai-management', label: 'AI Management', icon: Bot },
+  { to: '/admin/payments', label: 'Payments', icon: CreditCard },
+  { to: '/admin/team', label: 'Team & Roles', icon: Users },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAdminAuth();
   const router = useRouter();
-  const signOut = useSignOut();
-  const { data: roles } = useRoles();
+  const signOut = useAdminSignOut();
   const pathname = usePathname() || '';
 
   useEffect(() => {
-    if (!loading && !user && !pathname.startsWith('/auth')) {
-      const nextParam = new URLSearchParams({ next: pathname }).toString();
-      router.replace(`/auth?${nextParam}`);
+    if (!loading) {
+      if (!user && !pathname.startsWith('/auth')) {
+        const nextParam = new URLSearchParams({ next: pathname }).toString();
+        router.replace(`/auth?${nextParam}`);
+        return;
+      }
+
+      if (user && !user.permissions.includes('*')) {
+        const allowed = user.permissions.some(p => pathname === p || pathname.startsWith(`${p}/`));
+        if (!allowed && pathname !== '/admin') {
+          router.replace('/admin');
+        }
+      }
     }
   }, [loading, user, router, pathname]);
 
@@ -63,7 +76,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           Nazexa <span className="text-muted-foreground">CMS</span>
         </Link>
         <nav className="mt-8 flex-1 space-y-1">
-          {nav.map((item) => {
+          {nav.filter(item => user.permissions.includes('*') || user.permissions.includes(item.to)).map((item) => {
             const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
             return (
               <Link
@@ -85,7 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="border-border border-t pt-4">
           <p className="text-muted-foreground truncate text-xs">{user.email}</p>
           <p className="text-primary mt-0.5 text-xs">
-            {roles?.length ? roles.join(', ') : 'no role assigned'}
+            {user.role || 'no role assigned'}
           </p>
           <Button
             variant="outline"

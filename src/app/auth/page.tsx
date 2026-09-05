@@ -10,8 +10,8 @@ import { AuroraBackground, GridBackground } from '@/components/backgrounds/Anima
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { login } from '@/lib/auth.server';
-import { useAuth } from '@/hooks/useAuth';
+import { adminLogin as login } from '@/lib/admin-auth.server';
+import { useAdminAuth as useAuth } from '@/hooks/useAdminAuth';
 
 function safeNext(raw: string | null): string {
   if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/admin';
@@ -42,7 +42,7 @@ export default function AuthPage() {
         toast.error(res.error);
         return;
       }
-      await queryClient.invalidateQueries({ queryKey: ['auth-session'] });
+      await queryClient.invalidateQueries({ queryKey: ['admin-auth-session'] });
       const next = safeNext(new URLSearchParams(window.location.search).get('next'));
       router.replace(next);
     } catch (err) {

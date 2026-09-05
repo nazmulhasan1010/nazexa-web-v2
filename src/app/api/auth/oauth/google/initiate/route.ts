@@ -1,22 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 /**
  * Google OAuth Initiation — with callback_url support
  *
- * GET /api/auth/oauth/google/initiate?callback_url=<url>
- *
- * Used by registered Nazexa products to initiate Google OAuth through
- * Nazexa Central Auth. After the user authenticates with Google, the
- * nazexa_session cookie is set and the user is redirected to callback_url
- * (typically the product's SSO endpoint).
- *
- * The callback_url is passed through the OAuth `state` parameter so it
- * survives the Google redirect roundtrip.
- *
- * SECURITY:
- *  - callback_url is validated to be a safe URL (http/https only)
- *  - state is base64url encoded (not signed here — Google verifies its own state)
+ * Product SSO must survive Google's redirect round-trip without relying on
+ * cookies alone. We embed callback_url + auth_perform_from in OAuth `state`.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -32,53 +20,65 @@ export async function GET(request: NextRequest) {
   if (!clientId) {
     return NextResponse.json(
       { error: 'Google OAuth not configured in environment' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
-  // Validate callback_url — must be a valid http/https URL
   let callbackUrl = '';
   if (rawCallbackUrl) {
     try {
       const parsed = new URL(rawCallbackUrl);
-      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      const allowedOrigins = [
+        baseUrl,
+        process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000',
+        process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000',
+      ].filter(Boolean);
+
+      const isValidOrigin = allowedOrigins.some((origin) => {
+        try {
+          return parsed.origin === new URL(origin).origin;
+        } catch {
+          return false;
+        }
+      });
+
+      if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && isValidOrigin) {
         callbackUrl = rawCallbackUrl;
       }
     } catch {
-      // Invalid URL — ignore and use default
+      // Invalid URL — ignore
     }
   }
 
-  // Encode callback_url in the OAuth state parameter
-  const state = callbackUrl
-    ? Buffer.from(JSON.stringify({ callback_url: callbackUrl })).toString('base64url')
-    : '';
+  const state = Buffer.from(
+    JSON.stringify({
+      callback_url: callbackUrl || undefined,
+      auth_perform_from: authPerformFrom || undefined,
+    }),
+  ).toString('base64url');
 
-  const scope = 'openid email profile';
   const authUrlParams = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
     response_type: 'code',
-    scope,
+    scope: 'openid email profile',
     access_type: 'offline',
     prompt: 'consent',
+    state,
   });
 
-  if (state) {
-    authUrlParams.set('state', state);
-  }
+  const response = NextResponse.redirect(
+    `https://accounts.google.com/o/oauth2/v2/auth?${authUrlParams.toString()}`,
+  );
 
-  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${authUrlParams.toString()}`;
-
-  const response = NextResponse.redirect(authUrl);
-
+  // Best-effort cookie backup (state is the source of truth)
   if (authPerformFrom) {
-    const cookieStore = await cookies();
-    cookieStore.set('auth_perform_from', authPerformFrom, {
+    response.cookies.set('auth_perform_from', authPerformFrom, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
       maxAge: 60 * 15,
+      sameSite: 'lax',
     });
   }
 

@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { planId } = body;
+    const { planId, currency } = body;
 
     if (!planId) {
       return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
         // Pass the session cookie directly so Nazexa DB can exchange it
         Cookie: `nazexa_session=${encodeURIComponent(nazexaSession)}`,
       },
-      body: JSON.stringify({ planId, nazexaSession }),
+      body: JSON.stringify({ planId, currency, nazexaSession }),
     });
 
     const data = await response.json();
