@@ -8,9 +8,9 @@ import { UsageAndBilling } from '@/components/profile/UsageAndBilling';
 import { Section } from '@/components/site/PageShell';
 
 export function ProfileDashboard() {
-  const [activeTab, setActiveTab] = useState<
-    'profile' | 'security' | 'notifications' | 'billing'
-  >('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'notifications' | 'billing'>(
+    'profile'
+  );
 
   return (
     <Section className="relative z-10 max-w-5xl pt-10">
@@ -78,8 +78,6 @@ export function ProfileDashboard() {
             {activeTab === 'profile' && <ProfileForm />}
 
             {activeTab === 'security' && <SecurityForm />}
-
-
 
             {activeTab === 'notifications' && (
               <div className="p-8">

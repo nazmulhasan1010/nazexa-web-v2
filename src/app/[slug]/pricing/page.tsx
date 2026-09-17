@@ -6,6 +6,8 @@ import { fetchContentItems } from '@/lib/cms';
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 
+import { getAppUrlsAction } from '@/lib/app-urls.actions';
+
 export async function generateMetadata({
   params,
 }: {
@@ -15,8 +17,8 @@ export async function generateMetadata({
   const product = products.find((p) => p.slug === params.slug);
 
   return constructMetadata({
-    title: product ? `${product.name} Pricing` : 'Pricing',
-    description: product ? `Pricing plans for ${product.name}` : 'Pricing plans',
+    title: product ? `${product.title || product.slug} Pricing` : 'Pricing',
+    description: product ? `Pricing plans for ${product.title || product.slug}` : 'Pricing plans',
     url: `//pricing`,
   });
 }
@@ -36,12 +38,13 @@ export default async function Page({ params }: { params: { slug: string } }) {
   };
 
   const page = { ...basePage };
-  page.title = `${product.name} Pricing`;
-  page.description = `Transparent pricing for ${product.name}`;
+  page.title = `${product.title || product.slug} Pricing`;
+  page.description = `Transparent pricing for ${product.title || product.slug}`;
 
   let dbPlans: any[] = [];
   try {
-    const dbApiUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
+    const urls = await getAppUrlsAction();
+    const dbApiUrl = urls['nazexa-db'];
     const res = await fetch(`${dbApiUrl}/api/plans`, {
       next: { revalidate: 60 },
     });
@@ -90,9 +93,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
       }),
     };
 
-    
-    
-
     // I will use id: plan.slug because PaymentProductPlan uses planCode = slug! Actually I'll use id: plan.id but keep it consistent.
     // Let me just set it exactly as it was: id: plan.id.
 
@@ -119,10 +119,3 @@ export default async function Page({ params }: { params: { slug: string } }) {
     </>
   );
 }
-
-
-
-
-
-
-

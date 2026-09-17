@@ -43,14 +43,14 @@ function verifyPaddleSignature(
   payload: string,
   header: string | null,
   secret: string,
-  toleranceSec = 300,
+  toleranceSec = 300
 ): boolean {
   if (!header || !secret) return false;
   const parts = Object.fromEntries(
     header.split(';').map((p) => {
       const [k, ...rest] = p.trim().split('=');
       return [k, rest.join('=')];
-    }),
+    })
   ) as Record<string, string>;
 
   const ts = parts.ts;
@@ -233,8 +233,7 @@ export const paddleAdapter: PaymentGatewayAdapter = {
 
     const amountOk = amount == null || amountsMatch(input.amount, amount);
     const currencyOk = !currency || currenciesMatch(input.currency, currency);
-    const ref =
-      data.custom_data?.nazexaTransactionId || data.custom_data?.transaction_id;
+    const ref = data.custom_data?.nazexaTransactionId || data.custom_data?.transaction_id;
     const refOk = !ref || ref === input.publicId;
 
     if (paid && (!amountOk || !currencyOk || !refOk)) {
@@ -291,26 +290,26 @@ export const paddleAdapter: PaymentGatewayAdapter = {
     const url = `${baseUrl(input.environment, input.config)}/adjustments`;
     const currency = normalizeCurrency(input.currency);
     const minor = toMinorUnits(input.amount, currency);
-    const res = await jsonFetch<{ data?: { id?: string; status?: string }; error?: { detail?: string } }>(
-      url,
-      {
-        method: 'POST',
-        bearer: cfg(input.config, 'apiKey'),
-        headers: { 'Paddle-Version': '1' },
-        body: {
-          action: 'refund',
-          transaction_id: txnId,
-          reason: input.reason || 'Refund requested',
-          type: 'full',
-          ...(minor != null
-            ? {
-                type: 'partial',
-                items: [{ type: 'partial', amount: String(minor) }],
-              }
-            : {}),
-        },
+    const res = await jsonFetch<{
+      data?: { id?: string; status?: string };
+      error?: { detail?: string };
+    }>(url, {
+      method: 'POST',
+      bearer: cfg(input.config, 'apiKey'),
+      headers: { 'Paddle-Version': '1' },
+      body: {
+        action: 'refund',
+        transaction_id: txnId,
+        reason: input.reason || 'Refund requested',
+        type: 'full',
+        ...(minor != null
+          ? {
+              type: 'partial',
+              items: [{ type: 'partial', amount: String(minor) }],
+            }
+          : {}),
       },
-    );
+    });
     if (!res.ok || !res.data?.data?.id) {
       return {
         ok: false,
@@ -387,7 +386,7 @@ export const paddleAdapter: PaymentGatewayAdapter = {
 
   async testConnection(
     config: Record<string, string>,
-    environment: PaymentEnvironment,
+    environment: PaymentEnvironment
   ): Promise<TestConnectionResult> {
     const v = this.validateConfig(config);
     if (!v.valid) return { ok: false, message: v.errors.join('; '), liveVerified: false };

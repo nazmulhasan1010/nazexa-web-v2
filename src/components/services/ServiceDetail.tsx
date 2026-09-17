@@ -188,8 +188,7 @@ export function ServiceDetail({ service }: { service: Service }) {
           {related.map((r, i) => (
             <Reveal key={r.slug} delay={i * 80}>
               <Link
-                href="/services/$slug"
-                params={{ slug: r.slug }}
+                href={`/services/${r.slug}`}
                 className="surface-card hover-lift group block h-full p-6"
               >
                 <div className="bg-primary/12 ring-primary/30 flex h-9 w-9 items-center justify-center rounded-lg ring-1">

@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const globalConfig = await getGlobalAIProviderConfig();
-    const agents = await prisma.aiagent.findMany({
+    const agents = await prisma.aiAgent.findMany({
       orderBy: { createdAt: 'desc' },
     });
 
@@ -25,7 +25,10 @@ export async function GET(req: NextRequest) {
       })),
     });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -35,22 +38,25 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json();
-    
+
     const updateData: Record<string, string | boolean> = {};
     if (body.activeProvider !== undefined) updateData.activeProvider = body.activeProvider;
     if (body.googleApiKey && body.googleApiKey !== '            ') {
-       updateData.googleApiKey = body.googleApiKey;
+      updateData.googleApiKey = body.googleApiKey;
     }
     if (body.googleModel !== undefined) updateData.googleModel = body.googleModel;
 
-    const updated = await prisma.aiproviderconfig.update({
+    const updated = await prisma.aiProviderConfig.update({
       where: { id: 'global' },
       data: updateData,
     });
 
     return NextResponse.json({ success: true, activeProvider: updated.activeProvider });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -60,16 +66,16 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    
+
     // If setting to active, we must deactivate others
     if (body.isActive) {
-      await prisma.aiagent.updateMany({
+      await prisma.aiAgent.updateMany({
         where: { isActive: true },
-        data: { isActive: false }
+        data: { isActive: false },
       });
     }
 
-    const agent = await prisma.aiagent.create({
+    const agent = await prisma.aiAgent.create({
       data: {
         name: body.name,
         baseUrl: body.baseUrl || null,
@@ -81,6 +87,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(agent);
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Error' },
+      { status: 500 }
+    );
   }
 }

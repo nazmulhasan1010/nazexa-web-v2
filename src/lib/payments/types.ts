@@ -180,5 +180,8 @@ export interface PaymentGatewayAdapter {
   getPaymentStatus(input: PaymentStatusInput): Promise<PaymentStatusResult>;
   refundPayment?(input: RefundPaymentInput): Promise<RefundResult>;
   handleWebhook?(request: Request, config: Record<string, string>): Promise<WebhookResult>;
-  testConnection?(config: Record<string, string>, environment: PaymentEnvironment): Promise<TestConnectionResult>;
+  testConnection?(
+    config: Record<string, string>,
+    environment: PaymentEnvironment
+  ): Promise<TestConnectionResult>;
 }

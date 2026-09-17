@@ -5,10 +5,7 @@ import { getGatewayDef } from '@/lib/payments/registry';
 import { parseConfig, unsealConfig } from '@/lib/payments/secrets';
 import { markTransactionPaid, recordWebhookEvent } from '@/lib/payments/orchestration';
 
-export async function POST(
-  req: NextRequest,
-  ctx: { params: Promise<{ gateway: string }> },
-) {
+export async function POST(req: NextRequest, ctx: { params: Promise<{ gateway: string }> }) {
   const { gateway: gatewayCode } = await ctx.params;
   const adapter = getAdapter(gatewayCode);
   const def = getGatewayDef(gatewayCode);

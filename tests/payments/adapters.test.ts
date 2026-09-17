@@ -9,11 +9,7 @@ import { aamarpayAdapter } from '@/lib/payments/adapters/aamarpay';
 import { stripeAdapter } from '@/lib/payments/adapters/stripe';
 import { paypalAdapter } from '@/lib/payments/adapters/paypal';
 import { razorpayAdapter } from '@/lib/payments/adapters/razorpay';
-import {
-  amountsMatch,
-  currenciesMatch,
-  AMOUNT_TOLERANCE,
-} from '@/lib/payments/adapters/base';
+import { amountsMatch, currenciesMatch, AMOUNT_TOLERANCE } from '@/lib/payments/adapters/base';
 import type { CreatePaymentInput, VerifyPaymentInput } from '@/lib/payments/types';
 
 afterEach(() => {
@@ -44,7 +40,7 @@ describe('bank_transfer', () => {
         bankName: 'City',
         accountName: 'Nazexa',
         accountNumber: '123',
-      }).valid,
+      }).valid
     ).toBe(true);
   });
 
@@ -56,7 +52,7 @@ describe('bank_transfer', () => {
           accountName: 'Nazexa Ltd',
           accountNumber: '001122',
         },
-      }),
+      })
     );
     expect(result.ok).toBe(true);
     expect(result.requiresManualProof).toBe(true);
@@ -166,7 +162,7 @@ describe('razorpay payment signature', () => {
             currency: 'INR',
             order_id: orderId,
           }),
-      })),
+      }))
     );
 
     const result = await razorpayAdapter.verifyPayment({

@@ -13,6 +13,9 @@ export async function GET(req: NextRequest) {
     const config = await getActiveAIConfig();
     return NextResponse.json(config);
   } catch (error: unknown) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Error' },
+      { status: 500 }
+    );
   }
 }

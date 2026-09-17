@@ -2,7 +2,8 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { Loader2, Save } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { FaRegCircleCheck } from 'react-icons/fa6';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -104,7 +105,7 @@ function ThemePage() {
           {save.isPending ? (
             <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
           ) : (
-            <Save className="mr-1.5 h-4 w-4" />
+            <FaRegCircleCheck className="mr-1.5 h-4 w-4" />
           )}
           Save theme
         </Button>

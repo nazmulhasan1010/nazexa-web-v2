@@ -27,7 +27,9 @@ export async function POST(req: NextRequest) {
     const gatewayId = typeof body.gatewayId === 'string' ? body.gatewayId : '';
     const action = body.action === 'submit_proof' ? 'submit_proof' : 'initiate';
     const details =
-      body.details && typeof body.details === 'object' ? (body.details as Record<string, string>) : {};
+      body.details && typeof body.details === 'object'
+        ? (body.details as Record<string, string>)
+        : {};
 
     if (JSON.stringify(details).length > 5000) {
       return NextResponse.json({ error: 'Payload too large' }, { status: 413 });

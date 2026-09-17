@@ -92,7 +92,7 @@ export async function getAdminSession() {
 
     const session = await db.adminSession.findUnique({
       where: { id: payload.sessionId as string },
-      include: { user: true },
+      include: { admin_users: true },
     });
 
     if (!session) {
@@ -100,14 +100,14 @@ export async function getAdminSession() {
       (await cookies()).delete('nazexa_admin_session');
       return null;
     }
-    
+
     if (session.expiresAt < new Date()) {
       console.log('getAdminSession: session expired');
       (await cookies()).delete('nazexa_admin_session');
       return null;
     }
 
-    return session.user;
+    return session.admin_users;
   } catch (error) {
     console.error('getAdminSession: caught error', error);
     (await cookies()).delete('nazexa_admin_session');

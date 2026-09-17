@@ -7,8 +7,8 @@ import { fetchContentItems } from '@/lib/cms';
 const basePage = pages['team']!;
 
 export const metadata = constructMetadata({
-  title: typeof page !== 'undefined' && page.title ? page.title : undefined,
-  description: typeof page !== 'undefined' && page.description ? page.description : undefined,
+  title: basePage?.title || undefined,
+  description: basePage?.description || undefined,
   url: '/team',
 });
 
@@ -29,6 +29,7 @@ export default async function Page() {
           role: t.subtitle || '',
           location: (t.data?.location as string) || '',
           focus: (t.body as string) || '',
+          image: t.image_url || '',
         })),
     }));
 

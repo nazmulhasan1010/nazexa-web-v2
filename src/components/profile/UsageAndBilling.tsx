@@ -29,6 +29,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getAppUrlsAction } from '@/lib/app-urls.actions';
 
 interface OverviewData {
   product: { id: string; name: string };
@@ -65,14 +66,16 @@ export function UsageAndBilling() {
   const [purchases, setPurchases] = useState<PurchaseItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dbUrl, setDbUrl] = useState('http://localhost:8000');
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
-        const [overviewRes, purchasesRes] = await Promise.all([
+        const [overviewRes, purchasesRes, urls] = await Promise.all([
           fetch('/api/products/nazexa-db/overview'),
           fetch('/api/products/nazexa-db/purchases?page=1&limit=10'),
+          getAppUrlsAction(),
         ]);
 
         const overviewData = await overviewRes.json();
@@ -80,6 +83,7 @@ export function UsageAndBilling() {
 
         if (overviewData.error) throw new Error(overviewData.error);
 
+        setDbUrl(urls['nazexa-db'] || 'http://localhost:8000');
         setOverview(overviewData.data);
         if (purchasesData.data && purchasesData.data.items) {
           setPurchases(purchasesData.data.items);
@@ -184,11 +188,7 @@ export function UsageAndBilling() {
           </CardContent>
           <CardFooter>
             <Button variant="outline" className="w-full gap-2" asChild>
-              <a
-                href={`${process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000'}/account`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={`${dbUrl}/account`} target="_blank" rel="noopener noreferrer">
                 Manage in Nazexa DB <ExternalLink className="h-4 w-4" />
               </a>
             </Button>

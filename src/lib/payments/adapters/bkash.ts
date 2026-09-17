@@ -38,7 +38,7 @@ function baseUrl(environment: PaymentEnvironment, config: Record<string, string>
 
 async function grantToken(
   environment: PaymentEnvironment,
-  config: Record<string, string>,
+  config: Record<string, string>
 ): Promise<{ token?: string; error?: string }> {
   const url = `${baseUrl(environment, config)}${gatewayEndpoints.bkash.paths.grantToken}`;
   const res = await jsonFetch<{
@@ -118,12 +118,7 @@ export const bkashAdapter: PaymentGatewayAdapter = {
   },
 
   validateConfig(config: unknown): ValidationResult {
-    return requireFields(asStringConfig(config), [
-      'appKey',
-      'appSecret',
-      'username',
-      'password',
-    ]);
+    return requireFields(asStringConfig(config), ['appKey', 'appSecret', 'username', 'password']);
   },
 
   async createPayment(input: CreatePaymentInput): Promise<CreatePaymentResult> {
@@ -183,9 +178,7 @@ export const bkashAdapter: PaymentGatewayAdapter = {
 
   async verifyPayment(input: VerifyPaymentInput): Promise<PaymentVerificationResult> {
     const paymentID =
-      input.gatewayPaymentId ||
-      input.callbackParams?.paymentID ||
-      input.callbackParams?.paymentId;
+      input.gatewayPaymentId || input.callbackParams?.paymentID || input.callbackParams?.paymentId;
     if (!paymentID) {
       return { ok: false, paid: false, status: 'UNKNOWN', error: 'Missing bKash paymentID' };
     }
@@ -223,10 +216,8 @@ export const bkashAdapter: PaymentGatewayAdapter = {
 
     const status = String(res.data.transactionStatus || '').toLowerCase();
     const paid = status === 'completed' || status === 'success';
-    const amountOk =
-      res.data.amount == null || amountsMatch(input.amount, res.data.amount);
-    const currencyOk =
-      !res.data.currency || currenciesMatch(input.currency, res.data.currency);
+    const amountOk = res.data.amount == null || amountsMatch(input.amount, res.data.amount);
+    const currencyOk = !res.data.currency || currenciesMatch(input.currency, res.data.currency);
 
     if (paid && (!amountOk || !currencyOk)) {
       return {
@@ -301,7 +292,7 @@ export const bkashAdapter: PaymentGatewayAdapter = {
 
   async testConnection(
     config: Record<string, string>,
-    environment: PaymentEnvironment,
+    environment: PaymentEnvironment
   ): Promise<TestConnectionResult> {
     const v = this.validateConfig(config);
     if (!v.valid) return { ok: false, message: v.errors.join('; '), liveVerified: false };

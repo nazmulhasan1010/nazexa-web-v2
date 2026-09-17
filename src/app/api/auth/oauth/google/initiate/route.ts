@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { getAppUrlsAction } from '@/lib/app-urls.actions';
+
 /**
  * Google OAuth Initiation — with callback_url support
  *
@@ -14,13 +16,15 @@ export async function GET(request: NextRequest) {
   const protocol = host.includes('localhost') ? 'http' : 'https';
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
 
+  const urls = await getAppUrlsAction();
+
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const redirectUri = `${baseUrl}/api/auth/callback/google`;
 
   if (!clientId) {
     return NextResponse.json(
       { error: 'Google OAuth not configured in environment' },
-      { status: 500 },
+      { status: 500 }
     );
   }
 
@@ -28,11 +32,9 @@ export async function GET(request: NextRequest) {
   if (rawCallbackUrl) {
     try {
       const parsed = new URL(rawCallbackUrl);
-      const allowedOrigins = [
-        baseUrl,
-        process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000',
-        process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000',
-      ].filter(Boolean);
+      const allowedOrigins = [baseUrl, urls['nazexa-db'], urls['nazexa-socket-platform']].filter(
+        Boolean
+      );
 
       const isValidOrigin = allowedOrigins.some((origin) => {
         try {
@@ -54,7 +56,7 @@ export async function GET(request: NextRequest) {
     JSON.stringify({
       callback_url: callbackUrl || undefined,
       auth_perform_from: authPerformFrom || undefined,
-    }),
+    })
   ).toString('base64url');
 
   const authUrlParams = new URLSearchParams({
@@ -68,7 +70,7 @@ export async function GET(request: NextRequest) {
   });
 
   const response = NextResponse.redirect(
-    `https://accounts.google.com/o/oauth2/v2/auth?${authUrlParams.toString()}`,
+    `https://accounts.google.com/o/oauth2/v2/auth?${authUrlParams.toString()}`
   );
 
   // Best-effort cookie backup (state is the source of truth)

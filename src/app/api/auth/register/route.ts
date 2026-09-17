@@ -2,6 +2,7 @@ import { rateLimit } from '@/lib/rate-limit';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { hashPassword, createSession } from '@/lib/auth';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 export async function POST(request: Request) {
   const ip = request.headers.get('x-forwarded-for') || 'unknown';
@@ -9,9 +10,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
   try {
-    const { name, email, password } = await request.json();
+    const { name, email, password, turnstileToken } = await request.json();
     if (!name || !email || !password) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+    }
+
+    const isTurnstileValid = await verifyTurnstile(turnstileToken);
+    if (!isTurnstileValid) {
+      return NextResponse.json({ error: 'Invalid security verification' }, { status: 400 });
     }
 
     const existingUser = await db.user.findUnique({ where: { email } });
@@ -20,7 +26,7 @@ export async function POST(request: Request) {
     }
 
     const hashedPassword = await hashPassword(password);
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    const clientIp = request.headers.get('x-forwarded-for') || 'unknown';
 
     // 4. Create user and events in transaction
     const newUser = await db.$transaction(async (tx) => {
@@ -30,7 +36,7 @@ export async function POST(request: Request) {
           email,
           password_hash: hashedPassword,
           lastLoginAt: new Date(),
-          lastLoginIp: ip,
+          lastLoginIp: clientIp,
         },
       });
 
@@ -49,7 +55,7 @@ export async function POST(request: Request) {
           centralUserId: u.id,
           source: 'nazexa-web-core',
           eventType: 'USER_LOGGED_IN',
-          payload: JSON.stringify({ ip, provider: 'email' }),
+          payload: JSON.stringify({ ip: clientIp, provider: 'email' }),
         },
       });
       return u;

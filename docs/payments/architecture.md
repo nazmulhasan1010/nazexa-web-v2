@@ -37,14 +37,14 @@ Product (S2S)                    Nazexa Web                         Gateway
 
 ## Layers
 
-| Layer | Path | Role |
-| --- | --- | --- |
-| S2S create | `src/app/api/payments/create` | Authenticate app; ignore client amount |
-| Orchestration | `src/lib/payments/orchestration.ts` | Amounts, gateway select, PAID, fulfillment |
-| Adapters | `src/lib/payments/adapters/*` | Provider create / verify / refund / webhook |
-| Endpoints | `src/lib/payments/endpoints.ts` | Sandbox/prod base URLs + path helpers |
-| Registry | `src/lib/payments/registry.ts` | Admin UI fields, capabilities, currencies |
-| Secrets | `src/lib/payments/secrets.ts` | AES seal, sanitize, truncate |
+| Layer         | Path                                | Role                                        |
+| ------------- | ----------------------------------- | ------------------------------------------- |
+| S2S create    | `src/app/api/payments/create`       | Authenticate app; ignore client amount      |
+| Orchestration | `src/lib/payments/orchestration.ts` | Amounts, gateway select, PAID, fulfillment  |
+| Adapters      | `src/lib/payments/adapters/*`       | Provider create / verify / refund / webhook |
+| Endpoints     | `src/lib/payments/endpoints.ts`     | Sandbox/prod base URLs + path helpers       |
+| Registry      | `src/lib/payments/registry.ts`      | Admin UI fields, capabilities, currencies   |
+| Secrets       | `src/lib/payments/secrets.ts`       | AES seal, sanitize, truncate                |
 
 ## Invariants
 

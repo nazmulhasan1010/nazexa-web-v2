@@ -1,16 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { AuroraBackground, GridBackground } from '@/components/backgrounds/AnimatedBackground';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { adminLogin as login } from '@/lib/admin-auth.server';
 import { useAdminAuth as useAuth } from '@/hooks/useAdminAuth';
 
 function safeNext(raw: string | null): string {
@@ -19,8 +16,6 @@ function safeNext(raw: string | null): string {
 }
 
 export default function AuthPage() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
   const { user, loading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,22 +24,29 @@ export default function AuthPage() {
   useEffect(() => {
     if (!loading && user) {
       const next = safeNext(new URLSearchParams(window.location.search).get('next'));
-      router.replace(next);
+      window.location.href = next;
     }
-  }, [loading, user, router]);
+  }, [loading, user]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     try {
-      const res = await login({ email, password });
-      if (res && res.error) {
-        toast.error(res.error);
+      const res = await fetch('/api/admin/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        toast.error(data.error || 'Invalid credentials');
         return;
       }
-      await queryClient.invalidateQueries({ queryKey: ['admin-auth-session'] });
+      // Hard redirect so the browser sends the new session cookie on the very next request.
+      // router.replace() is a client-side navigation that can race the cookie being committed.
       const next = safeNext(new URLSearchParams(window.location.search).get('next'));
-      router.replace(next);
+      window.location.href = next;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Invalid credentials');
     } finally {

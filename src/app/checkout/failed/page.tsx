@@ -34,7 +34,9 @@ export default async function CheckoutFailedPage({
   return (
     <div className="bg-background flex min-h-screen items-center justify-center px-4">
       <div className="border-border bg-card max-w-md rounded-xl border p-8 text-center shadow-sm">
-        <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Checkout</p>
+        <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+          Checkout
+        </p>
         <h1 className="text-foreground mt-2 text-xl font-semibold">{copy.title}</h1>
         <p className="text-muted-foreground mt-3 text-sm leading-relaxed">{copy.body}</p>
         {reason !== 'unknown' && (

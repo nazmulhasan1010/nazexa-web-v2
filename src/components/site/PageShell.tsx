@@ -361,13 +361,22 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                   <Reveal key={item.name} delay={j * 70}>
                     <div className="surface-card hover-lift h-full p-6">
                       <div className="flex items-center gap-3">
-                        <div className="bg-primary/12 font-display text-primary ring-primary/30 flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold ring-1">
-                          {item.name
-                            .split(' ')
-                            .map((n) => n[0])
-                            .join('')
-                            .slice(0, 2)}
-                        </div>
+                        {item.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="ring-primary/30 h-11 w-11 rounded-full object-cover ring-1"
+                          />
+                        ) : (
+                          <div className="bg-primary/12 font-display text-primary ring-primary/30 flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold ring-1">
+                            {item.name
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')
+                              .slice(0, 2)}
+                          </div>
+                        )}
                         <div>
                           <div className="text-sm font-semibold">{item.name}</div>
                           <div className="text-muted-foreground text-xs">{item.role}</div>
@@ -393,8 +402,8 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
           return (
             <Section key={i} title={block.title}>
               <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                {block.items.map((item, j) => (
-                  <Reveal key={item.title} delay={j * 80}>
+                {block.items.map((item, j) => {
+                  const inner = (
                     <div className="surface-card hover-lift flex h-full flex-col p-6">
                       {item.tag ? (
                         <Badge
@@ -412,8 +421,19 @@ export function PageBlocks({ blocks }: { blocks: PageBlock[] }) {
                         </div>
                       ) : null}
                     </div>
-                  </Reveal>
-                ))}
+                  );
+                  return (
+                    <Reveal key={item.title} delay={j * 80}>
+                      {item.href ? (
+                        <Link href={item.href} className="block h-full">
+                          {inner}
+                        </Link>
+                      ) : (
+                        inner
+                      )}
+                    </Reveal>
+                  );
+                })}
               </div>
             </Section>
           );

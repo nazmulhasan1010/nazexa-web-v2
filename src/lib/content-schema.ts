@@ -39,6 +39,7 @@ export const CONTENT_SCHEMA: Record<string, CollectionSchema> = {
         type: 'text',
         className: 'sm:col-span-2',
       },
+      { name: 'subtitle', label: 'Excerpt', type: 'textarea', className: 'sm:col-span-2' },
       { name: 'slug', label: 'Slug', type: 'text' },
       { name: 'category', label: 'Category', type: 'text' },
       {
@@ -398,6 +399,23 @@ export const CONTENT_SCHEMA: Record<string, CollectionSchema> = {
       },
     ],
   },
+  news: {
+    label: 'News Article',
+    description: 'Manage news articles and announcements.',
+    fields: [
+      { name: 'title', label: 'Headline', type: 'text' },
+      { name: 'slug', label: 'Slug', type: 'text' },
+      { name: 'subtitle', label: 'Short Excerpt', type: 'textarea', className: 'sm:col-span-2' },
+      { name: 'category', label: 'Category', type: 'text' },
+      {
+        name: 'body',
+        label: 'Full Article Content',
+        type: 'rich-text',
+        className: 'sm:col-span-2',
+      },
+      { name: 'image_url', label: 'Featured Image', type: 'image', className: 'sm:col-span-2' },
+    ],
+  },
   integrations: {
     label: 'Integration',
     description: 'Manage third-party tool integrations.',
@@ -443,6 +461,11 @@ export const CONTENT_SCHEMA: Record<string, CollectionSchema> = {
         type: 'textarea',
         className: 'sm:col-span-2',
       },
+      { name: 'subtitle', label: 'Short summary', type: 'text', className: 'sm:col-span-2' },
+      { name: 'end_date', label: 'End date & time', type: 'datetime', isData: true },
+      { name: 'link_url', label: 'Registration URL', type: 'text' },
+      { name: 'price_label', label: 'Price label', type: 'text', isData: true },
+      { name: 'format', label: 'Format (In person / Online)', type: 'text', isData: true },
     ],
   },
   team: {
@@ -533,6 +556,106 @@ export const CONTENT_SCHEMA: Record<string, CollectionSchema> = {
       },
       { name: 'link_url', label: 'Checkout URL', type: 'text' },
       { name: 'link_label', label: 'Button Label', type: 'text' },
+    ],
+  },
+  pillars: {
+    label: 'What We Do (Pillar)',
+    description: 'Manage homepage service pillars.',
+    fields: [
+      { name: 'title', label: 'Pillar Name', type: 'text' },
+      { name: 'subtitle', label: 'Description', type: 'textarea', className: 'sm:col-span-2' },
+      { name: 'icon', label: 'Icon', type: 'icon' },
+      {
+        name: 'visual',
+        label: 'Visual Type (e.g. build, mobile, cloud)',
+        type: 'text',
+        isData: true,
+      },
+    ],
+  },
+  missionvision: {
+    label: 'Mission & Vision',
+    description: 'Manage company mission and vision blocks.',
+    fields: [
+      { name: 'title', label: 'Title', type: 'text' },
+      { name: 'subtitle', label: 'Subtitle', type: 'text' },
+      { name: 'body', label: 'Content', type: 'textarea', className: 'sm:col-span-2' },
+    ],
+  },
+  technologies: {
+    label: 'Technology',
+    description: 'Manage tech stack grid items.',
+    fields: [
+      { name: 'title', label: 'Technology Name', type: 'text' },
+      { name: 'category', label: 'Category', type: 'text' },
+      {
+        name: 'icons',
+        label: 'Icons (JSON array of icon names)',
+        type: 'json',
+        isData: true,
+        className: 'sm:col-span-2',
+      },
+    ],
+  },
+  values: {
+    label: 'Company Value',
+    description: 'Manage "Why Nazexa" value propositions.',
+    fields: [
+      { name: 'title', label: 'Value Title', type: 'text' },
+      { name: 'body', label: 'Description', type: 'textarea', className: 'sm:col-span-2' },
+    ],
+  },
+  stats: {
+    label: 'Company Statistic',
+    description: 'Manage global company statistics.',
+    fields: [
+      { name: 'title', label: 'Statistic Label', type: 'text' },
+      { name: 'value', label: 'Statistic Value (e.g. 50+)', type: 'text', isData: true },
+    ],
+  },
+  process: {
+    label: 'Process Step',
+    description: 'Manage delivery process steps.',
+    fields: [
+      { name: 'title', label: 'Step Name', type: 'text' },
+      { name: 'subtitle', label: 'Short description', type: 'text' },
+      { name: 'body', label: 'Details', type: 'textarea', className: 'sm:col-span-2' },
+    ],
+  },
+  tutorials: {
+    label: 'Tutorial',
+    description: 'Short, focused build tutorials on the Tutorials page.',
+    fields: [
+      { name: 'title', label: 'Title', type: 'text', className: 'sm:col-span-2' },
+      { name: 'slug', label: 'Slug', type: 'text' },
+      { name: 'subtitle', label: 'Excerpt', type: 'textarea', className: 'sm:col-span-2' },
+      { name: 'category', label: 'Category', type: 'text' },
+      { name: 'duration', label: 'Duration (e.g. 20 min)', type: 'text', isData: true },
+      {
+        name: 'difficulty',
+        label: 'Difficulty',
+        type: 'select',
+        isData: true,
+        options: [
+          { label: 'Beginner', value: 'Beginner' },
+          { label: 'Intermediate', value: 'Intermediate' },
+          { label: 'Advanced', value: 'Advanced' },
+        ],
+      },
+      { name: 'language', label: 'Language / stack', type: 'text', isData: true },
+      { name: 'repo_url', label: 'Repository URL', type: 'text', isData: true },
+      { name: 'body', label: 'Content', type: 'rich-text', className: 'sm:col-span-2' },
+    ],
+  },
+  community: {
+    label: 'Community Link',
+    description: 'Channels shown on the Community page.',
+    fields: [
+      { name: 'title', label: 'Channel', type: 'text' },
+      { name: 'subtitle', label: 'Description', type: 'textarea', className: 'sm:col-span-2' },
+      { name: 'icon', label: 'Icon', type: 'icon' },
+      { name: 'link_url', label: 'Link URL', type: 'text' },
+      { name: 'link_label', label: 'Link label', type: 'text' },
     ],
   },
 };

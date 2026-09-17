@@ -1,7 +1,4 @@
-export async function adminFetch<T>(
-  input: RequestInfo | URL,
-  init?: RequestInit,
-): Promise<T> {
+export async function adminFetch<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
   const res = await fetch(input, {
     ...init,
     headers: {
@@ -39,7 +36,7 @@ export const adminApi = {
       {
         method: 'PATCH',
         body: JSON.stringify({ id, action: 'test' }),
-      },
+      }
     ),
 
   paymentRequests: (params: Record<string, string | number | undefined>) => {

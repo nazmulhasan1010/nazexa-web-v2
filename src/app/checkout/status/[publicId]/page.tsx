@@ -21,12 +21,15 @@ export default async function CheckoutStatusPage({
           {txn.currency} {txn.amount.toString()} · {txn.product} / {txn.plan}
         </p>
         {txn.status === 'PAID' ? (
-          <p className="mt-4 text-sm text-emerald-600">Payment verified. Fulfillment: {txn.fulfillmentStatus}</p>
+          <p className="mt-4 text-sm text-emerald-600">
+            Payment verified. Fulfillment: {txn.fulfillmentStatus}
+          </p>
         ) : txn.status === 'PENDING_REVIEW' ? (
           <p className="mt-4 text-sm text-amber-600">Awaiting admin verification.</p>
         ) : (
           <p className="text-muted-foreground mt-4 text-sm">
-            Status updates after gateway verification or admin review — not from browser redirects alone.
+            Status updates after gateway verification or admin review — not from browser redirects
+            alone.
           </p>
         )}
         <Link href="/" className="text-primary mt-6 inline-block text-sm underline">

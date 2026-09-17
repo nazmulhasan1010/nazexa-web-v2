@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
       OR: [{ publicId }, { id: publicId }],
     },
     include: {
-      gateway: { select: { code: true, displayName: true } },
+      payment_gateways: { select: { code: true, displayName: true } },
     },
   });
 
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     product: txn.product,
     plan: txn.plan,
     planId: txn.planId,
-    gateway: txn.gateway?.code ?? null,
+    gateway: txn.payment_gateways?.code ?? null,
     paidAt: txn.paidAt?.toISOString() ?? null,
     fulfillmentStatus: txn.fulfillmentStatus,
     userId: txn.userId,

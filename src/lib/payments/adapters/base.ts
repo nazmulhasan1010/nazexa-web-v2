@@ -44,7 +44,7 @@ export function parseAmount(value: string | number | null | undefined): number |
 export function amountsMatch(
   expected: string | number,
   actual: string | number,
-  tolerance = AMOUNT_TOLERANCE,
+  tolerance = AMOUNT_TOLERANCE
 ): boolean {
   const a = parseAmount(expected);
   const b = parseAmount(actual);
@@ -71,7 +71,10 @@ export function fromMinorUnits(minor: number, currency: string): string {
   return (minor / 100).toFixed(2);
 }
 
-export function isSandbox(environment: PaymentEnvironment, config?: Record<string, string>): boolean {
+export function isSandbox(
+  environment: PaymentEnvironment,
+  config?: Record<string, string>
+): boolean {
   if (config?.environment === 'production' || config?.environment === 'live') return false;
   if (config?.environment === 'sandbox' || config?.environment === 'test') return true;
   if (config?.sandbox === 'false' || config?.sandbox === '0') return false;
@@ -79,10 +82,7 @@ export function isSandbox(environment: PaymentEnvironment, config?: Record<strin
   return environment === 'sandbox';
 }
 
-export function requireFields(
-  config: Record<string, string>,
-  keys: string[],
-): ValidationResult {
+export function requireFields(config: Record<string, string>, keys: string[]): ValidationResult {
   const errors: string[] = [];
   for (const key of keys) {
     if (!String(config?.[key] ?? '').trim()) {
@@ -102,7 +102,9 @@ export function asStringConfig(config: unknown): Record<string, string> {
   return out;
 }
 
-export function formEncode(data: Record<string, string | number | boolean | null | undefined>): string {
+export function formEncode(
+  data: Record<string, string | number | boolean | null | undefined>
+): string {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(data)) {
     if (value == null) continue;
@@ -135,7 +137,7 @@ const DEFAULT_TIMEOUT_MS = 25_000;
 
 export async function jsonFetch<T = unknown>(
   url: string,
-  options: JsonFetchOptions = {},
+  options: JsonFetchOptions = {}
 ): Promise<JsonFetchResult<T>> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), options.timeoutMs ?? DEFAULT_TIMEOUT_MS);
@@ -146,7 +148,7 @@ export async function jsonFetch<T = unknown>(
     if (options.basicAuth) {
       const token = Buffer.from(
         `${options.basicAuth.username}:${options.basicAuth.password}`,
-        'utf8',
+        'utf8'
       ).toString('base64');
       headers.Authorization = `Basic ${token}`;
     }

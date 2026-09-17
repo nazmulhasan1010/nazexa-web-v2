@@ -2,11 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { getSession } from '@/lib/auth';
+import { getAdminSession } from '@/lib/admin-auth.server';
+
+const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
+const ALLOWED = [
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/gif',
+  'image/svg+xml',
+  'image/avif',
+];
 
 export async function POST(req: NextRequest) {
   try {
+    // Allow either a central user session (profile) or an admin session (CMS).
     const sessionUser = await getSession();
-    if (!sessionUser) {
+    const adminSession = sessionUser ? null : await getAdminSession();
+    if (!sessionUser && !adminSession) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -15,6 +28,12 @@ export async function POST(req: NextRequest) {
 
     if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+    }
+    if (!ALLOWED.includes(file.type)) {
+      return NextResponse.json({ error: 'Only image files are allowed' }, { status: 415 });
+    }
+    if (file.size > MAX_BYTES) {
+      return NextResponse.json({ error: 'Image must be under 8 MB' }, { status: 413 });
     }
 
     const bytes = await file.arrayBuffer();
@@ -29,7 +48,7 @@ export async function POST(req: NextRequest) {
     // Ensure directory exists
     try {
       await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
+    } catch {
       // Ignore if exists
     }
 

@@ -1,10 +1,13 @@
 import { constructMetadata } from '@/lib/seo';
 import { ProductsIndex } from '@/components/products/ProductsIndex';
 import { fetchContentItems } from '@/lib/cms';
+import { pages } from '@/lib/site-content';
+
+const basePage = pages['products'];
 
 export const metadata = constructMetadata({
-  title: typeof page !== 'undefined' && page.title ? page.title : undefined,
-  description: typeof page !== 'undefined' && page.description ? page.description : undefined,
+  title: basePage?.title || undefined,
+  description: basePage?.description || undefined,
   url: '/products',
 });
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,11 +9,13 @@ import { Reveal } from '@/components/motion/Reveal';
 import { useCurrency } from '@/hooks/use-currency';
 import { formatPrice, formatMoney } from '@/lib/currency';
 import { CurrencySwitcher } from './CurrencySwitcher';
+import { getAppUrlsAction } from '@/lib/app-urls.actions';
 
 export interface PricingTierData {
   id?: string;
   name: string;
   price: string | number;
+  prices?: Record<string, number>;
   prices?: Record<string, number>;
   cadence?: string;
   body: string;
@@ -24,7 +26,19 @@ export interface PricingTierData {
 export function PricingTiers({ tiers }: { tiers: PricingTierData[] }) {
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const { currency, setCurrency, clearOverride, country, isDetecting, isManual } = useCurrency();
+
+  useEffect(() => {
+    fetch('/api/products/nazexa-db/overview')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.data?.subscription?.planSlug) {
+          setCurrentPlan(data.data.subscription.planSlug);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handlePurchase = async (planId?: string) => {
     if (!planId) {
@@ -59,11 +73,13 @@ export function PricingTiers({ tiers }: { tiers: PricingTierData[] }) {
         if (/^https?:\/\//i.test(checkoutUrl)) {
           window.location.href = checkoutUrl;
         } else {
-          const dbUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
+          const urls = await getAppUrlsAction();
+          const dbUrl = urls['nazexa-db'];
           window.location.href = `${dbUrl}${checkoutUrl.startsWith('/') ? '' : '/'}${checkoutUrl}`;
         }
       } else if (data.data?.status === 'active') {
-        const dbUrl = process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
+        const urls = await getAppUrlsAction();
+        const dbUrl = urls['nazexa-db'];
         window.location.href = `${dbUrl}/account`;
       }
     } catch (err) {
@@ -89,17 +105,25 @@ export function PricingTiers({ tiers }: { tiers: PricingTierData[] }) {
         {tiers.map((tier, j) => (
           <Reveal key={tier.name} variant="up" delay={j * 90}>
             <div
-              className={`surface-card flex h-full flex-col p-7 ${tier.highlight ? 'glow-ring ring-primary/40 ring-1' : ''}`}
+              className={`surface-card flex h-full flex-col p-7 ${tier.highlight || currentPlan === tier.id ? 'glow-ring ring-primary/40 ring-1' : ''}`}
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">{tier.name}</h3>
-                {tier.highlight ? (
+                {currentPlan === tier.id ? (
+                  <Badge className="bg-primary/20 text-primary hover:bg-primary/20">
+                    Current Plan
+                  </Badge>
+                ) : tier.highlight ? (
                   <Badge className="bg-primary/15 text-primary">Most popular</Badge>
                 ) : null}
               </div>
               <div className="mt-4 flex items-baseline gap-2">
                 <span className="text-gradient font-display text-4xl font-semibold">
-                  {typeof tier.price === 'number' ? (tier.prices?.[currency] !== undefined ? formatMoney(tier.prices[currency], currency) : formatPrice(tier.price, currency)) : tier.price}
+                  {typeof tier.price === 'number'
+                    ? tier.prices?.[currency] !== undefined
+                      ? formatMoney(tier.prices[currency], currency)
+                      : formatPrice(tier.price, currency)
+                    : tier.price}
                 </span>
                 {tier.cadence ? (
                   <span className="text-muted-foreground text-xs">/{tier.cadence}</span>
@@ -114,25 +138,35 @@ export function PricingTiers({ tiers }: { tiers: PricingTierData[] }) {
                   </li>
                 ))}
               </ul>
-              <Button
-                onClick={() => handlePurchase(tier.id)}
-                disabled={loadingId === tier.id}
-                className="mt-7"
-                variant={tier.highlight ? 'default' : 'outline'}
-              >
-                {loadingId === tier.id ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : typeof tier.price === 'number' && tier.price === 0 ? (
-                  'Get started'
-                ) : tier.id ? (
-                  'Purchase / Subscribe'
-                ) : (
-                  'Contact sales'
-                )}
-              </Button>
+              {currentPlan === tier.id ? (
+                <Button
+                  disabled
+                  variant="outline"
+                  className="border-primary/40 text-primary mt-7 w-full"
+                >
+                  Active
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => handlePurchase(tier.id)}
+                  disabled={loadingId === tier.id}
+                  className="mt-7"
+                  variant={tier.highlight ? 'default' : 'outline'}
+                >
+                  {loadingId === tier.id ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : typeof tier.price === 'number' && tier.price === 0 ? (
+                    'Get started'
+                  ) : tier.id ? (
+                    'Purchase / Subscribe'
+                  ) : (
+                    'Contact sales'
+                  )}
+                </Button>
+              )}
             </div>
           </Reveal>
         ))}

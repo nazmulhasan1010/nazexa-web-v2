@@ -1,11 +1,11 @@
 import { db } from '@/lib/db';
 
 export async function getGlobalAIProviderConfig() {
-  let config = await db.aiproviderconfig.findUnique({
+  let config = await db.aiProviderConfig.findUnique({
     where: { id: 'global' },
   });
   if (!config) {
-    config = await db.aiproviderconfig.create({
+    config = await db.aiProviderConfig.create({
       data: {
         id: 'global',
         activeProvider: 'openai',
@@ -28,7 +28,7 @@ export async function getActiveAIConfig() {
     };
   }
 
-  const activeAgent = await db.aiagent.findFirst({
+  const activeAgent = await db.aiAgent.findFirst({
     where: { isActive: true },
   });
 

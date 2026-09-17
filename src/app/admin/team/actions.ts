@@ -26,7 +26,12 @@ export async function getAdminUsers() {
   return users;
 }
 
-export async function createAdminUser(data: { name: string; email: string; password?: string; role: string }) {
+export async function createAdminUser(data: {
+  name: string;
+  email: string;
+  password?: string;
+  role: string;
+}) {
   const session = await getAdminSession();
   if (!session || session.user.role !== 'super_admin') {
     throw new Error('Unauthorized');
@@ -52,18 +57,21 @@ export async function createAdminUser(data: { name: string; email: string; passw
   return { success: true };
 }
 
-export async function updateAdminUser(id: string, data: { name?: string; role?: string; status?: string; password?: string }) {
+export async function updateAdminUser(
+  id: string,
+  data: { name?: string; role?: string; status?: string; password?: string }
+) {
   const session = await getAdminSession();
   if (!session || session.user.role !== 'super_admin') {
     throw new Error('Unauthorized');
   }
-  
+
   if (session.user.id === id && data.status === 'disabled') {
     throw new Error('Cannot disable your own account');
   }
 
   const updateData: any = { ...data };
-  
+
   if (data.password) {
     const salt = await bcrypt.genSalt(12);
     updateData.password_hash = await bcrypt.hash(data.password, salt);

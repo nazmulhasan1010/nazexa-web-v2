@@ -85,8 +85,8 @@ export async function getSession(options?: { requiredScope?: string }) {
         // If no required scope is requested, this endpoint does not accept application tokens.
         return null;
       }
-      
-      const tokenScopes = (payload.scopes as string || '').split(' ');
+
+      const tokenScopes = ((payload.scopes as string) || '').split(' ');
       if (!tokenScopes.includes(options.requiredScope)) {
         return null;
       }

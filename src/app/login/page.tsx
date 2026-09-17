@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { TurnstileWidget, TurnstileHandle } from '@/components/auth/TurnstileWidget';
 
 function safeNextPath(raw: string | null): string {
   if (!raw) return '/';
@@ -28,29 +29,37 @@ function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+
+  const turnstileRef = useRef<TurnstileHandle>(null);
 
   const errorParam = searchParams?.get('error');
   const nextPath = safeNextPath(searchParams?.get('redirect') || searchParams?.get('next'));
   const siteOrigin =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    'http://localhost:3000';
+    process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const oauthCallback = `${siteOrigin.replace(/\/$/, '')}${nextPath}`;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!turnstileToken) {
+      toast.error('Please complete the security verification');
+      return;
+    }
+
     setBusy(true);
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, turnstileToken }),
       });
 
       const data = await res.json();
 
       if (!res.ok || data.error) {
         toast.error(data.error || 'Invalid credentials');
+        turnstileRef.current?.reset();
+        setTurnstileToken('');
         return;
       }
 
@@ -59,6 +68,8 @@ function LoginForm() {
       router.refresh();
     } catch (err) {
       toast.error('An error occurred during sign in.');
+      turnstileRef.current?.reset();
+      setTurnstileToken('');
     } finally {
       setBusy(false);
     }
@@ -173,6 +184,12 @@ function LoginForm() {
           </div>
 
           <form onSubmit={onSubmit} className="mt-7 space-y-4">
+            <TurnstileWidget
+              ref={turnstileRef}
+              onVerify={(token) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken('')}
+            />
+            
             <div className="space-y-1.5">
               <Label htmlFor="email">Email address</Label>
               <Input
@@ -202,7 +219,12 @@ function LoginForm() {
                 required
               />
             </div>
-            <Button type="submit" className="glow-ring h-11 w-full" disabled={busy}>
+
+            <Button
+              type="submit"
+              className="glow-ring h-11 w-full"
+              disabled={busy || !turnstileToken}
+            >
               {busy ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
@@ -221,7 +243,9 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="bg-background min-h-screen" />}>
+    <Suspense
+      fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}
+    >
       <LoginForm />
     </Suspense>
   );

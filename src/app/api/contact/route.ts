@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { publishAdminEvent } from '@/lib/socket';
 import { getSession } from '@/lib/auth';
 
 export async function POST(request: Request) {
@@ -32,6 +33,21 @@ export async function POST(request: Request) {
         userId: user?.id || null,
       },
     });
+
+    // Emit real-time notification to admins that a new message was received
+    try {
+      await publishAdminEvent('contact.message.created', {
+        messageId: contactMessage.id,
+        name: contactMessage.name,
+        email: contactMessage.email,
+        preview:
+          contactMessage.message.substring(0, 50) +
+          (contactMessage.message.length > 50 ? '...' : ''),
+        createdAt: contactMessage.createdAt.toISOString(),
+      });
+    } catch (err) {
+      console.error('[socket] Failed to publish event:', err);
+    }
 
     return NextResponse.json({ success: true, message: contactMessage });
   } catch (err) {

@@ -7,8 +7,8 @@ import { fetchContentItems } from '@/lib/cms';
 const basePage = pages['partners']!;
 
 export const metadata = constructMetadata({
-  title: typeof page !== 'undefined' && page.title ? page.title : undefined,
-  description: typeof page !== 'undefined' && page.description ? page.description : undefined,
+  title: basePage?.title || undefined,
+  description: basePage?.description || undefined,
   url: '/partners',
 });
 

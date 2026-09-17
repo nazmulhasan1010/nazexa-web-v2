@@ -111,8 +111,7 @@ export const sslcommerzAdapter: PaymentGatewayAdapter = {
       },
     });
 
-    const redirect =
-      res.data?.GatewayPageURL || res.data?.redirectGatewayURL;
+    const redirect = res.data?.GatewayPageURL || res.data?.redirectGatewayURL;
     if (!res.ok || res.data?.status !== 'SUCCESS' || !redirect) {
       return {
         ok: false,
@@ -132,9 +131,7 @@ export const sslcommerzAdapter: PaymentGatewayAdapter = {
 
   async verifyPayment(input: VerifyPaymentInput): Promise<PaymentVerificationResult> {
     const valId =
-      input.callbackParams?.val_id ||
-      input.gatewayPaymentId ||
-      input.gatewayTransactionId;
+      input.callbackParams?.val_id || input.gatewayPaymentId || input.gatewayTransactionId;
     if (!valId) {
       return {
         ok: false,
@@ -156,6 +153,7 @@ export const sslcommerzAdapter: PaymentGatewayAdapter = {
       tran_id?: string;
       val_id?: string;
       amount?: string;
+      currency_amount?: string;
       currency?: string;
       currency_type?: string;
       bank_tran_id?: string;
@@ -278,7 +276,7 @@ export const sslcommerzAdapter: PaymentGatewayAdapter = {
 
   async testConnection(
     config: Record<string, string>,
-    environment: PaymentEnvironment,
+    environment: PaymentEnvironment
   ): Promise<TestConnectionResult> {
     const v = this.validateConfig(config);
     if (!v.valid) return { ok: false, message: v.errors.join('; '), liveVerified: false };

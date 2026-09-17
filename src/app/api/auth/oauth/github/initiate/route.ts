@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
+import { getAppUrlsAction } from '@/lib/app-urls.actions';
+
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const rawCallbackUrl = searchParams.get('callback_url');
@@ -9,13 +11,15 @@ export async function GET(request: NextRequest) {
   const protocol = host.includes('localhost') ? 'http' : 'https';
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
 
+  const urls = await getAppUrlsAction();
+
   const clientId = process.env.GITHUB_CLIENT_ID;
   const redirectUri = `${baseUrl}/api/auth/callback/github`;
 
   if (!clientId) {
     return NextResponse.json(
       { error: 'GitHub OAuth not configured in environment' },
-      { status: 500 },
+      { status: 500 }
     );
   }
 
@@ -23,11 +27,9 @@ export async function GET(request: NextRequest) {
   if (rawCallbackUrl) {
     try {
       const parsed = new URL(rawCallbackUrl);
-      const allowedOrigins = [
-        baseUrl,
-        process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000',
-        process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000',
-      ].filter(Boolean) as string[];
+      const allowedOrigins = [baseUrl, urls['nazexa-db'], urls['nazexa-socket-platform']].filter(
+        Boolean
+      ) as string[];
 
       const isValidOrigin = allowedOrigins.some((origin) => {
         try {
@@ -51,7 +53,7 @@ export async function GET(request: NextRequest) {
       callback_url: callbackUrl || undefined,
       nonce,
       auth_perform_from: authPerformFrom || undefined,
-    }),
+    })
   ).toString('base64url');
 
   const authUrlParams = new URLSearchParams({
@@ -62,7 +64,7 @@ export async function GET(request: NextRequest) {
   });
 
   const response = NextResponse.redirect(
-    `https://github.com/login/oauth/authorize?${authUrlParams.toString()}`,
+    `https://github.com/login/oauth/authorize?${authUrlParams.toString()}`
   );
 
   const isProd = process.env.NODE_ENV === 'production';

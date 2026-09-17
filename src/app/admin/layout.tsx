@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   LayoutDashboard,
   CreditCard,
@@ -9,40 +9,243 @@ import {
   FileText,
   Palette,
   Search,
-  LogOut,
   Loader2,
   Library,
   MessageSquare,
   PhoneCall,
   Bot,
   Users,
+  Mail,
+  BookOpen,
+  Boxes,
+  LogOut,
+  ChevronDown,
+  ChevronRight,
+  AppWindow,
+  Shield,
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
 import { useAdminAuth, useAdminSignOut } from '@/hooks/useAdminAuth';
+import { SocketProvider } from '@/components/providers/SocketProvider';
+import { AdminSocketListeners } from '@/components/admin/AdminSocketListeners';
 import { cn } from '@/lib/utils';
+import { CONTENT_SCHEMA } from '@/lib/content-schema';
+import { MODEL_REGISTRY, MODEL_KEYS } from '@/lib/cms-models/registry';
+import Image from 'next/image';
 
-const nav = [
-  { to: '/admin', label: 'Overview', icon: LayoutDashboard, exact: true },
-  { to: '/admin/builder', label: 'Homepage builder', icon: Layers },
-  { to: '/admin/content', label: 'Content library', icon: Library },
-  { to: '/admin/pages', label: 'Pages', icon: FileText },
-  { to: '/admin/theme', label: 'Theme', icon: Palette },
-  { to: '/admin/seo', label: 'SEO', icon: Search },
-  { to: '/admin/messages', label: 'Messages', icon: MessageSquare },
-  { to: '/admin/contact-settings', label: 'Contact Config', icon: PhoneCall },
-  { to: '/admin/ai-management', label: 'AI Management', icon: Bot },
-  { to: '/admin/payments', label: 'Payments', icon: CreditCard },
-  { to: '/admin/team', label: 'Team & Roles', icon: Users },
+// ── Nav definition ─────────────────────────────────────────────────────────────
+
+const LIBRARY_KEYS = [
+  'blog',
+  'announcement',
+  'video',
+  'gallery',
+  'document',
+  'faq',
+  'products',
+  'services',
+  'solutions',
+  'industries',
+  'case-studies',
+  'portfolio',
+  'news',
+  'integrations',
+  'events',
+  'team',
+  'customers',
+  'partners',
+  'pricing',
+  'tutorials',
+  'community',
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+const SITE_KEYS = ['pillars', 'missionvision', 'technologies', 'values', 'stats', 'process'];
+
+type FlatNavItem = {
+  to: string;
+  label: string;
+  icon: React.ElementType;
+  exact?: boolean;
+  badge?: 'payments' | 'messages';
+};
+
+type GroupNavItem = {
+  label: string;
+  icon: React.ElementType;
+  href: string; // clicking the label navigates here
+  children: { to: string; label: string }[];
+};
+
+type NavItem = ({ kind: 'flat' } & FlatNavItem) | ({ kind: 'group' } & GroupNavItem);
+
+const nav: NavItem[] = [
+  { kind: 'flat', to: '/admin', label: 'Overview', icon: LayoutDashboard, exact: true },
+  { kind: 'flat', to: '/admin/builder', label: 'Homepage builder', icon: Layers },
+  {
+    kind: 'group',
+    label: 'Content Library',
+    icon: Library,
+    href: '/admin/content',
+    children: LIBRARY_KEYS.map((key) => ({
+      to: `/admin/content?collection=${key}`,
+      label: CONTENT_SCHEMA[key]?.label || key,
+    })),
+  },
+  {
+    kind: 'group',
+    label: 'Site Content',
+    icon: BookOpen,
+    href: '/admin/content/site',
+    children: SITE_KEYS.map((key) => ({
+      to: `/admin/content/site?collection=${key}`,
+      label: CONTENT_SCHEMA[key]?.label || key,
+    })),
+  },
+  {
+    kind: 'group',
+    label: 'Pages & Data',
+    icon: Boxes,
+    href: '/admin/models',
+    children: MODEL_KEYS.map((key) => ({
+      to: `/admin/models/${key}`,
+      label: MODEL_REGISTRY[key]?.label || key,
+    })),
+  },
+  { kind: 'flat', to: '/admin/pages', label: 'Pages', icon: FileText },
+  { kind: 'flat', to: '/admin/applications', label: 'Applications', icon: AppWindow },
+  { kind: 'flat', to: '/admin/subscribers', label: 'Subscribers', icon: Users },
+  { kind: 'flat', to: '/admin/mail-subscribers', label: 'Mail Subscribers', icon: Mail },
+  { kind: 'flat', to: '/admin/theme', label: 'Theme', icon: Palette },
+  { kind: 'flat', to: '/admin/seo', label: 'SEO', icon: Search },
+  {
+    kind: 'flat',
+    to: '/admin/messages',
+    label: 'Messages',
+    icon: MessageSquare,
+    badge: 'messages',
+  },
+  { kind: 'flat', to: '/admin/contact-settings', label: 'Contact Config', icon: PhoneCall },
+  { kind: 'flat', to: '/admin/ai-management', label: 'AI Management', icon: Bot },
+  { kind: 'flat', to: '/admin/payments', label: 'Payments', icon: CreditCard, badge: 'payments' },
+  { kind: 'flat', to: '/admin/team', label: 'Team & Roles', icon: Users },
+  { kind: 'flat', to: '/admin/security', label: 'Security', icon: Shield },
+];
+
+// ── GroupNavRow — label navigates, chevron toggles ────────────────────────────
+
+function GroupNavRow({
+  item,
+  pathname,
+  searchQuery,
+}: {
+  item: GroupNavItem;
+  pathname: string;
+  searchQuery: string;
+}) {
+  // Determine if any child is active
+  const isAnyChildActive = item.children.some((child) => {
+    const [childPath, childQuery] = child.to.split('?');
+    return pathname === childPath && (!childQuery || searchQuery.includes(childQuery));
+  });
+
+  // Auto-open when a child is active; stay open if user manually opened it
+  const [open, setOpen] = useState(isAnyChildActive);
+  useEffect(() => {
+    if (isAnyChildActive) setOpen(true);
+  }, [isAnyChildActive]);
+
+  const isParentActive = pathname === item.href || isAnyChildActive;
+
+  return (
+    <div>
+      {/* Row: left = Link (navigate), right = chevron button (toggle) */}
+      <div
+        className={cn(
+          'flex items-center rounded-md text-sm transition-colors',
+          isParentActive
+            ? 'bg-primary/10 text-primary'
+            : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+        )}
+      >
+        {/* Clickable label → navigates to overview page AND opens dropdown */}
+        <Link
+          href={item.href}
+          onClick={() => setOpen((prev) => !prev)}
+          className="flex flex-1 items-center gap-2.5 px-3 py-2"
+        >
+          <item.icon className="h-4 w-4 shrink-0" />
+          <span className={cn('truncate', isParentActive && 'font-medium')}>{item.label}</span>
+        </Link>
+
+        {/* Chevron → only toggles dropdown, does NOT navigate */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            setOpen((prev) => !prev);
+          }}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-black/10 dark:hover:bg-white/10"
+          aria-label={open ? 'Collapse' : 'Expand'}
+        >
+          {open ? (
+            <ChevronDown className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronRight className="h-3.5 w-3.5" />
+          )}
+        </button>
+      </div>
+
+      {/* Dropdown children */}
+      {open && (
+        <div className="mt-0.5 ml-7 flex flex-col space-y-0.5 border-l pl-2.5">
+          {item.children.map((child) => {
+            const [childPath, childQuery] = child.to.split('?');
+            const isActive =
+              pathname === childPath && (!childQuery || searchQuery.includes(childQuery));
+            return (
+              <Link
+                key={child.to}
+                href={child.to}
+                className={cn(
+                  'rounded-md px-2.5 py-1.5 text-xs transition-colors',
+                  isActive
+                    ? 'bg-primary/10 text-primary font-medium'
+                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                )}
+              >
+                {child.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Layout ────────────────────────────────────────────────────────────────────
+
+function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAdminAuth();
   const router = useRouter();
   const signOut = useAdminSignOut();
   const pathname = usePathname() || '';
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams?.toString() ?? '';
 
+  const [pendingPaymentCount, setPendingPaymentCount] = useState<number>(0);
+  const [unreadMessageCount, setUnreadMessageCount] = useState<number>(0);
+  const queryClient = useQueryClient();
+
+  // Keep the Overview AI section live even when the dashboard page is not mounted.
+  const onAiUsage = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['ai-overview-stats'] });
+  }, [queryClient]);
+
+  // Auth Guard
   useEffect(() => {
     if (!loading) {
       if (!user && !pathname.startsWith('/auth')) {
@@ -50,15 +253,44 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         router.replace(`/auth?${nextParam}`);
         return;
       }
-
       if (user && !user.permissions.includes('*')) {
-        const allowed = user.permissions.some(p => pathname === p || pathname.startsWith(`${p}/`));
+        const allowed = user.permissions.some(
+          (p) => pathname === p || pathname.startsWith(`${p}/`)
+        );
         if (!allowed && pathname !== '/admin') {
           router.replace('/admin');
         }
       }
     }
   }, [loading, user, router, pathname]);
+
+  // Payments badge
+  useEffect(() => {
+    if (user && (user.permissions.includes('*') || user.permissions.includes('/admin/payments'))) {
+      fetch('/api/admin/payments/pending-count')
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.success) setPendingPaymentCount(d.count);
+        })
+        .catch(console.error);
+    }
+  }, [user]);
+
+  // Messages badge
+  useEffect(() => {
+    if (user && (user.permissions.includes('*') || user.permissions.includes('/admin/messages'))) {
+      if (pathname === '/admin/messages') {
+        setUnreadMessageCount(0);
+      } else {
+        fetch('/api/admin/messages/unread-count')
+          .then((r) => r.json())
+          .then((d) => {
+            if (d.success) setUnreadMessageCount(d.count);
+          })
+          .catch(console.error);
+      }
+    }
+  }, [pathname, user]);
 
   if (loading || !user) {
     return (
@@ -69,50 +301,124 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="flex min-h-screen">
-      <aside className="border-border bg-card/40 sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r p-5 md:flex">
-        <Link href="/" className="font-display flex items-center gap-2 text-lg font-semibold">
-          <img src="/logos/logo-sm.svg" alt="Nazexa" className="h-6 w-auto" />
-          Nazexa <span className="text-muted-foreground">CMS</span>
-        </Link>
-        <nav className="mt-8 flex-1 space-y-1">
-          {nav.filter(item => user.permissions.includes('*') || user.permissions.includes(item.to)).map((item) => {
-            const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
-            return (
-              <Link
-                key={item.to}
-                href={item.to}
-                className={cn(
-                  'flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors',
-                  active
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="border-border border-t pt-4">
-          <p className="text-muted-foreground truncate text-xs">{user.email}</p>
-          <p className="text-primary mt-0.5 text-xs">
-            {user.role || 'no role assigned'}
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-3 w-full"
-            onClick={() => void signOut()}
+    <SocketProvider>
+      <div className="flex min-h-screen">
+        <AdminSocketListeners
+          setPendingPaymentCount={setPendingPaymentCount}
+          setUnreadMessageCount={setUnreadMessageCount}
+          onAiUsage={onAiUsage}
+        />
+
+        {/* Sidebar */}
+        <aside className="border-border bg-card/40 sticky top-0 hidden h-screen w-64 shrink-0 scrollbar-none flex-col border-r p-5 [-ms-overflow-style:none] md:flex overflow-y-hidden">
+          <Link
+            href="/"
+            className="font-display flex shrink-0 items-center gap-2 text-lg font-semibold"
           >
-            <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
-          </Button>
-        </div>
-      </aside>
-      <div className="min-w-0 flex-1 px-5 py-8 md:px-10">
-        <div className="mx-auto max-w-5xl">{children}</div>
+            <div
+              className="flex min-w-0 flex-1 items-center gap-2"
+            >
+              <div className="relative flex h-10 w-32 shrink-0 items-center justify-center">
+                <Image src={'/logos/logo-light.webp'} alt="Logo" width={200} height={200} />
+                <p className="absolute top-7 right-1 text-[9px] text-gray-600 uppercase">CMS</p>
+              </div>
+            </div>
+          </Link>
+
+          <nav className="my-4 flex-1 space-y-0.5 h-full overflow-y-auto scrollbar-none">
+            {nav.map((item) => {
+              // Permission check
+              if (item.kind === 'group') {
+                const hasPerm =
+                  user.permissions.includes('*') || user.permissions.includes('/admin/content');
+                if (!hasPerm) return null;
+
+                return (
+                  <GroupNavRow
+                    key={item.label}
+                    item={item}
+                    pathname={pathname}
+                    searchQuery={searchQuery}
+                  />
+                );
+              }
+
+              // Flat item
+              const hasPerm = user.permissions.includes('*') || user.permissions.includes(item.to);
+              if (!hasPerm) return null;
+
+              const active = item.exact
+                ? pathname === item.to
+                : item.to === '/admin/content'
+                  ? pathname === '/admin/content' && !searchQuery.includes('collection=') === false
+                  : pathname === item.to || pathname.startsWith(`${item.to}/`);
+
+              return (
+                <Link
+                  key={item.to}
+                  href={item.to}
+                  className={cn(
+                    'flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors',
+                    active
+                      ? 'bg-primary/10 text-primary font-medium'
+                      : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                  )}
+                >
+                  <div className="flex min-w-0 items-center gap-2.5">
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{item.label}</span>
+                  </div>
+                  {item.badge === 'payments' && pendingPaymentCount > 0 && (
+                    <span className="bg-primary text-primary-foreground flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
+                      {pendingPaymentCount}
+                    </span>
+                  )}
+                  {item.badge === 'messages' && unreadMessageCount > 0 && (
+                    <span className="bg-primary text-primary-foreground flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
+                      {unreadMessageCount}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* User footer */}
+          <div className="shrink-0 border-t pt-4">
+            <div className="flex items-center gap-3 px-3 py-2">
+              <div className="bg-primary/10 text-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-semibold uppercase">
+                {user.name?.[0] || 'A'}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">{user.name}</p>
+                <p className="text-muted-foreground truncate text-xs">{user.email}</p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive mt-2 w-full justify-start gap-2.5"
+              onClick={() => signOut()}
+            >
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </Button>
+          </div>
+        </aside>
+
+        <main className="flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-6xl p-8">{children}</div>
+        </main>
       </div>
-    </div>
+    </SocketProvider>
+  );
+}
+
+// useSearchParams() must sit under a Suspense boundary so admin routes don't fail
+// static prerender during `next build`.
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={null}>
+      <AdminLayoutInner>{children}</AdminLayoutInner>
+    </Suspense>
   );
 }

@@ -132,9 +132,7 @@ export const upayAdapter: PaymentGatewayAdapter = {
       }>(`${base}/checkout/init`, {
         method: 'POST',
         headers: {
-          ...(cfg(input.config, 'apiKey')
-            ? { 'X-API-Key': cfg(input.config, 'apiKey') }
-            : {}),
+          ...(cfg(input.config, 'apiKey') ? { 'X-API-Key': cfg(input.config, 'apiKey') } : {}),
         },
         body: {
           merchantId: cfg(input.config, 'merchantId'),
@@ -149,8 +147,7 @@ export const upayAdapter: PaymentGatewayAdapter = {
         },
       });
 
-      const redirectUrl =
-        res.data?.payment_url || res.data?.redirectUrl || res.data?.checkoutUrl;
+      const redirectUrl = res.data?.payment_url || res.data?.redirectUrl || res.data?.checkoutUrl;
       if (res.ok && redirectUrl) {
         return {
           ok: true,

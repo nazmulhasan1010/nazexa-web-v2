@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useSignOut } from '@/hooks/useAuth';
 import { AuroraBackground } from '@/components/backgrounds/AnimatedBackground';
+import { TurnstileWidget, TurnstileHandle } from '@/components/auth/TurnstileWidget';
 
 function maskEmail(email: string) {
   if (!email) return '';
@@ -31,6 +32,9 @@ function VerifyContent() {
   const [resendTimer, setResendTimer] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileRef = useRef<TurnstileHandle>(null);
+
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const hasSentRef = useRef(false);
 
@@ -41,15 +45,15 @@ function VerifyContent() {
       return;
     }
     if (user.emailVerified) {
-      router.replace('/profile'); // or dashboard
+      router.replace('/profile');
       return;
     }
 
-    if (!hasSentRef.current && !isResending && resendTimer === 0) {
+    if (!hasSentRef.current && turnstileToken && !isResending && resendTimer === 0) {
       hasSentRef.current = true;
       sendCode();
     }
-  }, [loading, user, router]);
+  }, [loading, user, router, turnstileToken, isResending, resendTimer]);
 
   useEffect(() => {
     if (resendTimer > 0) {
@@ -60,21 +64,34 @@ function VerifyContent() {
 
   const sendCode = async () => {
     if (isResending) return;
+    if (!turnstileToken) {
+      toast.error('Please complete the security verification first.');
+      return;
+    }
     try {
       setIsResending(true);
       setError(null);
 
-      const res = await fetch('/api/auth/verify/send', { method: 'POST' });
+      const res = await fetch('/api/auth/verify/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ turnstileToken }),
+      });
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error || 'Failed to send code');
 
       toast.success('Verification code sent');
       setResendTimer(60);
+
+      turnstileRef.current?.reset();
+      setTurnstileToken('');
     } catch (err: any) {
       const msg = err.message || 'Failed to send verification code';
       setError(msg);
       toast.error(msg);
+      turnstileRef.current?.reset();
+      setTurnstileToken('');
     } finally {
       setIsResending(false);
     }
@@ -199,6 +216,12 @@ function VerifyContent() {
               ))}
             </div>
 
+            <TurnstileWidget
+              ref={turnstileRef}
+              onVerify={(token) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken('')}
+            />
+
             <div className="flex flex-col gap-4">
               <Button
                 onClick={() => handleVerify(code.join(''))}
@@ -218,7 +241,7 @@ function VerifyContent() {
               <Button
                 variant="ghost"
                 onClick={() => sendCode()}
-                disabled={resendTimer > 0 || isResending}
+                disabled={resendTimer > 0 || isResending || !turnstileToken}
                 className="w-full text-sm"
               >
                 {isResending ? (

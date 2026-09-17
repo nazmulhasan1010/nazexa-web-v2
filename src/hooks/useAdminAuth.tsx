@@ -3,7 +3,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, type ReactNode } from 'react';
-import { getAdminSession, adminLogout } from '@/lib/admin-auth.server';
 
 type AdminAuthContextValue = {
   user: {
@@ -26,14 +25,17 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     queryKey: ['admin-auth-session'],
     queryFn: async () => {
       try {
-        const res = await getAdminSession();
-        console.log('getAdminSession success:', res);
-        return res;
+        const res = await fetch('/api/admin/auth/session', { credentials: 'include' });
+        if (!res.ok) return null;
+        const json = await res.json();
+        return json;
       } catch (err) {
-        console.error('getAdminSession error:', err);
-        throw err;
+        console.error('Admin session check error:', err);
+        return null;
       }
     },
+    staleTime: 30_000,
+    retry: false,
   });
 
   return (
@@ -51,7 +53,11 @@ export function useAdminSignOut() {
   const queryClient = useQueryClient();
   const router = useRouter();
   return async () => {
-    await adminLogout();
+    try {
+      await fetch('/api/admin/auth/logout', { method: 'POST', credentials: 'include' });
+    } catch (_) {
+      /* ignore */
+    }
     await queryClient.cancelQueries();
     queryClient.clear();
     router.replace('/auth');

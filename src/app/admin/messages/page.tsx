@@ -1,15 +1,64 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { Loader2, Mail, CheckCircle2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Loader2, Mail, CheckCircle2, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
+import { useEffect } from 'react';
+import { useSocket } from '@/components/providers/SocketProvider';
 
 export default function AdminMessages() {
+  const queryClient = useQueryClient();
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewMessage = () => {
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
+    };
+
+    socket.on('contact.message.created', handleNewMessage);
+    return () => {
+      socket.off('contact.message.created', handleNewMessage);
+    };
+  }, [socket, queryClient]);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ['messages'],
     queryFn: async () => {
       const res = await fetch('/api/messages');
       if (!res.ok) throw new Error('Failed to fetch messages');
       return res.json();
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/admin/messages/delete?id=${id}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to delete message');
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success('Message deleted');
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
+    },
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
 
@@ -53,7 +102,9 @@ export default function AdminMessages() {
                     {msg.read ? (
                       <CheckCircle2 className="text-muted-foreground h-4 w-4" />
                     ) : (
-                      <span className="bg-primary flex h-2 w-2 rounded-full" />
+                      <span className="bg-primary text-primary-foreground rounded-md px-1.5 py-0.5 text-[10px] font-bold tracking-wider uppercase">
+                        New
+                      </span>
                     )}
                   </h3>
                   <p className="text-muted-foreground mt-1 flex items-center gap-1.5 text-sm">
@@ -61,8 +112,42 @@ export default function AdminMessages() {
                     {msg.email || 'No email provided'}
                   </p>
                 </div>
-                <div className="text-muted-foreground text-sm">
+                <div className="text-muted-foreground flex items-center gap-4 text-sm">
                   {new Date(msg.createdAt).toLocaleString()}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive hover:bg-destructive/10 hover:text-destructive h-8 w-8"
+                        disabled={deleteMutation.isPending && deleteMutation.variables === msg.id}
+                      >
+                        {deleteMutation.isPending && deleteMutation.variables === msg.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Message?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will permanently delete the message from{' '}
+                          <b>{msg.name || 'Anonymous'}</b>. This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteMutation.mutate(msg.id)}
+                          className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                        >
+                          Delete Message
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
               <div className="border-border/50 text-foreground/90 mt-4 border-t pt-4 text-sm whitespace-pre-wrap">

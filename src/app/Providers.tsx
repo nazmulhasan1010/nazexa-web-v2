@@ -34,7 +34,7 @@ export function Providers({
           {!bare && <SiteHeader products={products} />}
           <main className="relative z-10">{children}</main>
           {!bare && <SiteFooter />}
-          <Toaster />
+          <Toaster position={pathname?.startsWith('/admin') ? 'top-right' : 'bottom-right'} />
         </AdminAuthProvider>
       </AuthProvider>
     </QueryClientProvider>

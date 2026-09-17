@@ -1,0 +1,22 @@
+const { PrismaClient } = require('@prisma/client');
+const { SignJWT } = require('jose');
+const prisma = new PrismaClient();
+const JWT_SECRET =
+  process.env.JWT_SECRET || 'fallback-secret-for-development-only-do-not-use-in-prod';
+const encodedKey = new TextEncoder().encode(JWT_SECRET);
+async function main() {
+  const userId = '03c3c400-ccfe-4999-b2f3-68d6330728d4';
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const sessionId =
+    Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  await prisma.session.create({ data: { id: sessionId, userId, expiresAt } });
+  const token = await new SignJWT({ userId, sessionId })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('7d')
+    .sign(encodedKey);
+  console.log('TOKEN:', token);
+}
+main()
+  .catch(console.error)
+  .finally(async () => await prisma.$disconnect());

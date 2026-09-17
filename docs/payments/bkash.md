@@ -6,17 +6,17 @@ Tokenized Checkout: grant token → create → execute on return.
 
 ## Endpoints (`gatewayEndpoints.bkash`)
 
-| Env | Base |
-| --- | --- |
-| Sandbox | `https://tokenized.sandbox.bka.sh/v1.2.0-beta` |
-| Production | `https://tokenized.pay.bka.sh/v1.2.0-beta` |
+| Env        | Base                                           |
+| ---------- | ---------------------------------------------- |
+| Sandbox    | `https://tokenized.sandbox.bka.sh/v1.2.0-beta` |
+| Production | `https://tokenized.pay.bka.sh/v1.2.0-beta`     |
 
-| Path | Purpose |
-| --- | --- |
-| `/tokenized/checkout/token/grant` | OAuth-style grant |
-| `/tokenized/checkout/create` | Create payment |
-| `/tokenized/checkout/execute` | Execute after return |
-| `/tokenized/checkout/payment/status` | Query status |
+| Path                                 | Purpose              |
+| ------------------------------------ | -------------------- |
+| `/tokenized/checkout/token/grant`    | OAuth-style grant    |
+| `/tokenized/checkout/create`         | Create payment       |
+| `/tokenized/checkout/execute`        | Execute after return |
+| `/tokenized/checkout/payment/status` | Query status         |
 
 Optional config `apiBaseUrl` overrides base if merchant docs require it.
 

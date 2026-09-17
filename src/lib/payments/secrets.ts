@@ -118,7 +118,8 @@ export function truncatePayload(input: string, max = 32_000): string {
 export function sanitizeForStorage(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(sanitizeForStorage);
   if (!value || typeof value !== 'object') return value;
-  const SENSITIVE = /(secret|password|passwd|signature_key|private|token|authorization|card|cvv|pan)/i;
+  const SENSITIVE =
+    /(secret|password|passwd|signature_key|private|token|authorization|card|cvv|pan)/i;
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
     if (SENSITIVE.test(k)) {

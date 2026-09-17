@@ -44,7 +44,7 @@ function verifyStripeSignature(
   payload: string,
   header: string | null,
   secret: string,
-  toleranceSec = 300,
+  toleranceSec = 300
 ): boolean {
   if (!header || !secret) return false;
   const parts = header.split(',').map((p) => p.trim());
@@ -218,8 +218,7 @@ export const stripeAdapter: PaymentGatewayAdapter = {
     const amountOk = amount == null || amountsMatch(input.amount, amount);
     const currencyOk = currenciesMatch(input.currency, currency);
     const metaOk =
-      !res.data.metadata?.transaction_id ||
-      res.data.metadata.transaction_id === input.publicId;
+      !res.data.metadata?.transaction_id || res.data.metadata.transaction_id === input.publicId;
 
     if (paid && (!amountOk || !currencyOk || !metaOk)) {
       return {
@@ -288,7 +287,7 @@ export const stripeAdapter: PaymentGatewayAdapter = {
     const url = `${apiBase(input.environment)}${gatewayEndpoints.stripe.paths.refunds}`;
     const res = await jsonFetch<{ id?: string; status?: string; error?: { message?: string } }>(
       url,
-      { method: 'POST', bearer: secret, form },
+      { method: 'POST', bearer: secret, form }
     );
     if (!res.ok || !res.data?.id) {
       return {
@@ -334,13 +333,10 @@ export const stripeAdapter: PaymentGatewayAdapter = {
       client_reference_id?: string;
     };
 
-    const paid =
-      event.type === 'checkout.session.completed' && obj.payment_status === 'paid';
+    const paid = event.type === 'checkout.session.completed' && obj.payment_status === 'paid';
     const currency = obj.currency ? normalizeCurrency(obj.currency) : undefined;
     const amount =
-      obj.amount_total != null && currency
-        ? fromMinorUnits(obj.amount_total, currency)
-        : undefined;
+      obj.amount_total != null && currency ? fromMinorUnits(obj.amount_total, currency) : undefined;
 
     return {
       ok: true,
@@ -348,8 +344,7 @@ export const stripeAdapter: PaymentGatewayAdapter = {
       eventType: event.type,
       transactionPublicId: obj.metadata?.transaction_id || obj.client_reference_id,
       gatewayOrderId: obj.id,
-      gatewayPaymentId:
-        typeof obj.payment_intent === 'string' ? obj.payment_intent : undefined,
+      gatewayPaymentId: typeof obj.payment_intent === 'string' ? obj.payment_intent : undefined,
       paid,
       amount,
       currency,
@@ -361,7 +356,7 @@ export const stripeAdapter: PaymentGatewayAdapter = {
 
   async testConnection(
     config: Record<string, string>,
-    environment: PaymentEnvironment,
+    environment: PaymentEnvironment
   ): Promise<TestConnectionResult> {
     const v = this.validateConfig(config);
     if (!v.valid) return { ok: false, message: v.errors.join('; '), liveVerified: false };

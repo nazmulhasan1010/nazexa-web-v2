@@ -6,14 +6,14 @@ Checkout Sessions + webhook HMAC (`stripe-signature`).
 
 ## Endpoints (`gatewayEndpoints.stripe`)
 
-| Env | Base |
-| --- | --- |
+| Env                  | Base                     |
+| -------------------- | ------------------------ |
 | Sandbox / Production | `https://api.stripe.com` |
 
-| Path | Purpose |
-| --- | --- |
+| Path                    | Purpose                   |
+| ----------------------- | ------------------------- |
 | `/v1/checkout/sessions` | Create + retrieve session |
-| `/v1/refunds` | Refunds |
+| `/v1/refunds`           | Refunds                   |
 
 ## Config
 

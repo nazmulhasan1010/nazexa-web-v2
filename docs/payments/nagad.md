@@ -8,16 +8,16 @@ DFS checkout. Endpoints and RSA placeholder flow exist; merchant docs must confi
 
 `documentationStatus: 'verify'`
 
-| Env | Base |
-| --- | --- |
-| Sandbox | `https://sandbox.mynagad.com:10060/remote-payment-gateway-1.0` |
-| Production | `https://api.mynagad.com/api/dfs` |
+| Env        | Base                                                           |
+| ---------- | -------------------------------------------------------------- |
+| Sandbox    | `https://sandbox.mynagad.com:10060/remote-payment-gateway-1.0` |
+| Production | `https://api.mynagad.com/api/dfs`                              |
 
-| Path | Purpose |
-| --- | --- |
-| `/api/dfs/check-out/initialize` | Init |
-| `/api/dfs/check-out/complete` | Complete |
-| `/api/dfs/verify` | Verify |
+| Path                            | Purpose  |
+| ------------------------------- | -------- |
+| `/api/dfs/check-out/initialize` | Init     |
+| `/api/dfs/check-out/complete`   | Complete |
+| `/api/dfs/verify`               | Verify   |
 
 Override with `apiBaseUrl` when merchant docs differ.
 

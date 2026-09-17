@@ -298,12 +298,13 @@ export type PageBlock =
         role: string;
         location?: string;
         focus?: string;
+        image?: string;
       }[];
     }
   | {
       kind: 'cards';
       title: string;
-      items: { title: string; body: string; meta?: string; tag?: string }[];
+      items: { title: string; body: string; meta?: string; tag?: string; href?: string }[];
     }
   | {
       kind: 'checklist';

@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     if (!client_id || !client_secret || !userId || !code) {
       return NextResponse.json(
         { error: 'client_id, client_secret, userId, and code are required' },
-        { status: 400 },
+        { status: 400 }
       );
     }
 

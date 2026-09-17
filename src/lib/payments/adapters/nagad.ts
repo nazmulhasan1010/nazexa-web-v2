@@ -76,7 +76,7 @@ function rsaSignPlaceholder(payload: string, privateKeyPem: string): string | nu
 function rsaVerifyPlaceholder(
   payload: string,
   signatureB64: string,
-  publicKeyPem: string,
+  publicKeyPem: string
 ): boolean {
   if (!publicKeyPem.includes('PUBLIC KEY')) return false;
   try {
@@ -170,10 +170,7 @@ export const nagadAdapter: PaymentGatewayAdapter = {
       challenge,
     };
     const sensitiveJson = JSON.stringify(sensitiveObject);
-    const signature = rsaSignPlaceholder(
-      sensitiveJson,
-      cfg(input.config, 'merchantPrivateKey'),
-    );
+    const signature = rsaSignPlaceholder(sensitiveJson, cfg(input.config, 'merchantPrivateKey'));
 
     if (!signature) {
       return {
@@ -237,7 +234,7 @@ export const nagadAdapter: PaymentGatewayAdapter = {
         const ok = rsaVerifyPlaceholder(
           decoded,
           initRes.data.signature,
-          cfg(input.config, 'nagadPublicKey'),
+          cfg(input.config, 'nagadPublicKey')
         );
         if (!ok) {
           return {
@@ -280,10 +277,7 @@ export const nagadAdapter: PaymentGatewayAdapter = {
       challenge: challengeResp || challenge,
     };
     const completeJson = JSON.stringify(completeSensitive);
-    const completeSig = rsaSignPlaceholder(
-      completeJson,
-      cfg(input.config, 'merchantPrivateKey'),
-    );
+    const completeSig = rsaSignPlaceholder(completeJson, cfg(input.config, 'merchantPrivateKey'));
     if (!completeSig) {
       return {
         ok: false,
@@ -394,8 +388,7 @@ export const nagadAdapter: PaymentGatewayAdapter = {
 
     const status = String(res.data.status || '').toLowerCase();
     const paid = status === 'success' || status === 'paid' || status === 'complete';
-    const amountOk =
-      res.data.amount == null || amountsMatch(input.amount, res.data.amount);
+    const amountOk = res.data.amount == null || amountsMatch(input.amount, res.data.amount);
     const currencyOk =
       !res.data.currencyCode ||
       res.data.currencyCode === '050' ||
@@ -456,14 +449,12 @@ export const nagadAdapter: PaymentGatewayAdapter = {
 
   async testConnection(
     config: Record<string, string>,
-    environment: PaymentEnvironment,
+    environment: PaymentEnvironment
   ): Promise<TestConnectionResult> {
     void environment;
     const v = this.validateConfig(config);
     if (!v.valid) return { ok: false, message: v.errors.join('; '), liveVerified: false };
-    const canSign = Boolean(
-      rsaSignPlaceholder('{"ping":true}', cfg(config, 'merchantPrivateKey')),
-    );
+    const canSign = Boolean(rsaSignPlaceholder('{"ping":true}', cfg(config, 'merchantPrivateKey')));
     return {
       ok: canSign,
       message: canSign

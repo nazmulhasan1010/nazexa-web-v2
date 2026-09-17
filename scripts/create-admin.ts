@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   const email = 'admin@nazexa.com';
   const password = 'password123'; // Standard secure test password
-  
+
   const existing = await prisma.adminUser.findUnique({ where: { email } });
   if (existing) {
     console.log(`Admin user ${email} already exists.`);
@@ -22,8 +22,8 @@ async function main() {
       name: 'Super Admin',
       password_hash,
       role: 'super_admin',
-      status: 'active'
-    }
+      status: 'active',
+    },
   });
 
   console.log(`Successfully created admin user:`);

@@ -63,21 +63,24 @@ export async function POST(req: NextRequest) {
     if (!userId || !productCode || !resolvedPlanId || !currency) {
       return NextResponse.json(
         { error: 'Missing required fields: userId, product, planId/planSlug, currency' },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     const user = await db.user.findUnique({ where: { id: String(userId) } });
     if (!user) {
       return NextResponse.json(
-        { error: 'Central user not found for this account. Re-login via SSO.', code: 'USER_NOT_FOUND' },
-        { status: 404 },
+        {
+          error: 'Central user not found for this account. Re-login via SSO.',
+          code: 'USER_NOT_FOUND',
+        },
+        { status: 404 }
       );
     }
     if (user.status !== 'active') {
       return NextResponse.json(
         { error: 'Central user account is not active', code: 'USER_INACTIVE' },
-        { status: 403 },
+        { status: 403 }
       );
     }
 

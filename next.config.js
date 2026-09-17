@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['@radix-ui/react-label', '@radix-ui/react-slot', 'lucide-react'],
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,

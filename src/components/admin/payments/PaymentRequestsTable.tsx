@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { AdminPagination } from '@/components/admin/AdminPagination';
+import { useSocket } from '@/components/providers/SocketProvider';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -78,16 +79,33 @@ export function PaymentRequestsTable({
     }
   }, [status, page, onPendingCountChange]);
 
+  const { socket } = useSocket();
+
   useEffect(() => {
     void load();
   }, [load]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    // Refresh the table when relevant payment events occur
+    socket.on('payment.request.created', load);
+    socket.on('payment.request.approved', load);
+    socket.on('payment.request.rejected', load);
+
+    return () => {
+      socket.off('payment.request.created', load);
+      socket.off('payment.request.approved', load);
+      socket.off('payment.request.rejected', load);
+    };
+  }, [socket, load]);
 
   const review = async (id: string, action: 'approve' | 'reject', reviewNote?: string) => {
     setReviewing(id);
     try {
       await adminApi.reviewPaymentRequest({ id, action, note: reviewNote });
       toast.success(
-        action === 'approve' ? 'Payment approved — plan activated' : 'Payment rejected',
+        action === 'approve' ? 'Payment approved — plan activated' : 'Payment rejected'
       );
       await load();
     } catch (e) {
@@ -179,7 +197,9 @@ export function PaymentRequestsTable({
                   )}
                 </div>
 
-                {r.status === 'pending' || r.status === 'PENDING_REVIEW' || r.status === 'REQUIRES_ACTION' ? (
+                {r.status === 'pending' ||
+                r.status === 'PENDING_REVIEW' ||
+                r.status === 'REQUIRES_ACTION' ? (
                   <div className="flex shrink-0 gap-2">
                     <Button
                       size="sm"

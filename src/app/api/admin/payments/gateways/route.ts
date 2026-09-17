@@ -22,39 +22,41 @@ export async function GET() {
     });
 
     return NextResponse.json(
-      rows.map((row) => {
-        const def = getGatewayDef(row.code);
-        const config = parseConfig(row.config);
-        const missingFields = missingRequiredFields(row.code, config);
-        return {
-          id: row.id,
-          code: row.code,
-          name: row.displayName?.trim() || def?.name || row.code,
-          displayName: row.displayName,
-          group: def?.group ?? 'bank',
-          checkout: def?.checkout ?? 'manual',
-          type: def?.type ?? row.type,
-          description: def?.description ?? '',
-          instructions: row.instructions,
-          isEnabled: row.isEnabled,
-          sortOrder: row.sortOrder,
-          priority: row.priority,
-          environment: row.environment,
-          supportedCurrencies: row.supportedCurrencies,
-          accent: def?.accent ?? 'text-muted-foreground',
-          fields: def?.fields ?? [],
-          submissionFields: def?.submissionFields ?? [],
-          config: def ? maskedConfig(def.fields, config) : {},
-          missingFields,
-          isConfigured: missingFields.length === 0,
-          supportsRefund: row.supportsRefund,
-          supportsWebhook: row.supportsWebhook,
-          supportsManualReview: row.supportsManualReview,
-          lastTestAt: row.lastTestAt?.toISOString() ?? null,
-          lastTestStatus: row.lastTestStatus,
-          lastTestMessage: row.lastTestMessage,
-        };
-      }),
+      rows
+        .filter((row) => getGatewayDef(row.code) !== undefined)
+        .map((row) => {
+          const def = getGatewayDef(row.code)!;
+          const config = parseConfig(row.config);
+          const missingFields = missingRequiredFields(row.code, config);
+          return {
+            id: row.id,
+            code: row.code,
+            name: row.displayName?.trim() || def?.name || row.code,
+            displayName: row.displayName,
+            group: def?.group ?? 'bank',
+            checkout: def?.checkout ?? 'manual',
+            type: def?.type ?? row.type,
+            description: def?.description ?? '',
+            instructions: row.instructions,
+            isEnabled: row.isEnabled,
+            sortOrder: row.sortOrder,
+            priority: row.priority,
+            environment: row.environment,
+            supportedCurrencies: row.supportedCurrencies,
+            accent: def?.accent ?? 'text-muted-foreground',
+            fields: def?.fields ?? [],
+            submissionFields: def?.submissionFields ?? [],
+            config: def ? maskedConfig(def.fields, config) : {},
+            missingFields,
+            isConfigured: missingFields.length === 0,
+            supportsRefund: row.supportsRefund,
+            supportsWebhook: row.supportsWebhook,
+            supportsManualReview: row.supportsManualReview,
+            lastTestAt: row.lastTestAt?.toISOString() ?? null,
+            lastTestStatus: row.lastTestStatus,
+            lastTestMessage: row.lastTestMessage,
+          };
+        })
     );
   } catch (err) {
     console.error('Admin gateways list error:', err);
@@ -82,7 +84,8 @@ export async function PATCH(req: NextRequest) {
       const def = getGatewayDef(row.code);
       const adapter = getAdapter(row.code);
       if (!def || !adapter?.testConnection) {
-        const msg = 'Configuration format validated. Live credential verification requires a test transaction.';
+        const msg =
+          'Configuration format validated. Live credential verification requires a test transaction.';
         await db.paymentGateway.update({
           where: { id },
           data: {
@@ -95,7 +98,9 @@ export async function PATCH(req: NextRequest) {
       }
       const { unsealConfig } = await import('@/lib/payments/secrets');
       const config = unsealConfig(def.fields, parseConfig(row.config));
-      const env = (row.environment === 'production' ? 'production' : 'sandbox') as PaymentEnvironment;
+      const env = (
+        row.environment === 'production' ? 'production' : 'sandbox'
+      ) as PaymentEnvironment;
       const result = await adapter.testConnection(config, env);
       await db.paymentGateway.update({
         where: { id },
@@ -142,21 +147,31 @@ export async function PATCH(req: NextRequest) {
         def.fields,
         parseConfig(body.config),
         parseConfig(row.config),
-        SECRET_MASK,
+        SECRET_MASK
       );
       data.config = config;
     }
 
-    if (typeof body.isEnabled === 'boolean') {
-      const currentConfig = config ?? parseConfig(row.config);
-      const missing = missingRequiredFields(row.code, currentConfig);
-      if (body.isEnabled && missing.length > 0) {
-        return NextResponse.json(
-          { error: `Complete required fields first: ${missing.join(', ')}` },
-          { status: 422 },
-        );
+    const isEnabledNext = typeof body.isEnabled === 'boolean' ? body.isEnabled : row.isEnabled;
+    const finalConfig = config ?? parseConfig(row.config);
+    const missing = missingRequiredFields(row.code, finalConfig);
+
+    if (isEnabledNext) {
+      if (missing.length > 0) {
+        if (typeof body.isEnabled === 'boolean') {
+          return NextResponse.json(
+            { error: `Complete required fields first: ${missing.join(', ')}` },
+            { status: 422 }
+          );
+        } else {
+          // They saved an invalid config while the gateway was already enabled. Auto-disable it.
+          data.isEnabled = false;
+        }
+      } else if (typeof body.isEnabled === 'boolean') {
+        data.isEnabled = body.isEnabled;
       }
-      data.isEnabled = body.isEnabled;
+    } else if (typeof body.isEnabled === 'boolean') {
+      data.isEnabled = false;
     }
 
     if (Object.keys(data).length === 0) {

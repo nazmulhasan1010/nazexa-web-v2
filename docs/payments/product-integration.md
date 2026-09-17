@@ -11,11 +11,11 @@ Content-Type: application/json
 
 Authenticate with Application credentials registered in Nazexa:
 
-| Field | Required | Notes |
-| --- | --- | --- |
-| `client_id` | Yes | `applications.clientId` |
-| `client_secret` | Yes | Shared secret |
-| Scope | `payments:create` | Reserved; active apps may call create today |
+| Field           | Required          | Notes                                       |
+| --------------- | ----------------- | ------------------------------------------- |
+| `client_id`     | Yes               | `applications.clientId`                     |
+| `client_secret` | Yes               | Shared secret                               |
+| Scope           | `payments:create` | Reserved; active apps may call create today |
 
 Also reserved: `payments:read`, `payments:status` for future read APIs.
 

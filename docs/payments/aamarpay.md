@@ -6,15 +6,15 @@ Bangladeshi aggregator — JSON initiate + search verification.
 
 ## Endpoints (`gatewayEndpoints.aamarpay`)
 
-| Env | Base |
-| --- | --- |
-| Sandbox | `https://sandbox.aamarpay.com` |
-| Production | `https://secure.aamarpay.com` |
+| Env        | Base                           |
+| ---------- | ------------------------------ |
+| Sandbox    | `https://sandbox.aamarpay.com` |
+| Production | `https://secure.aamarpay.com`  |
 
-| Path | Purpose |
-| --- | --- |
-| `/jsonpost.php` | Create payment → `payment_url` |
-| `/api/v1/trxcheck/request.php` | Verify by `request_id` |
+| Path                           | Purpose                        |
+| ------------------------------ | ------------------------------ |
+| `/jsonpost.php`                | Create payment → `payment_url` |
+| `/api/v1/trxcheck/request.php` | Verify by `request_id`         |
 
 ## Config
 

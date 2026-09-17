@@ -109,7 +109,7 @@ export const gatewayEndpoints = {
 
 export function resolveBaseUrl(
   gateway: keyof typeof gatewayEndpoints,
-  environment: EndpointEnv,
+  environment: EndpointEnv
 ): string | null {
   const entry = gatewayEndpoints[gateway] as EnvUrls & { documentationStatus?: string };
   const url = entry[environment];
@@ -117,13 +117,17 @@ export function resolveBaseUrl(
 }
 
 export function appBaseUrl(): string {
-  return (process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'http://localhost:3000').replace(
-    /\/$/,
-    '',
-  );
+  return (
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.APP_URL ||
+    'http://localhost:3000'
+  ).replace(/\/$/, '');
 }
 
-export function paymentCallbackUrl(gateway: string, outcome: 'success' | 'fail' | 'cancel'): string {
+export function paymentCallbackUrl(
+  gateway: string,
+  outcome: 'success' | 'fail' | 'cancel'
+): string {
   return `${appBaseUrl()}/api/payments/callback/${gateway}/${outcome}`;
 }
 

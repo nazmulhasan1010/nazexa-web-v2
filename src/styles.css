@@ -165,6 +165,15 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Hide all scrollbars globally */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  * {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
   h1,
   h2,
   h3,
@@ -350,4 +359,8 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+[role='dialog'] {
+  @apply scrollbar-none;
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 
 import {
@@ -27,7 +29,9 @@ import {
   WaveBackground,
 } from '@/components/backgrounds/AnimatedBackground';
 import { Counter, Magnetic, Reveal, TextReveal } from '@/components/motion/Reveal';
-import { homeSectionsQuery } from '@/lib/queries';
+import { useQuery } from '@tanstack/react-query';
+import { contentQuery } from '@/lib/queries';
+import type { ContentItem } from '@/lib/cms';
 import { Section } from '@/components/site/PageShell';
 import {
   Accordion,
@@ -38,6 +42,27 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
+function useContent(collection: string): ContentItem[] {
+  const { data } = useQuery(contentQuery(collection));
+  return data ?? [];
+}
+
+const cstr = (d: ContentItem['data'] | undefined, key: string): string => {
+  const v = d?.[key];
+  return typeof v === 'string' && v.trim() ? v : '';
+};
+
+// Parse a stat value string like "120+" or "99.99%" into a Counter-friendly shape.
+function parseStat(raw: string): { value: number; suffix: string; decimals: number } | null {
+  const m = raw.match(/^\s*([\d,.]+)(.*)$/);
+  if (!m) return null;
+  const numStr = (m[1] ?? '').replace(/,/g, '');
+  const value = parseFloat(numStr);
+  if (Number.isNaN(value)) return null;
+  const decimals = numStr.includes('.') ? (numStr.split('.')[1]?.length ?? 0) : 0;
+  return { value, suffix: m[2] ?? '', decimals };
+}
 
 const brands = [
   'Northwind',
@@ -134,16 +159,19 @@ $ your product is live — and you own every line`}</code>
   );
 }
 
-export function TrustedBy() {
+export function TrustedBy({ title }: { title?: string | null } = {}) {
+  const customers = useContent('customers');
+  const names = customers.length ? customers.map((c) => c.title || '').filter(Boolean) : brands;
+  if (!names.length) return null;
   return (
     <section className="border-border relative border-y py-10">
       <div className="mx-auto max-w-7xl px-5">
         <p className="text-muted-foreground text-center text-xs tracking-[0.25em] uppercase">
-          Trusted by engineering teams at
+          {title || 'Trusted by engineering teams at'}
         </p>
         <div className="mt-7 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
           <div className="animate-marquee flex w-max gap-14">
-            {[...brands, ...brands].map((b, i) => (
+            {[...names, ...names].map((b, i) => (
               <span
                 key={`${b}-${i}`}
                 className="font-display text-muted-foreground/70 text-lg font-medium"
@@ -344,38 +372,53 @@ export function PlatformOverview() {
 }
 
 export function Stats() {
-  const stats: {
-    value: number;
-    suffix: string;
-    label: string;
-    decimals?: number;
-  }[] = [
-    { value: 120, suffix: '+', label: 'Projects delivered for clients' },
-    { value: 13, suffix: '', label: 'Service practices in-house' },
-    { value: 40, suffix: '+', label: 'Technologies we work with' },
-    { value: 9, suffix: ' yrs', label: 'Building software since 2019' },
+  const cms = useContent('stats');
+  const defaults: { raw: string; label: string }[] = [
+    { raw: '120+', label: 'Projects delivered for clients' },
+    { raw: '13', label: 'Service practices in-house' },
+    { raw: '40+', label: 'Technologies we work with' },
+    { raw: '9 yrs', label: 'Building software since 2019' },
   ];
+  const stats = cms.length
+    ? cms.map((s) => ({ raw: cstr(s.data, 'value'), label: s.title ?? '' }))
+    : defaults;
+  if (!stats.length) return null;
   return (
     <section className="border-border relative isolate overflow-hidden border-y py-16">
       <GridBackground variant="dots" />
       <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s, i) => (
-          <Reveal key={s.label} variant="zoom" delay={i * 90}>
-            <div className="text-center">
-              <div className="text-gradient font-display text-5xl font-semibold">
-                <Counter to={s.value} suffix={s.suffix} decimals={s.decimals ?? 0} />
+        {stats.map((s, i) => {
+          const parsed = parseStat(s.raw);
+          return (
+            <Reveal key={`${s.label}-${i}`} variant="zoom" delay={i * 90}>
+              <div className="text-center">
+                <div className="text-gradient font-display text-5xl font-semibold">
+                  {parsed ? (
+                    <Counter to={parsed.value} suffix={parsed.suffix} decimals={parsed.decimals} />
+                  ) : (
+                    s.raw || '—'
+                  )}
+                </div>
+                <p className="text-muted-foreground mt-2 text-sm">{s.label}</p>
               </div>
-              <p className="text-muted-foreground mt-2 text-sm">{s.label}</p>
-            </div>
-          </Reveal>
-        ))}
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-export function Testimonials() {
-  const items = [
+export function Testimonials({ title }: { title?: string | null } = {}) {
+  const cms = useContent('customers');
+  const fromCms = cms
+    .filter((c) => cstr(c.data, 'testimonial'))
+    .map((c) => ({
+      quote: cstr(c.data, 'testimonial'),
+      name: cstr(c.data, 'author') || c.title || '',
+      role: cstr(c.data, 'author_role'),
+    }));
+  const defaults = [
     {
       quote:
         'Nazexa replaced a decade-old internal system in four months. Their discovery phase alone was worth the engagement.',
@@ -395,11 +438,13 @@ export function Testimonials() {
       role: 'CTO, Helio Health',
     },
   ];
+  const items = fromCms.length ? fromCms : defaults;
+  if (!items.length) return null;
   return (
-    <Section title="What clients say about working with us">
+    <Section title={title || 'What clients say about working with us'}>
       <div className="grid gap-5 lg:grid-cols-3">
         {items.map((t, i) => (
-          <Reveal key={t.name} delay={i * 110}>
+          <Reveal key={`${t.name}-${i}`} delay={i * 110}>
             <figure className="surface-card hover-lift flex h-full flex-col p-7">
               <Quote className="text-primary/60 h-6 w-6" />
               <blockquote className="text-foreground/90 mt-4 flex-1 text-sm leading-relaxed">
@@ -538,32 +583,45 @@ export function BlogPreview() {
   );
 }
 
-export function FaqPreview() {
-  const faqs = [
-    [
-      'How do projects usually start?',
-      'With a short discovery call, followed by a written approach covering scope, architecture, milestones and a fixed estimate — normally within a week.',
-    ],
-    [
-      'Who owns the code and infrastructure?',
-      'You do, from the first commit. Repositories, cloud accounts and credentials are in your name throughout.',
-    ],
-    [
-      'Can you work with our existing team or codebase?',
-      'Yes. We regularly join in-house teams, take over legacy systems and run audits before recommending any rewrite.',
-    ],
-    [
-      'What happens after launch?',
-      'We offer maintenance and support plans with monitoring, security updates and an agreed response time, plus knowledge transfer whenever you want to take over.',
-    ],
+export function FaqPreview({ title }: { title?: string | null } = {}) {
+  const cms = useContent('faq');
+  const defaults: { q: string; a: string }[] = [
+    {
+      q: 'How do projects usually start?',
+      a: 'With a short discovery call, followed by a written approach covering scope, architecture, milestones and a fixed estimate — normally within a week.',
+    },
+    {
+      q: 'Who owns the code and infrastructure?',
+      a: 'You do, from the first commit. Repositories, cloud accounts and credentials are in your name throughout.',
+    },
+    {
+      q: 'Can you work with our existing team or codebase?',
+      a: 'Yes. We regularly join in-house teams, take over legacy systems and run audits before recommending any rewrite.',
+    },
+    {
+      q: 'What happens after launch?',
+      a: 'We offer maintenance and support plans with monitoring, security updates and an agreed response time, plus knowledge transfer whenever you want to take over.',
+    },
   ];
+  const faqs = cms.length
+    ? cms
+        .map((f) => ({ q: f.title || '', a: f.body || '' }))
+        .filter((f) => f.q)
+        .slice(0, 6)
+    : defaults;
+  if (!faqs.length) return null;
   return (
-    <Section title="Working with Nazexa, answered">
+    <Section title={title || 'Working with Nazexa, answered'}>
       <Accordion type="single" collapsible className="mx-auto max-w-3xl">
-        {faqs.map(([q, a]) => (
-          <AccordionItem key={q} value={q as string}>
-            <AccordionTrigger className="text-left">{q}</AccordionTrigger>
-            <AccordionContent className="text-muted-foreground">{a}</AccordionContent>
+        {faqs.map((f, i) => (
+          <AccordionItem key={`${f.q}-${i}`} value={`faq-${i}`}>
+            <AccordionTrigger className="text-left">{f.q}</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground">
+              <div
+                className="prose prose-sm dark:prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: f.a }}
+              />
+            </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>

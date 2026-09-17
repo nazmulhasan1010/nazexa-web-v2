@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -8,6 +8,7 @@ import { AuroraBackground, GridBackground } from '@/components/backgrounds/Anima
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { TurnstileWidget, TurnstileHandle } from '@/components/auth/TurnstileWidget';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -15,21 +16,31 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+
+  const turnstileRef = useRef<TurnstileHandle>(null);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!turnstileToken) {
+      toast.error('Please complete the security verification');
+      return;
+    }
+
     setBusy(true);
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, turnstileToken }),
       });
 
       const data = await res.json();
 
       if (!res.ok || data.error) {
         toast.error(data.error || 'Registration failed');
+        turnstileRef.current?.reset();
+        setTurnstileToken('');
         return;
       }
 
@@ -38,6 +49,8 @@ export default function RegisterPage() {
       router.refresh();
     } catch (err) {
       toast.error('An error occurred during registration.');
+      turnstileRef.current?.reset();
+      setTurnstileToken('');
     } finally {
       setBusy(false);
     }
@@ -101,6 +114,12 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={onSubmit} className="mt-7 space-y-4">
+          <TurnstileWidget
+            ref={turnstileRef}
+            onVerify={(token) => setTurnstileToken(token)}
+            onExpire={() => setTurnstileToken('')}
+          />
+
           <div className="space-y-1.5">
             <Label htmlFor="name">Full Name</Label>
             <Input
@@ -137,7 +156,12 @@ export default function RegisterPage() {
               required
             />
           </div>
-          <Button type="submit" className="glow-ring h-11 w-full" disabled={busy}>
+
+          <Button
+            type="submit"
+            className="glow-ring h-11 w-full"
+            disabled={busy || !turnstileToken}
+          >
             {busy ? 'Creating account...' : 'Create account'}
           </Button>
         </form>

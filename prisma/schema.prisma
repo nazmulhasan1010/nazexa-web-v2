@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-1.0.x"]
@@ -23,6 +18,16 @@ model HomeSection {
   content  String  @db.LongText
 
   @@map("home_sections")
+}
+
+model BuilderDraft {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  data      String   @db.LongText
+  updatedBy String?
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("builder_drafts")
 }
 
 model SiteSettings {
@@ -52,42 +57,366 @@ model Page {
 }
 
 model ContentItem {
-  id         String  @id @default(uuid())
+  id         String   @id @default(uuid())
   collection String
   slug       String
   position   Int
-  published  Boolean @default(false)
+  published  Boolean  @default(false)
   title      String?
-  subtitle   String? @db.Text
-  body       String? @db.LongText
+  subtitle   String?  @db.Text
+  body       String?  @db.LongText
   icon       String?
   tone       String?
   category   String?
   image_url  String?
   link_url   String?
   link_label String?
-  data       String? @db.LongText
+  data       String?  @db.LongText
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
+  @@index([collection])
+  @@index([collection, published])
   @@map("content_items")
 }
 
-model User {
-  id            String    @id @default(uuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?   @db.LongText
-  password_hash String?
-  status        String    @default("active")
-  lastLoginAt   DateTime?
-  lastLoginIp   String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
+model JobPosting {
+  id               String    @id @default(uuid())
+  title            String
+  slug             String    @unique
+  department       String?
+  location         String?
+  level            String?
+  employment_type  String?
+  remote           Boolean   @default(false)
+  excerpt          String?   @db.Text
+  body             String?   @db.LongText
+  responsibilities String?   @db.LongText
+  requirements     String?   @db.LongText
+  salary_band      String?
+  apply_url        String?
+  featured         Boolean   @default(false)
+  published        Boolean   @default(false)
+  position         Int       @default(0)
+  posted_at        DateTime  @default(now())
+  closes_at        DateTime?
+  seo_title        String?
+  seo_description  String?   @db.Text
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @default(now()) @updatedAt
 
-  sessions               Session[]
+  @@index([published])
+  @@map("job_postings")
+}
+
+model Resource {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  excerpt         String?  @db.Text
+  body            String?  @db.LongText
+  type            String   @default("Report")
+  format          String?
+  file_url        String?
+  external_url    String?
+  image_url       String?
+  gated           Boolean  @default(false)
+  featured        Boolean  @default(false)
+  published       Boolean  @default(false)
+  position        Int      @default(0)
+  seo_title       String?
+  seo_description String?  @db.Text
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@index([type])
+  @@map("resources")
+}
+
+model PressAsset {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  type        String   @default("Logo")
+  description String?  @db.Text
+  file_url    String?
+  formats     String?
+  image_url   String?
+  position    Int      @default(0)
+  published   Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@map("press_assets")
+}
+
+model CompanyMilestone {
+  id         String   @id @default(uuid())
+  date       String
+  title      String
+  body       String?  @db.Text
+  tag        String?
+  position   Int      @default(0)
+  published  Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@map("company_milestones")
+}
+
+model LearningPath {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  level           String?
+  module_count    Int      @default(0)
+  duration_label  String?
+  summary         String?  @db.Text
+  image_url       String?
+  modules         String?  @db.LongText
+  featured        Boolean  @default(false)
+  published       Boolean  @default(false)
+  position        Int      @default(0)
+  seo_title       String?
+  seo_description String?  @db.Text
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@map("learning_paths")
+}
+
+model Certification {
+  id           String   @id @default(uuid())
+  name         String
+  requirements String?  @db.Text
+  validity     String?
+  position     Int      @default(0)
+  published    Boolean  @default(false)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@map("certifications")
+}
+
+model Release {
+  id              String             @id @default(uuid())
+  version         String?
+  title           String
+  slug            String             @unique
+  body            String?            @db.LongText
+  type            String             @default("Feature")
+  channel         String             @default("stable")
+  released_at     DateTime           @default(now())
+  security_until  DateTime?
+  status          String             @default("Current")
+  migration_notes String?            @db.Text
+  featured        Boolean            @default(false)
+  published       Boolean            @default(false)
+  position        Int                @default(0)
+  seo_title       String?
+  seo_description String?             @db.Text
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @default(now()) @updatedAt
+  artifacts       DownloadArtifact[]
+
+  @@index([published])
+  @@index([released_at])
+  @@map("releases")
+}
+
+model DownloadArtifact {
+  id            String   @id @default(uuid())
+  kind          String   @default("CLI")
+  name          String
+  platform      String?
+  architecture  String?
+  language      String?
+  package_name  String?
+  version       String?
+  file_url      String?
+  file_size     String?
+  checksum      String?  @db.Text
+  signature_url String?
+  status        String   @default("Stable")
+  release_id    String?
+  release       Release? @relation(fields: [release_id], references: [id], onDelete: SetNull)
+  position      Int      @default(0)
+  published     Boolean  @default(false)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@index([kind])
+  @@index([release_id])
+  @@map("download_artifacts")
+}
+
+model RoadmapItem {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  body            String?  @db.Text
+  phase           String   @default("now")
+  tag             String?
+  target_label    String?
+  featured        Boolean  @default(false)
+  published       Boolean  @default(false)
+  position        Int      @default(0)
+  seo_title       String?
+  seo_description String?  @db.Text
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@index([phase])
+  @@map("roadmap_items")
+}
+
+model DocArticle {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  excerpt         String?  @db.Text
+  body            String?  @db.LongText
+  area            String?
+  difficulty      String?
+  version         String?
+  reading_minutes Int      @default(0)
+  featured        Boolean  @default(false)
+  published       Boolean  @default(false)
+  position        Int      @default(0)
+  seo_title       String?
+  seo_description String?  @db.Text
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@index([area])
+  @@map("doc_articles")
+}
+
+model ApiEndpoint {
+  id               String   @id @default(uuid())
+  method           String   @default("GET")
+  path             String
+  summary          String?  @db.Text
+  api_group        String?
+  description      String?  @db.LongText
+  request_example  String?  @db.LongText
+  response_example String?  @db.LongText
+  version          String?
+  position         Int      @default(0)
+  published        Boolean  @default(false)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@map("api_endpoints")
+}
+
+model ApiErrorCode {
+  id         String   @id @default(uuid())
+  status     Int      @default(400)
+  code       String
+  meaning    String?  @db.Text
+  position   Int      @default(0)
+  published  Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@map("api_error_codes")
+}
+
+model StatusComponent {
+  id              String   @id @default(uuid())
+  name            String
+  component_group String?
+  current_status  String   @default("operational")
+  uptime_90d      String?
+  p50_latency_ms  String?
+  position        Int      @default(0)
+  published       Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now()) @updatedAt
+
+  @@index([published])
+  @@map("status_components")
+}
+
+model Incident {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  severity    String    @default("minor")
+  status      String    @default("resolved")
+  started_at  DateTime  @default(now())
+  resolved_at DateTime?
+  body        String?   @db.LongText
+  updates     String?   @db.LongText
+  published   Boolean   @default(false)
+  position    Int       @default(0)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now()) @updatedAt
+
+  @@index([published])
+  @@index([started_at])
+  @@map("incidents")
+}
+
+model FeatureRequest {
+  id         String               @id @default(uuid())
+  title      String
+  slug       String               @unique
+  body       String?              @db.Text
+  status     String               @default("Under review")
+  vote_count Int                  @default(0)
+  category   String?
+  featured   Boolean              @default(false)
+  published  Boolean              @default(false)
+  position   Int                  @default(0)
+  created_at DateTime             @default(now())
+  updated_at DateTime             @default(now()) @updatedAt
+  votes      FeatureRequestVote[]
+
+  @@index([published])
+  @@map("feature_requests")
+}
+
+model FeatureRequestVote {
+  id         String         @id @default(uuid())
+  request_id String
+  request    FeatureRequest @relation(fields: [request_id], references: [id], onDelete: Cascade)
+  voter_key  String
+  created_at DateTime       @default(now())
+
+  @@unique([request_id, voter_key])
+  @@index([request_id])
+  @@map("feature_request_votes")
+}
+
+model User {
+  id                     String                  @id @default(uuid())
+  name                   String?
+  email                  String                  @unique
+  emailVerified          DateTime?
+  image                  String?                 @db.LongText
+  password_hash          String?
+  status                 String                  @default("active")
+  lastLoginAt            DateTime?
+  lastLoginIp            String?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @default(now()) @updatedAt
   accounts               Account[]
   authorizations         Authorization[]
   emailVerificationCodes EmailVerificationCode[]
+  payment_transactions   PaymentTransaction[]
+  sessions               Session[]
 
   @@map("users")
 }
@@ -105,19 +434,20 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId], map: "accounts_userId_fkey")
   @@map("accounts")
 }
 
 model Session {
-  id        String   @id
+  id        String   @id @default(uuid())
   userId    String
   expiresAt DateTime
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId], map: "sessions_userId_fkey")
   @@map("sessions")
 }
 
@@ -134,11 +464,11 @@ model EmailVerificationCode {
   id        String   @id @default(cuid())
   userId    String
   email     String
-  code      String /// 6-digit numeric code (stored as bcrypt hash)
+  /// 6-digit numeric code (stored as bcrypt hash)
+  code      String
   expiresAt DateTime
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([email])
@@ -146,32 +476,33 @@ model EmailVerificationCode {
 }
 
 model Application {
-  id             String   @id @default(uuid())
-  clientId       String   @unique
-  clientSecret   String
-  name           String
-  status         String   @default("active")
-  redirectUris   String   @db.Text
-  allowedOrigins String?  @db.Text
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @default(now()) @updatedAt
-
-  authorizations Authorization[]
+  id                   String                 @id @default(uuid())
+  clientId             String                 @unique
+  clientSecret         String
+  name                 String
+  status               String                 @default("active")
+  redirectUris         String                 @db.Text
+  allowedOrigins       String?                @db.Text
+  paymentWebhookUrl    String?                @db.Text
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @default(now()) @updatedAt
+  authorizations       Authorization[]
+  payment_transactions PaymentTransaction[]
 
   @@map("applications")
 }
 
 model Authorization {
-  id            String   @id @default(uuid())
+  id            String      @id @default(uuid())
   userId        String
   applicationId String
   scopes        String?
-  createdAt     DateTime @default(now())
-
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, applicationId])
+  @@index([applicationId], map: "authorizations_applicationId_fkey")
   @@map("authorizations")
 }
 
@@ -213,16 +544,16 @@ model ContactSettings {
   @@map("contact_settings")
 }
 
-model aiproviderconfig {
-  id             String  @id @default("global")
-  activeProvider String // "openai" | "google"
-  googleApiKey   String? @db.Text
+model AiProviderConfig {
+  id             String   @id @default("global")
+  activeProvider String
+  googleApiKey   String?  @db.Text
   googleModel    String?
-
-  updatedAt DateTime @default(now()) @updatedAt
+  updatedAt      DateTime @default(now()) @updatedAt
+  @@map("aiproviderconfig")
 }
 
-model aiagent {
+model AiAgent {
   id        String   @id @default(cuid())
   name      String
   baseUrl   String?
@@ -231,4 +562,380 @@ model aiagent {
   isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  @@map("aiagent")
 }
+
+model AdminAuditLog {
+  id         String   @id @default(uuid())
+  actorId    String
+  action     String
+  targetType String
+  targetId   String
+  details    String?  @db.MediumText
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([createdAt])
+  @@index([targetType, targetId])
+  @@map("admin_audit_logs")
+}
+
+model AdminRole {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  permissions String   @db.LongText
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  @@map("admin_roles")
+}
+
+model AdminSession {
+  id          String      @id @default(uuid())
+  userId      String
+  expiresAt   DateTime
+  admin_users AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "admin_sessions_userId_fkey")
+  @@map("admin_sessions")
+}
+
+model AdminUser {
+  id             String           @id @default(uuid())
+  name           String?
+  email          String           @unique
+  password_hash  String
+  role           String           @default("admin")
+  status         String           @default("active")
+  lastLoginAt    DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now())
+  admin_sessions AdminSession[]
+  @@map("admin_users")
+}
+
+model AiJob {
+  id         String   @id @default(uuid())
+  appId      String
+  userId     String
+  prompt     String   @db.LongText
+  context    String?  @db.LongText
+  status     String   @default("pending")
+  response   String?  @db.LongText
+  error      String?  @db.Text
+  provider   String?
+  modelUsed  String?
+  retryCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+
+  @@index([appId, userId])
+  @@index([status])
+  @@map("ai_jobs")
+}
+
+model AiUsageRecord {
+  id              String   @id @default(uuid())
+  jobId           String?  @unique // one record per job, guaranteed
+  provider        String // "openai" | "groq" | "openrouter" | "google" | "custom"
+  model           String
+  appId           String?
+  userId          String?
+  inputTokens     Int      @default(0)
+  outputTokens    Int      @default(0)
+  totalTokens     Int      @default(0)
+  cachedTokens    Int      @default(0)
+  reasoningTokens Int      @default(0)
+  costUsd         Float?
+  costSource      String? // "actual" | "estimated"
+  latencyMs       Int?
+  status          String // "success" | "error"
+  errorMessage    String?  @db.Text
+  createdAt       DateTime @default(now())
+
+  @@index([provider])
+  @@index([createdAt])
+  @@index([status])
+  @@index([userId, createdAt])
+  @@map("ai_usage_records")
+}
+
+/// Per-user daily rollup of AI usage. Powers the contribution heatmap,
+/// active-users counts and fast per-user analytics. Incremented once per
+/// newly-created AiUsageRecord (see recordAiUsage in src/lib/ai/usage.ts).
+model AiUserDailyUsage {
+  id           String   @id @default(uuid())
+  userId       String
+  date         String // 'YYYY-MM-DD' UTC — matches ActivityHeatmap key format
+  requests     Int      @default(0)
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  totalTokens  Int      @default(0)
+  costUsd      Float    @default(0)
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@unique([userId, date])
+  @@index([date])
+  @@index([userId])
+  @@map("ai_user_daily_usage")
+}
+
+/// Latest account snapshot per provider, refreshed server-side from the
+/// provider APIs (OpenRouter live; OpenAI/Groq rate-limit headers captured
+/// from real traffic; Google unavailable). Lets the dashboard load cached
+/// stats instantly and show an accurate lastSyncedAt.
+model AiProviderStat {
+  id           String    @id @default(uuid())
+  provider     String    @unique // "openai" | "groq" | "openrouter" | "google" | "custom"
+  status       String    @default("unavailable") // "ok" | "error" | "unavailable"
+  balance      Float?
+  usage        Float?
+  quota        Float?
+  remaining    Float?
+  requests     Int?
+  inputTokens  Int?
+  outputTokens Int?
+  totalTokens  Int?
+  rateLimits   String?   @db.Text // JSON: {requests:{limit,remaining,reset},tokens:{...},retryAfter}
+  extra        String?   @db.Text // JSON: {usageDaily,usageWeekly,usageMonthly,isFreeTier,note}
+  raw          String?   @db.Text // full provider response, for debugging
+  error        String?   @db.Text
+  syncedAt     DateTime? // last successful account sync (OpenRouter live fetch)
+  headersAt    DateTime? // last rate-limit header capture (OpenAI/Groq)
+  updatedAt    DateTime  @default(now()) @updatedAt
+  createdAt    DateTime  @default(now())
+
+  @@map("ai_provider_stats")
+}
+
+model ManualPaymentProof {
+  id                   String               @id @default(uuid())
+  transactionId        String
+  fields               Json
+  note                 String?              @db.Text
+  submittedAt          DateTime             @default(now())
+  payment_transactions PaymentTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([transactionId])
+  @@map("manual_payment_proofs")
+}
+
+model PaymentAttempt {
+  id                   String               @id @default(uuid())
+  transactionId        String
+  gatewayCode          String
+  status               String
+  gatewayTransactionId String?
+  gatewayOrderId       String?
+  gatewayPaymentId     String?
+  requestSummary       String?              @db.Text
+  responseSummary      String?              @db.Text
+  errorMessage         String?              @db.Text
+  createdAt            DateTime             @default(now())
+  payment_transactions PaymentTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([transactionId])
+  @@map("payment_attempts")
+}
+
+model PaymentGateway {
+  id                   String                 @id @default(uuid())
+  code                 String                 @unique
+  displayName          String?
+  type                 String                 @default("manual")
+  instructions         String?                @db.Text
+  config               Json?
+  isEnabled            Boolean                @default(false)
+  environment          String                 @default("sandbox")
+  priority             Int                    @default(100)
+  sortOrder            Int                    @default(0)
+  supportedCurrencies  String?                @db.Text
+  allowedApplications  String?                @db.Text
+  allowedProducts      String?                @db.Text
+  supportsRecurring    Boolean                @default(false)
+  supportsRefund       Boolean                @default(false)
+  supportsWebhook      Boolean                @default(false)
+  supportsManualReview Boolean                @default(true)
+  lastTestAt           DateTime?
+  lastTestStatus       String?
+  lastTestMessage      String?                @db.Text
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @default(now())
+  payment_transactions PaymentTransaction[]
+
+  @@index([isEnabled, priority])
+  @@map("payment_gateways")
+}
+
+model PaymentProductPlan {
+  id          String   @id @default(uuid())
+  productCode String
+  planCode    String
+  planName    String
+  currency    String
+  amount      Decimal  @db.Decimal(12, 2)
+  interval    String?
+  isActive    Boolean  @default(true)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  @@unique([productCode, planCode, currency])
+  @@index([productCode, isActive])
+  @@map("payment_product_plans")
+}
+
+model PaymentRefund {
+  id                   String               @id @default(uuid())
+  transactionId        String
+  amount               Decimal              @db.Decimal(12, 2)
+  currency             String
+  status               String               @default("REFUND_REQUESTED")
+  gatewayRefundId      String?
+  reason               String?              @db.Text
+  isManual             Boolean              @default(false)
+  requestedBy          String?
+  failureReason        String?              @db.Text
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @default(now())
+  completedAt          DateTime?
+  payment_transactions PaymentTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([transactionId])
+  @@map("payment_refunds")
+}
+
+model PaymentTransaction {
+  id                     String                   @id @default(uuid())
+  publicId               String                   @unique
+  userId                 String
+  appId                  String?
+  product                String
+  productId              String?
+  plan                   String
+  planId                 String?
+  amount                 Decimal                  @db.Decimal(12, 2)
+  currency               String                   @default("USD")
+  amountUsd              Decimal                  @default(0.00) @db.Decimal(12, 2)
+  gatewayId              String?
+  gatewayTransactionId   String?
+  gatewayOrderId         String?
+  gatewayPaymentId       String?
+  status                 String                   @default("CREATED")
+  failureReason          String?                  @db.Text
+  source                 String?
+  metadata               String?                  @db.Text
+  reference              String?
+  details                Json?
+  adminNote              String?                  @db.Text
+  reviewedBy             String?
+  reviewedAt             DateTime?
+  idempotencyKey         String?                  @unique
+  returnUrl              String?                  @db.Text
+  cancelUrl              String?                  @db.Text
+  fulfillmentStatus      String                   @default("PENDING")
+  fulfilledAt            DateTime?
+  expiresAt              DateTime?
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @default(now())
+  paidAt                 DateTime?
+  manual_payment_proofs  ManualPaymentProof[]
+  payment_attempts       PaymentAttempt[]
+  payment_refunds        PaymentRefund[]
+  applications           Application?             @relation(fields: [appId], references: [id])
+  payment_gateways       PaymentGateway?        @relation(fields: [gatewayId], references: [id])
+  users                  User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payment_webhook_events PaymentWebhookEvent[]
+
+  @@index([appId])
+  @@index([gatewayId], map: "payment_transactions_gatewayId_fkey")
+  @@index([gatewayOrderId])
+  @@index([gatewayTransactionId])
+  @@index([status])
+  @@index([userId])
+  @@map("payment_transactions")
+}
+
+model PaymentWebhookEvent {
+  id                   String                @id @default(uuid())
+  gateway              String
+  eventId              String?
+  transactionId        String?
+  eventType            String?
+  processingStatus     String                @default("RECEIVED")
+  failureReason        String?               @db.Text
+  payload              String?               @db.MediumText
+  receivedAt           DateTime              @default(now())
+  processedAt          DateTime?
+  payment_transactions PaymentTransaction? @relation(fields: [transactionId], references: [id])
+
+  @@unique([gateway, eventId])
+  @@index([processingStatus])
+  @@index([transactionId])
+  @@map("payment_webhook_events")
+}
+
+model Subscriber {
+  id             String    @id @default(uuid())
+  email          String    @unique
+  status         String    @default("ACTIVE") // "ACTIVE" | "UNSUBSCRIBED"
+  subscribedAt   DateTime  @default(now())
+  unsubscribedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+
+  deliveries     NewsletterDelivery[]
+
+  @@index([status])
+  @@map("subscribers")
+}
+
+model NewsletterCampaign {
+  id              String   @id @default(uuid())
+  type            String   // "NEWS" | "CUSTOM"
+  subject         String
+  contentHtml     String?  @db.LongText
+  status          String   @default("DRAFT") // "DRAFT" | "QUEUED" | "PROCESSING" | "COMPLETED" | "PARTIALLY_FAILED" | "FAILED"
+  totalRecipients Int      @default(0)
+  sentCount       Int      @default(0)
+  failedCount     Int      @default(0)
+  newsId          String?  // Reference to the published news ID to prevent duplicate campaigns
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  deliveries      NewsletterDelivery[]
+
+  @@index([newsId])
+  @@index([status])
+  @@map("newsletter_campaigns")
+}
+
+model NewsletterDelivery {
+  id           String   @id @default(uuid())
+  campaignId   String
+  subscriberId String
+  status       String   @default("PENDING") // "PENDING" | "SENT" | "FAILED"
+  error        String?  @db.Text
+  sentAt       DateTime?
+
+  campaign   NewsletterCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  subscriber Subscriber         @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, subscriberId])
+  @@index([campaignId, status])
+  @@map("newsletter_deliveries")
+}
+
+model SecuritySettings {
+  id                 String   @id @default("global")
+  turnstileEnabled   Boolean  @default(false)
+  turnstileSiteKey   String?  @db.Text
+  turnstileSecretKey String?  @db.Text
+  updatedAt          DateTime @default(now()) @updatedAt
+
+  @@map("security_settings")
+}
+

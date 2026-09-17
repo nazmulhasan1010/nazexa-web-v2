@@ -289,21 +289,77 @@ async function main() {
       data: {
         password_hash,
         name: adminName,
-      }
+      },
     });
     console.log(`Admin user ${adminEmail} updated with new password.`);
   }
 
   // Payment product plans (authoritative pricing for central payment)
   const plans = [
-    { productCode: 'nazexa-db', planCode: 'starter', planName: 'Starter', currency: 'USD', amount: 9, interval: 'monthly' },
-    { productCode: 'nazexa-db', planCode: 'starter', planName: 'Starter', currency: 'BDT', amount: 999, interval: 'monthly' },
-    { productCode: 'nazexa-db', planCode: 'pro', planName: 'Pro', currency: 'USD', amount: 19, interval: 'monthly' },
-    { productCode: 'nazexa-db', planCode: 'pro', planName: 'Pro', currency: 'BDT', amount: 1999, interval: 'monthly' },
-    { productCode: 'nazexa-db', planCode: 'business', planName: 'Business', currency: 'USD', amount: 49, interval: 'monthly' },
-    { productCode: 'nazexa-db', planCode: 'business', planName: 'Business', currency: 'BDT', amount: 4999, interval: 'monthly' },
-    { productCode: 'nazexa-db', planCode: 'team', planName: 'Team', currency: 'USD', amount: 99, interval: 'monthly' },
-    { productCode: 'nazexa-db', planCode: 'team', planName: 'Team', currency: 'BDT', amount: 9999, interval: 'monthly' },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'starter',
+      planName: 'Starter',
+      currency: 'USD',
+      amount: 9,
+      interval: 'monthly',
+    },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'starter',
+      planName: 'Starter',
+      currency: 'BDT',
+      amount: 999,
+      interval: 'monthly',
+    },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'pro',
+      planName: 'Pro',
+      currency: 'USD',
+      amount: 19,
+      interval: 'monthly',
+    },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'pro',
+      planName: 'Pro',
+      currency: 'BDT',
+      amount: 1999,
+      interval: 'monthly',
+    },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'business',
+      planName: 'Business',
+      currency: 'USD',
+      amount: 49,
+      interval: 'monthly',
+    },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'business',
+      planName: 'Business',
+      currency: 'BDT',
+      amount: 4999,
+      interval: 'monthly',
+    },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'team',
+      planName: 'Team',
+      currency: 'USD',
+      amount: 99,
+      interval: 'monthly',
+    },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'team',
+      planName: 'Team',
+      currency: 'BDT',
+      amount: 9999,
+      interval: 'monthly',
+    },
   ];
   for (const plan of plans) {
     await prisma.paymentProductPlan.upsert({
@@ -315,7 +371,12 @@ async function main() {
         },
       },
       create: { ...plan, isActive: true },
-      update: { planName: plan.planName, amount: plan.amount, interval: plan.interval, isActive: true },
+      update: {
+        planName: plan.planName,
+        amount: plan.amount,
+        interval: plan.interval,
+        isActive: true,
+      },
     });
   }
   console.log(`Seeded ${plans.length} payment product plans`);
@@ -374,4 +435,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-

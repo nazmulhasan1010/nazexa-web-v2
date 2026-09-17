@@ -42,12 +42,18 @@ export async function authenticateApplication(input: {
   return { error: null, app };
 }
 
-export function isAllowlistedUrl(url: string | undefined | null, allowedOrigins: string | null | undefined): boolean {
+export function isAllowlistedUrl(
+  url: string | undefined | null,
+  allowedOrigins: string | null | undefined
+): boolean {
   if (!url) return true;
   if (!allowedOrigins?.trim()) return false;
   try {
     const target = new URL(url);
-    const allowed = allowedOrigins.split(',').map((o) => o.trim()).filter(Boolean);
+    const allowed = allowedOrigins
+      .split(',')
+      .map((o) => o.trim())
+      .filter(Boolean);
     return allowed.some((origin) => {
       try {
         const o = new URL(origin);

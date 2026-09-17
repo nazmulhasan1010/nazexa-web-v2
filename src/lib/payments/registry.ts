@@ -112,7 +112,7 @@ function mfsGateway(
   description: string,
   sortOrder: number,
   accent: string,
-  extras?: Partial<GatewayDef>,
+  extras?: Partial<GatewayDef>
 ): GatewayDef {
   return {
     code,
@@ -173,24 +173,100 @@ export const GATEWAYS: GatewayDef[] = [
     countries: [],
     currencies: [],
     fields: [
-      { key: 'bkashEnabled', label: 'bKash - Enabled', type: 'select', required: true, options: [{value: 'true', label: 'ON'}, {value: 'false', label: 'OFF'}], public: true },
+      {
+        key: 'bkashEnabled',
+        label: 'bKash - Enabled',
+        type: 'select',
+        required: false,
+        options: [
+          { value: 'true', label: 'ON' },
+          { value: 'false', label: 'OFF' },
+        ],
+        public: true,
+      },
       { key: 'bkashNumber', label: 'bKash Number', type: 'text', required: false, public: true },
-      { key: 'bkashInstructions', label: 'bKash Instructions', type: 'textarea', required: false, public: true },
-      
-      { key: 'nagadEnabled', label: 'Nagad - Enabled', type: 'select', required: true, options: [{value: 'true', label: 'ON'}, {value: 'false', label: 'OFF'}], public: true },
+      {
+        key: 'bkashInstructions',
+        label: 'bKash Instructions',
+        type: 'textarea',
+        required: false,
+        public: true,
+      },
+
+      {
+        key: 'nagadEnabled',
+        label: 'Nagad - Enabled',
+        type: 'select',
+        required: false,
+        options: [
+          { value: 'true', label: 'ON' },
+          { value: 'false', label: 'OFF' },
+        ],
+        public: true,
+      },
       { key: 'nagadNumber', label: 'Nagad Number', type: 'text', required: false, public: true },
-      { key: 'nagadInstructions', label: 'Nagad Instructions', type: 'textarea', required: false, public: true },
-      
-      { key: 'bankEnabled', label: 'Bank Transfer - Enabled', type: 'select', required: true, options: [{value: 'true', label: 'ON'}, {value: 'false', label: 'OFF'}], public: true },
+      {
+        key: 'nagadInstructions',
+        label: 'Nagad Instructions',
+        type: 'textarea',
+        required: false,
+        public: true,
+      },
+
+      {
+        key: 'bankEnabled',
+        label: 'Bank Transfer - Enabled',
+        type: 'select',
+        required: false,
+        options: [
+          { value: 'true', label: 'ON' },
+          { value: 'false', label: 'OFF' },
+        ],
+        public: true,
+      },
       { key: 'bankName', label: 'Bank Name', type: 'text', required: false, public: true },
-      { key: 'accountName', label: 'Account Name', type: 'text', required: false, public: true },
-      { key: 'accountNumber', label: 'Account Number', type: 'text', required: false, public: true },
-      { key: 'branch', label: 'Branch Name', type: 'text', required: false, public: true },
-      { key: 'routingNumber', label: 'Routing Number', type: 'text', required: false, public: true },
-      { key: 'bankInstructions', label: 'Bank Instructions', type: 'textarea', required: false, public: true },
+      {
+        key: 'bankAccountName',
+        label: 'Account Name',
+        type: 'text',
+        required: false,
+        public: true,
+      },
+      {
+        key: 'bankAccountNumber',
+        label: 'Account Number',
+        type: 'text',
+        required: false,
+        public: true,
+      },
+      { key: 'bankBranch', label: 'Branch Name', type: 'text', required: false, public: true },
+      {
+        key: 'bankRoutingNumber',
+        label: 'Routing Number',
+        type: 'text',
+        required: false,
+        public: true,
+      },
+      {
+        key: 'bankInstructions',
+        label: 'Bank Instructions',
+        type: 'textarea',
+        required: false,
+        public: true,
+      },
     ],
     submissionFields: [
-      { key: 'customPaymentType', label: 'Payment Method Used', type: 'select', required: true, options: [{value: 'bkash', label: 'bKash'}, {value: 'nagad', label: 'Nagad'}, {value: 'bank_transfer', label: 'Bank Transfer'}] },
+      {
+        key: 'customPaymentType',
+        label: 'Payment Method Used',
+        type: 'select',
+        required: true,
+        options: [
+          { value: 'bkash', label: 'bKash' },
+          { value: 'nagad', label: 'Nagad' },
+          { value: 'bank_transfer', label: 'Bank Transfer' },
+        ],
+      },
       TXN_ID,
       SENDER_NUMBER,
     ],
@@ -296,7 +372,7 @@ export const GATEWAYS: GatewayDef[] = [
     'Rocket',
     'Dutch-Bangla Bank mobile banking — manual MFS only (no automated API).',
     30,
-    'text-purple-600 border-purple-500/30 bg-purple-500/10',
+    'text-purple-600 border-purple-500/30 bg-purple-500/10'
   ),
   {
     ...mfsGateway(
@@ -304,7 +380,7 @@ export const GATEWAYS: GatewayDef[] = [
       'Upay',
       'UCB-backed MFS. Manual by default; optional HTTPS apiBaseUrl enables merchant API.',
       40,
-      'text-sky-600 border-sky-500/30 bg-sky-500/10',
+      'text-sky-600 border-sky-500/30 bg-sky-500/10'
     ),
     type: 'hybrid',
     fields: [
@@ -591,41 +667,6 @@ export const GATEWAYS: GatewayDef[] = [
     supportsWebhook: true,
     supportsManualReview: false,
   },
-
-  // ── Bank transfer ─────────────────────────────────────────────────────────
-  {
-    code: 'bank_transfer',
-    name: 'Bank Transfer',
-    group: 'bank',
-    checkout: 'manual',
-    description: 'Direct bank deposit or wire transfer.',
-    countries: [],
-    currencies: [],
-    fields: [
-      { key: 'bankName', label: 'Bank name', type: 'text', required: true, public: true },
-      { key: 'accountName', label: 'Account name', type: 'text', required: true, public: true },
-      { key: 'accountNumber', label: 'Account number', type: 'text', required: true, public: true },
-      { key: 'branch', label: 'Branch', type: 'text', required: false, public: true },
-      {
-        key: 'routingNumber',
-        label: 'Routing number',
-        type: 'text',
-        required: false,
-        public: true,
-      },
-      { key: 'swift', label: 'SWIFT / BIC', type: 'text', required: false, public: true },
-    ],
-    submissionFields: [
-      { key: 'transactionId', label: 'Reference / slip number', type: 'text', required: true },
-      { key: 'senderName', label: 'Sender account name', type: 'text', required: false },
-    ],
-    accent: 'text-slate-600 border-slate-500/30 bg-slate-500/10',
-    defaultSortOrder: 120,
-    type: 'manual',
-    supportsRefund: false,
-    supportsWebhook: false,
-    supportsManualReview: true,
-  },
 ];
 
 export const GATEWAY_GROUP_LABELS: Record<GatewayGroup, string> = {
@@ -646,7 +687,7 @@ export const GATEWAY_CAPABILITIES = Object.fromEntries(
       supportsWebhook: g.supportsWebhook,
       supportsManualReview: g.supportsManualReview,
     },
-  ]),
+  ])
 ) as Record<
   string,
   {
@@ -682,12 +723,28 @@ export function missingRequiredFields(code: string, config: GatewayConfig): stri
     .map((f) => f.label);
 
   if (code === 'custom_payment') {
-    if (config?.bkashEnabled === 'true') { if (!config?.bkashNumber?.trim()) missing.push('bKash Number'); else if (!/^01[3-9]\d{8}$/.test(config.bkashNumber.trim())) missing.push('Valid bKash Number (01XXXXXXXXX)'); }
-    if (config?.nagadEnabled === 'true') { if (!config?.nagadNumber?.trim()) missing.push('Nagad Number'); else if (!/^01[3-9]\d{8}$/.test(config.nagadNumber.trim())) missing.push('Valid Nagad Number (01XXXXXXXXX)'); }
-    if (config?.bankEnabled === 'true') {
+    const bkash = config?.bkashEnabled === 'true';
+    const nagad = config?.nagadEnabled === 'true';
+    const bank = config?.bankEnabled === 'true';
+
+    if (!bkash && !nagad && !bank) {
+      missing.push('At least one payment option (bKash, Nagad, or Bank Transfer)');
+    }
+
+    if (bkash) {
+      if (!config?.bkashNumber?.trim()) missing.push('bKash Number');
+      else if (!/^01[3-9]\d{8}$/.test(config.bkashNumber.trim()))
+        missing.push('Valid bKash Number (01XXXXXXXXX)');
+    }
+    if (nagad) {
+      if (!config?.nagadNumber?.trim()) missing.push('Nagad Number');
+      else if (!/^01[3-9]\d{8}$/.test(config.nagadNumber.trim()))
+        missing.push('Valid Nagad Number (01XXXXXXXXX)');
+    }
+    if (bank) {
       if (!config?.bankName?.trim()) missing.push('Bank Name');
-      if (!config?.accountName?.trim()) missing.push('Account Name');
-      if (!config?.accountNumber?.trim()) missing.push('Account Number');
+      if (!config?.bankAccountName?.trim()) missing.push('Account Name');
+      if (!config?.bankAccountNumber?.trim()) missing.push('Account Number');
     }
   }
 

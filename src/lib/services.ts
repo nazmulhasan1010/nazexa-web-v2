@@ -879,7 +879,8 @@ export const services: Service[] = [
   },
 ];
 
-export const serviceBySlug = Object.fromEntries(services.map((s) => [s.slug, s]));
+export const serviceBySlug = (slug: string): Service | undefined =>
+  services.find((s) => s.slug === slug);
 export const serviceSlugs = services.map((s) => s.slug);
 
 export const engagementProcess = [

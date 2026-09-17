@@ -3,12 +3,24 @@ import { getSession } from '@/lib/auth';
 import { generateVerificationCode } from '@/lib/verification-code';
 import { sendVerificationEmail } from '@/lib/verification-email';
 import { db } from '@/lib/db';
+import { verifyTurnstile } from '@/lib/turnstile';
 
-export async function POST() {
+export async function POST(request: Request) {
   const sessionUser = await getSession();
 
   if (!sessionUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const { turnstileToken } = await request.json();
+    const isTurnstileValid = await verifyTurnstile(turnstileToken);
+
+    if (!isTurnstileValid) {
+      return NextResponse.json({ error: 'Invalid security verification' }, { status: 400 });
+    }
+  } catch (err) {
+    return NextResponse.json({ error: 'Invalid request payload' }, { status: 400 });
   }
 
   const userId = sessionUser.id;

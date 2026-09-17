@@ -18,12 +18,12 @@ Implemented in `src/app/api/payments/webhook/[gateway]/route.ts`.
 
 ### Gateways with `handleWebhook`
 
-| Gateway | Signature / validation |
-| --- | --- |
-| `stripe` | `stripe-signature` (`t=…,v1=…`) + `webhookSecret` |
-| `razorpay` | `X-Razorpay-Signature` HMAC-SHA256 of raw body |
-| `paddle` | `Paddle-Signature` (`ts=…;h1=…`) |
-| `sslcommerz` | IPN body; confirm via validation API (`val_id`) |
+| Gateway      | Signature / validation                            |
+| ------------ | ------------------------------------------------- |
+| `stripe`     | `stripe-signature` (`t=…,v1=…`) + `webhookSecret` |
+| `razorpay`   | `X-Razorpay-Signature` HMAC-SHA256 of raw body    |
+| `paddle`     | `Paddle-Signature` (`ts=…;h1=…`)                  |
+| `sslcommerz` | IPN body; confirm via validation API (`val_id`)   |
 
 Register URLs via `paymentWebhookUrl(gateway)` → `{APP}/api/payments/webhook/{code}`.
 
@@ -53,8 +53,8 @@ Implemented in `src/app/api/payments/callback/[gateway]/[outcome]/route.ts`.
 
 From `src/lib/payments/endpoints.ts`:
 
-| Helper | Path |
-| --- | --- |
+| Helper                            | Path                                    |
+| --------------------------------- | --------------------------------------- |
 | `paymentCallbackUrl(gw, outcome)` | `/api/payments/callback/{gw}/{outcome}` |
-| `paymentWebhookUrl(gw)` | `/api/payments/webhook/{gw}` |
-| `paymentReturnPage(publicId)` | `/checkout/{publicId}/return` |
+| `paymentWebhookUrl(gw)`           | `/api/payments/webhook/{gw}`            |
+| `paymentReturnPage(publicId)`     | `/checkout/{publicId}/return`           |

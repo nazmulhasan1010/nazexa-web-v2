@@ -6,16 +6,16 @@ India cards/UPI/netbanking. Orders (paise) + payment links; HMAC payment + webho
 
 ## Endpoints (`gatewayEndpoints.razorpay`)
 
-| Env | Base |
-| --- | --- |
+| Env                  | Base                       |
+| -------------------- | -------------------------- |
 | Sandbox / Production | `https://api.razorpay.com` |
 
-| Path | Purpose |
-| --- | --- |
-| `/v1/orders` | Create / GET order |
-| `/v1/payments` | Payment retrieve |
-| `/v1/payments/{id}/refund` | Refund |
-| `/v1/payment_links` | Hosted redirect URL (used by adapter) |
+| Path                       | Purpose                               |
+| -------------------------- | ------------------------------------- |
+| `/v1/orders`               | Create / GET order                    |
+| `/v1/payments`             | Payment retrieve                      |
+| `/v1/payments/{id}/refund` | Refund                                |
+| `/v1/payment_links`        | Hosted redirect URL (used by adapter) |
 
 ## Config
 

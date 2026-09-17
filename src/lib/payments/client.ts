@@ -4,7 +4,7 @@ export class PaymentApiError extends Error {
   constructor(
     message: string,
     readonly status: number,
-    readonly code?: string,
+    readonly code?: string
   ) {
     super(message);
     this.name = 'PaymentApiError';
@@ -22,7 +22,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     throw new PaymentApiError(
       data?.error || `Request failed (${res.status})`,
       res.status,
-      data?.code,
+      data?.code
     );
   }
   return data as T;
@@ -36,7 +36,7 @@ export const paymentsApi = {
       if (product) sp.set('product', product);
       const q = sp.toString();
       const data = await request<{ available: boolean }>(
-        `/api/payments/availability${q ? `?${q}` : ''}`,
+        `/api/payments/availability${q ? `?${q}` : ''}`
       );
       return Boolean(data.available);
     } catch {
@@ -68,7 +68,7 @@ export const paymentsApi = {
 
   status(publicId: string) {
     return request<{ status: string; paidAt: string | null }>(
-      `/api/payments/status?publicId=${encodeURIComponent(publicId)}`,
+      `/api/payments/status?publicId=${encodeURIComponent(publicId)}`
     );
   },
 };

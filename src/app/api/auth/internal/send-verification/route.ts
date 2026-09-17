@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     if (!client_id || !client_secret || !userId) {
       return NextResponse.json(
         { error: 'client_id, client_secret, and userId are required' },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     if (user.emailVerified) {
       return NextResponse.json(
         { error: 'Email is already verified', verified: true },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     if (result.rateLimited) {
       return NextResponse.json(
         { error: 'Too many verification codes sent. Please try again later.' },
-        { status: 429 },
+        { status: 429 }
       );
     }
 
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
         console.error('Failed to send verification email from Central Auth:', emailErr);
         return NextResponse.json(
           { error: 'Failed to send verification email. Please try again.' },
-          { status: 500 },
+          { status: 500 }
         );
       }
     }

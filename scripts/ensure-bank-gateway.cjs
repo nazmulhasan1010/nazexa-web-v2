@@ -46,9 +46,21 @@ async function main() {
 
   // Ensure product plans exist for common slugs
   const plans = [
-    { productCode: 'nazexa-db', planCode: 'starter', planName: 'Starter', currency: 'USD', amount: 9 },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'starter',
+      planName: 'Starter',
+      currency: 'USD',
+      amount: 9,
+    },
     { productCode: 'nazexa-db', planCode: 'pro', planName: 'Pro', currency: 'USD', amount: 19 },
-    { productCode: 'nazexa-db', planCode: 'business', planName: 'Business', currency: 'USD', amount: 49 },
+    {
+      productCode: 'nazexa-db',
+      planCode: 'business',
+      planName: 'Business',
+      currency: 'USD',
+      amount: 49,
+    },
     { productCode: 'nazexa-db', planCode: 'team', planName: 'Team', currency: 'USD', amount: 99 },
   ];
   for (const plan of plans) {
@@ -82,7 +94,7 @@ async function main() {
       ok: true,
       gateway: { code: row.code, enabled: row.isEnabled, env: row.environment },
       plans: plans.length,
-    }),
+    })
   );
   await db.$disconnect();
 }

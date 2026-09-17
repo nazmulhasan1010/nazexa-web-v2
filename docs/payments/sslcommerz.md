@@ -6,15 +6,15 @@ BD aggregator (cards, MFS, net banking). Session create + IPN validation.
 
 ## Endpoints (`gatewayEndpoints.sslcommerz`)
 
-| Env | Base |
-| --- | --- |
-| Sandbox | `https://sandbox.sslcommerz.com` |
+| Env        | Base                               |
+| ---------- | ---------------------------------- |
+| Sandbox    | `https://sandbox.sslcommerz.com`   |
 | Production | `https://securepay.sslcommerz.com` |
 
-| Path | Purpose |
-| --- | --- |
-| `/gwprocess/v4/api.php` | Session / GatewayPageURL |
-| `/validator/api/validationserverAPI.php` | Validate by `val_id` |
+| Path                                     | Purpose                  |
+| ---------------------------------------- | ------------------------ |
+| `/gwprocess/v4/api.php`                  | Session / GatewayPageURL |
+| `/validator/api/validationserverAPI.php` | Validate by `val_id`     |
 
 ## Config
 

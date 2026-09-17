@@ -183,13 +183,16 @@ export async function GET(request: NextRequest) {
     if (decodedState.callback_url) {
       try {
         const parsed = new URL(decodedState.callback_url);
-        const allowedOrigins = [
-          baseUrl,
-          process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000',
-          process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000',
-        ].filter(Boolean) as string[];
+        const apps = await db.application.findMany({ select: { allowedOrigins: true } });
+        const dynamicOrigins = apps.flatMap((a) =>
+          (a.allowedOrigins || '')
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean)
+        );
+        const allowedOrigins = [baseUrl, ...dynamicOrigins].filter(Boolean) as string[];
         const isValidOrigin = allowedOrigins.some(
-          (origin) => parsed.origin === new URL(origin).origin,
+          (origin) => parsed.origin === new URL(origin).origin
         );
         if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && isValidOrigin) {
           redirectUrl = decodedState.callback_url;
@@ -197,10 +200,17 @@ export async function GET(request: NextRequest) {
       } catch {
         // ignore
       }
-    } else if (authPerformFrom === 'nazexa-db') {
-      redirectUrl = `${(process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000').replace(/\/$/, '')}/api/auth/sso?redirect=${encodeURIComponent('/dashboard')}`;
-    } else if (authPerformFrom === 'nazexa-socket-platform') {
-      redirectUrl = `${(process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000').replace(/\/$/, '')}/api/auth/sso?redirect=${encodeURIComponent('/dashboard')}`;
+    } else if (authPerformFrom) {
+      const app = await db.application.findUnique({ where: { clientId: authPerformFrom } });
+      if (app && app.redirectUris) {
+        const primaryRedirect = app.redirectUris.split(',')[0].trim();
+        const base = new URL(primaryRedirect).origin;
+        redirectUrl = `${base}/api/auth/sso?redirect=${encodeURIComponent('/dashboard')}`;
+      } else if (!user.emailVerified) {
+        redirectUrl = `${baseUrl}/verify`;
+      } else if (!user.password_hash) {
+        redirectUrl = `${baseUrl}/set-password`;
+      }
     } else if (!user.emailVerified) {
       redirectUrl = `${baseUrl}/verify`;
     } else if (!user.password_hash) {
@@ -210,7 +220,7 @@ export async function GET(request: NextRequest) {
     const response = NextResponse.redirect(
       isExternalProductRedirect(redirectUrl, baseUrl)
         ? appendSsoHandoff(redirectUrl, token)
-        : redirectUrl,
+        : redirectUrl
     );
 
     response.cookies.delete('auth_perform_from');

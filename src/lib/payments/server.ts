@@ -66,7 +66,13 @@ export async function getAvailableGateways(opts?: {
     }
 
     if (opts?.product && row.allowedProducts?.trim()) {
-      if (!row.allowedProducts.split(',').map((p) => p.trim()).includes(opts.product)) continue;
+      if (
+        !row.allowedProducts
+          .split(',')
+          .map((p) => p.trim())
+          .includes(opts.product)
+      )
+        continue;
     }
     if (opts?.applicationClientId && row.allowedApplications?.trim()) {
       if (

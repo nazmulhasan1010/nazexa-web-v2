@@ -168,10 +168,8 @@ export const aamarpayAdapter: PaymentGatewayAdapter = {
       statusTitle === 'success' ||
       String(res.data.status_code) === '2';
 
-    const amountOk =
-      res.data.amount == null || amountsMatch(input.amount, res.data.amount);
-    const currencyOk =
-      !res.data.currency || currenciesMatch(input.currency, res.data.currency);
+    const amountOk = res.data.amount == null || amountsMatch(input.amount, res.data.amount);
+    const currencyOk = !res.data.currency || currenciesMatch(input.currency, res.data.currency);
 
     if (paid && (!amountOk || !currencyOk)) {
       return {
@@ -221,7 +219,7 @@ export const aamarpayAdapter: PaymentGatewayAdapter = {
 
   async testConnection(
     config: Record<string, string>,
-    environment: PaymentEnvironment,
+    environment: PaymentEnvironment
   ): Promise<TestConnectionResult> {
     const v = this.validateConfig(config);
     if (!v.valid) {

@@ -6,7 +6,15 @@ import * as z from 'zod';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2, Crown, BadgeCheck, Camera, Activity, CalendarDays, ShieldCheck } from 'lucide-react';
+import {
+  Loader2,
+  Crown,
+  BadgeCheck,
+  Camera,
+  Activity,
+  CalendarDays,
+  ShieldCheck,
+} from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -134,7 +142,7 @@ export function ProfileForm() {
     <div className="flex flex-col">
       {/* Premium Cover Photo Area */}
       {/* Premium Cover Photo Area */}
-      <div className="relative h-48 w-full overflow-hidden bg-muted/20">
+      <div className="bg-muted/20 relative h-48 w-full overflow-hidden">
         <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="tech-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -143,7 +151,14 @@ export function ProfileForm() {
               <stop offset="100%" stopColor="#ec4899" stopOpacity="0.8" />
             </linearGradient>
             <pattern id="tech-circuit" width="80" height="80" patternUnits="userSpaceOnUse">
-              <path d="M20 20h20v20M50 20h20v40h10M20 50v20h40v10M70 50v20H50" fill="none" stroke="url(#tech-gradient)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M20 20h20v20M50 20h20v40h10M20 50v20h40v10M70 50v20H50"
+                fill="none"
+                stroke="url(#tech-gradient)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
               <circle cx="20" cy="20" r="3" fill="#3b82f6" />
               <circle cx="40" cy="40" r="3" fill="#8b5cf6" />
               <circle cx="70" cy="20" r="3" fill="#ec4899" />
@@ -155,7 +170,7 @@ export function ProfileForm() {
           </defs>
           <rect width="100%" height="100%" fill="url(#tech-circuit)" />
         </svg>
-        <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+        <div className="from-background absolute inset-0 bg-gradient-to-t to-transparent" />
       </div>
 
       <div className="px-8 pb-8">
@@ -165,9 +180,9 @@ export function ProfileForm() {
             <div className="relative -mt-16 flex items-end justify-between sm:items-center">
               <div className="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-end">
                 <div className="group relative">
-                  <Avatar className="relative h-32 w-32 border-4 border-background shadow-xl">
+                  <Avatar className="border-background relative h-32 w-32 border-4 shadow-xl">
                     <AvatarImage src={form.watch('image') || undefined} className="object-cover" />
-                    <AvatarFallback className="bg-muted text-4xl font-medium text-muted-foreground">
+                    <AvatarFallback className="bg-muted text-muted-foreground text-4xl font-medium">
                       {user.email?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -193,17 +208,15 @@ export function ProfileForm() {
                     disabled={isUploading}
                   />
                 </div>
-                
+
                 <div className="flex-1 space-y-1.5 pt-2 sm:pt-14">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-3xl font-bold tracking-tight text-foreground">
+                    <h3 className="text-foreground text-3xl font-bold tracking-tight">
                       {form.watch('name') || 'Your Profile'}
                     </h3>
-                    {user.emailVerified && (
-                      <BadgeCheck className="h-6 w-6 text-blue-500" />
-                    )}
+                    {user.emailVerified && <BadgeCheck className="h-6 w-6 text-blue-500" />}
                   </div>
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <p className="text-muted-foreground flex items-center gap-2 text-sm">
                     {user.email}
                   </p>
                 </div>
@@ -211,27 +224,27 @@ export function ProfileForm() {
             </div>
 
             {/* Quick Stats/Info Grid */}
-            <div className="grid grid-cols-3 gap-4 sm:grid-cols-3 pt-4">
-              <div className="rounded-xl border border-border/50 bg-muted/20 p-4">
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
+            <div className="grid grid-cols-3 gap-4 pt-4 sm:grid-cols-3">
+              <div className="border-border/50 bg-muted/20 rounded-xl border p-4">
+                <div className="text-muted-foreground mb-2 flex items-center gap-2">
                   <Activity className="h-4 w-4" />
-                  <span className="text-xs font-medium uppercase tracking-wider">Status</span>
+                  <span className="text-xs font-medium tracking-wider uppercase">Status</span>
                 </div>
-                <p className="text-sm font-semibold text-foreground">Active</p>
+                <p className="text-foreground text-sm font-semibold">Active</p>
               </div>
-              <div className="rounded-xl border border-border/50 bg-muted/20 p-4">
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
+              <div className="border-border/50 bg-muted/20 rounded-xl border p-4">
+                <div className="text-muted-foreground mb-2 flex items-center gap-2">
                   <ShieldCheck className="h-4 w-4" />
-                  <span className="text-xs font-medium uppercase tracking-wider">Security</span>
+                  <span className="text-xs font-medium tracking-wider uppercase">Security</span>
                 </div>
-                <p className="text-sm font-semibold text-foreground">Standard</p>
+                <p className="text-foreground text-sm font-semibold">Standard</p>
               </div>
-              <div className="rounded-xl border border-border/50 bg-muted/20 p-4">
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
+              <div className="border-border/50 bg-muted/20 rounded-xl border p-4">
+                <div className="text-muted-foreground mb-2 flex items-center gap-2">
                   <CalendarDays className="h-4 w-4" />
-                  <span className="text-xs font-medium uppercase tracking-wider">Member Since</span>
+                  <span className="text-xs font-medium tracking-wider uppercase">Member Since</span>
                 </div>
-                <p className="text-sm font-semibold text-foreground">2026</p>
+                <p className="text-foreground text-sm font-semibold">2026</p>
               </div>
             </div>
 
@@ -245,10 +258,10 @@ export function ProfileForm() {
                     <FormItem className="space-y-2">
                       <FormLabel className="text-sm font-semibold">Display Name</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="Your premium name" 
-                          className="h-11 bg-background/50 text-base" 
-                          {...field} 
+                        <Input
+                          placeholder="Your premium name"
+                          className="bg-background/50 h-11 text-base"
+                          {...field}
                         />
                       </FormControl>
                       <FormDescription className="text-xs">
@@ -269,24 +282,35 @@ export function ProfileForm() {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-b from-muted/30 to-muted/10 p-6 shadow-sm">
-                <div className="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-primary/5 to-transparent" />
+              <div className="border-border/50 from-muted/30 to-muted/10 relative overflow-hidden rounded-xl border bg-gradient-to-b p-6 shadow-sm">
+                <div className="from-primary/5 absolute top-0 right-0 h-full w-1/2 bg-gradient-to-l to-transparent" />
                 <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h4 className="text-base font-semibold text-foreground">Email Address</h4>
-                    <p className="mt-1 text-sm text-muted-foreground max-w-sm">
-                      Your email address is managed by your authentication provider. It is used for critical account notifications.
+                    <h4 className="text-foreground text-base font-semibold">Email Address</h4>
+                    <p className="text-muted-foreground mt-1 max-w-sm text-sm">
+                      Your email address is managed by your authentication provider. It is used for
+                      critical account notifications.
                     </p>
                   </div>
                   <div className="flex flex-col gap-3 sm:items-end">
-                    <Input disabled value={user.email} className="h-10 w-full bg-background/80 sm:w-64" />
+                    <Input
+                      disabled
+                      value={user.email}
+                      className="bg-background/80 h-10 w-full sm:w-64"
+                    />
                     {user.emailVerified ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 ring-1 ring-inset ring-emerald-500/20">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 ring-1 ring-emerald-500/20 ring-inset">
                         <ShieldCheck className="h-3.5 w-3.5" />
                         Verified Account
                       </span>
                     ) : (
-                      <Button type="button" variant="outline" size="sm" className="h-8 shadow-sm" asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-8 shadow-sm"
+                        asChild
+                      >
                         <Link href="/verify">Verify Email</Link>
                       </Button>
                     )}
@@ -294,18 +318,18 @@ export function ProfileForm() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-4 border-t border-border/40 pt-6">
-                <Button 
-                  type="button" 
-                  variant="ghost" 
+              <div className="border-border/40 flex items-center justify-end gap-4 border-t pt-6">
+                <Button
+                  type="button"
+                  variant="ghost"
                   onClick={() => form.reset()}
                   disabled={isUpdating || !form.formState.isDirty}
                 >
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
-                  disabled={isUpdating || !form.formState.isDirty} 
+                <Button
+                  type="submit"
+                  disabled={isUpdating || !form.formState.isDirty}
                   className="h-10 min-w-[120px] shadow-md transition-all hover:shadow-lg"
                 >
                   {isUpdating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Save Changes'}

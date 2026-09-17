@@ -27,18 +27,28 @@ export const customPaymentAdapter: PaymentGatewayAdapter = {
 
     const phoneRegex = /^01[3-9]\d{8}$/;
 
-    if (c.bkashEnabled === 'true') {
+    const bkash = c.bkashEnabled === 'true';
+    const nagad = c.nagadEnabled === 'true';
+    const bank = c.bankEnabled === 'true';
+
+    if (!bkash && !nagad && !bank) {
+      errors.push('At least one payment option (bKash, Nagad, or Bank Transfer) must be enabled');
+    }
+
+    if (bkash) {
       if (!c.bkashNumber?.trim()) errors.push('bKash Number is required when enabled');
-      else if (!phoneRegex.test(c.bkashNumber.trim())) errors.push('bKash Number must be a valid BD phone number (e.g., 017XXXXXXXX)');
+      else if (!phoneRegex.test(c.bkashNumber.trim()))
+        errors.push('bKash Number must be a valid BD phone number (e.g., 017XXXXXXXX)');
     }
-    if (c.nagadEnabled === 'true') {
+    if (nagad) {
       if (!c.nagadNumber?.trim()) errors.push('Nagad Number is required when enabled');
-      else if (!phoneRegex.test(c.nagadNumber.trim())) errors.push('Nagad Number must be a valid BD phone number (e.g., 017XXXXXXXX)');
+      else if (!phoneRegex.test(c.nagadNumber.trim()))
+        errors.push('Nagad Number must be a valid BD phone number (e.g., 017XXXXXXXX)');
     }
-    if (c.bankEnabled === 'true') {
+    if (bank) {
       if (!c.bankName?.trim()) errors.push('Bank Name is required when enabled');
-      if (!c.accountName?.trim()) errors.push('Account Name is required when enabled');
-      if (!c.accountNumber?.trim()) errors.push('Account Number is required when enabled');
+      if (!c.bankAccountName?.trim()) errors.push('Account Name is required when enabled');
+      if (!c.bankAccountNumber?.trim()) errors.push('Account Number is required when enabled');
     }
 
     return { valid: errors.length === 0, errors };
@@ -49,7 +59,7 @@ export const customPaymentAdapter: PaymentGatewayAdapter = {
     if (!validation.valid) {
       return { ok: false, error: validation.errors.join('; ') };
     }
-    
+
     return {
       ok: true,
       requiresManualProof: true,

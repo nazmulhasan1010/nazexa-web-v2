@@ -6,11 +6,7 @@
 import { createHmac, randomUUID } from 'crypto';
 import { db } from '@/lib/db';
 import { getAdapter } from '@/lib/payments/adapters';
-import {
-  appBaseUrl,
-  paymentCallbackUrl,
-  paymentWebhookUrl,
-} from '@/lib/payments/endpoints';
+import { appBaseUrl, paymentCallbackUrl, paymentWebhookUrl } from '@/lib/payments/endpoints';
 import { getGatewayDef } from '@/lib/payments/registry';
 import {
   parseConfig,
@@ -21,16 +17,13 @@ import {
   type GatewayConfig,
 } from '@/lib/payments/secrets';
 import { isAllowlistedUrl } from '@/lib/payments/s2s-auth';
-import type {
-  GatewayConfigField,
-  PaymentEnvironment,
-  PaymentStatus,
-} from '@/lib/payments/types';
+import type { GatewayConfigField, PaymentEnvironment, PaymentStatus } from '@/lib/payments/types';
 import { NON_PAYABLE, TERMINAL_PAID } from '@/lib/payments/types';
 
 function envFromConfig(config: GatewayConfig, rowEnv?: string | null): PaymentEnvironment {
   const fromConfig = (config.environment || config.sandbox || '').toLowerCase();
-  if (fromConfig === 'production' || fromConfig === 'live' || fromConfig === 'false') return 'production';
+  if (fromConfig === 'production' || fromConfig === 'live' || fromConfig === 'false')
+    return 'production';
   if (fromConfig === 'sandbox' || fromConfig === 'test' || fromConfig === 'true') return 'sandbox';
   return rowEnv === 'production' ? 'production' : 'sandbox';
 }
@@ -129,7 +122,10 @@ export async function createPaymentTransaction(input: {
   });
 
   if (!authoritative && (input.fallbackAmount == null || input.fallbackAmount <= 0)) {
-    return { error: 'Unknown product plan or currency — configure PaymentProductPlan', status: 422 as const };
+    return {
+      error: 'Unknown product plan or currency — configure PaymentProductPlan',
+      status: 422 as const,
+    };
   }
 
   const amount = authoritative?.amount ?? Number(input.fallbackAmount);
@@ -146,9 +142,13 @@ export async function createPaymentTransaction(input: {
   if (idempotencyKey) {
     const existing = await db.paymentTransaction.findUnique({ where: { idempotencyKey } });
     if (existing) {
-      const reusable = ['CREATED', 'REQUIRES_ACTION', 'INITIATED', 'PENDING', 'PROCESSING'].includes(
-        existing.status,
-      );
+      const reusable = [
+        'CREATED',
+        'REQUIRES_ACTION',
+        'INITIATED',
+        'PENDING',
+        'PROCESSING',
+      ].includes(existing.status);
       const notExpired = !existing.expiresAt || existing.expiresAt > new Date();
       if (reusable && notExpired) {
         return { transaction: existing, reused: true as const };
@@ -206,7 +206,7 @@ export async function initiatePayment(input: {
 }) {
   const txn = await db.paymentTransaction.findUnique({
     where: { id: input.transactionId },
-    include: { user: true },
+    include: { users: true },
   });
   if (!txn || txn.userId !== input.userId) {
     return { error: 'Transaction not found', status: 404 as const };
@@ -245,8 +245,8 @@ export async function initiatePayment(input: {
     currency: txn.currency,
     description: `${txn.product} — ${txn.plan}`,
     customer: {
-      name: txn.user.name,
-      email: txn.user.email,
+      name: txn.users.name,
+      email: txn.users.email,
       phone: null,
     },
     successUrl: `${paymentCallbackUrl(gateway.code, 'success')}?nazexa_transaction=${encodeURIComponent(txn.publicId)}`,
@@ -312,7 +312,7 @@ export async function submitManualProof(input: {
 }) {
   const txn = await db.paymentTransaction.findUnique({
     where: { id: input.transactionId },
-    include: { gateway: true },
+    include: { payment_gateways: true },
   });
   if (!txn || txn.userId !== input.userId) {
     return { error: 'Transaction not found', status: 404 as const };
@@ -320,15 +320,15 @@ export async function submitManualProof(input: {
   if (!['CREATED', 'REQUIRES_ACTION', 'INITIATED', 'PENDING'].includes(txn.status)) {
     return { error: `Cannot submit proof for status ${txn.status}`, status: 409 as const };
   }
-  if (!txn.gatewayId || !txn.gateway) {
+  if (!txn.gatewayId || !txn.payment_gateways) {
     return { error: 'Select a gateway first', status: 400 as const };
   }
 
-  const def = getGatewayDef(txn.gateway.code);
+  const def = getGatewayDef(txn.payment_gateways.code);
   if (!def) return { error: 'Unknown gateway', status: 400 as const };
 
   const missing = def.submissionFields.filter(
-    (f) => f.required && !String(input.details[f.key] ?? '').trim(),
+    (f) => f.required && !String(input.details[f.key] ?? '').trim()
   );
   if (missing.length) {
     return {
@@ -355,12 +355,12 @@ export async function submitManualProof(input: {
 
   // Local/sandbox bank transfers: auto-verify so plan purchase can complete without admin UI.
   // Production always requires admin review. Set PAYMENT_SANDBOX_AUTO_APPROVE=false to disable.
-  const gatewayEnv = (txn.gateway.environment || 'sandbox').toLowerCase();
+  const gatewayEnv = (txn.payment_gateways.environment || 'sandbox').toLowerCase();
   const autoApproveEnabled = process.env.PAYMENT_SANDBOX_AUTO_APPROVE !== 'false';
   const isSandboxBank =
     autoApproveEnabled &&
     gatewayEnv !== 'production' &&
-    txn.gateway.code === 'bank_transfer';
+    txn.payment_gateways.code === 'bank_transfer';
 
   if (isSandboxBank) {
     const paid = await markTransactionPaid({
@@ -370,6 +370,32 @@ export async function submitManualProof(input: {
     });
     if ('transaction' in paid && paid.transaction) {
       return { transaction: paid.transaction, autoApproved: true as const };
+    }
+  } else {
+    // Send admin email
+    import('@/lib/payments/email')
+      .then(({ sendAdminCustomPaymentPendingEmail }) => {
+        sendAdminCustomPaymentPendingEmail(updated.id);
+      })
+      .catch((err) => console.error('[email] Failed to load email lib:', err));
+
+    // Emit real-time notification to admins that a new request was created
+    try {
+      const { publishAdminEvent } = await import('@/lib/socket');
+      await publishAdminEvent('payment.request.created', {
+        paymentId: updated.id,
+        publicId: updated.publicId,
+        userId: updated.userId,
+        product: updated.product,
+        plan: updated.plan,
+        amount: updated.amount.toString(),
+        currency: updated.currency,
+        paymentMethod: txn.payment_gateways?.displayName || txn.payment_gateways?.code || 'Custom',
+        status: updated.status,
+        createdAt: updated.createdAt.toISOString(),
+      });
+    } catch (err) {
+      console.error('[socket] Failed to publish event:', err);
     }
   }
 
@@ -391,7 +417,7 @@ export async function markTransactionPaid(input: {
 }) {
   const txn = await db.paymentTransaction.findUnique({
     where: { id: input.transactionId },
-    include: { application: true },
+    include: { applications: true },
   });
   if (!txn) return { error: 'Not found', status: 404 as const };
 
@@ -434,8 +460,37 @@ export async function markTransactionPaid(input: {
 
   const paid = await db.paymentTransaction.findUnique({
     where: { id: txn.id },
-    include: { application: true },
+    include: { applications: true },
   });
+
+  if (paid) {
+    // Idempotent email send
+    const details = (paid.details as Record<string, unknown>) || {};
+    if (!details.successEmailSentAt || !details.adminSuccessEmailSentAt) {
+      import('@/lib/payments/email')
+        .then(async ({ sendPaymentSuccessEmail, sendAdminPaymentSuccessEmail }) => {
+          const updates: Record<string, string> = {};
+
+          if (!details.successEmailSentAt) {
+            await sendPaymentSuccessEmail(paid.id);
+            updates.successEmailSentAt = new Date().toISOString();
+          }
+
+          if (!details.adminSuccessEmailSentAt) {
+            await sendAdminPaymentSuccessEmail(paid.id);
+            updates.adminSuccessEmailSentAt = new Date().toISOString();
+          }
+
+          if (Object.keys(updates).length > 0) {
+            await db.paymentTransaction.update({
+              where: { id: paid.id },
+              data: { details: { ...details, ...updates } },
+            });
+          }
+        })
+        .catch((err) => console.error('[email] Failed to load email lib:', err));
+    }
+  }
 
   await fulfillTransaction(paid!.id);
   return { transaction: paid!, alreadyPaid: false as const };
@@ -444,7 +499,7 @@ export async function markTransactionPaid(input: {
 export async function fulfillTransaction(transactionId: string) {
   const txn = await db.paymentTransaction.findUnique({
     where: { id: transactionId },
-    include: { application: true },
+    include: { applications: true },
   });
   if (!txn || txn.status !== 'PAID') return;
 
@@ -456,7 +511,7 @@ export async function fulfillTransaction(transactionId: string) {
   });
   if (claim.count === 0) return;
 
-  const app = txn.application;
+  const app = txn.applications;
   if (!app?.paymentWebhookUrl) {
     await db.paymentTransaction.update({
       where: { id: txn.id },
@@ -487,9 +542,7 @@ export async function fulfillTransaction(transactionId: string) {
     };
     const body = JSON.stringify(payload);
     const hmacSecret =
-      process.env.PAYMENT_WEBHOOK_SECRET ||
-      process.env.NAZEXA_WEBHOOK_SECRET ||
-      app.clientSecret;
+      process.env.PAYMENT_WEBHOOK_SECRET || process.env.NAZEXA_WEBHOOK_SECRET || app.clientSecret;
     const signature = createHmac('sha256', hmacSecret).update(body).digest('hex');
 
     const res = await fetch(app.paymentWebhookUrl, {
@@ -516,10 +569,24 @@ export async function fulfillTransaction(transactionId: string) {
       return;
     }
 
-    await db.paymentTransaction.update({
+    const updated = await db.paymentTransaction.update({
       where: { id: txn.id },
       data: { fulfillmentStatus: 'FULFILLED', fulfilledAt: new Date() },
     });
+
+    // Idempotent email send for plan activation
+    const details = (updated.details as Record<string, unknown>) || {};
+    if (!details.activationEmailSentAt) {
+      import('@/lib/payments/email')
+        .then(async ({ sendPlanActivatedEmail }) => {
+          await sendPlanActivatedEmail(updated.id);
+          await db.paymentTransaction.update({
+            where: { id: updated.id },
+            data: { details: { ...details, activationEmailSentAt: new Date().toISOString() } },
+          });
+        })
+        .catch((err) => console.error('[email] Failed to load email lib:', err));
+    }
   } catch (err) {
     await db.paymentTransaction.update({
       where: { id: txn.id },
@@ -540,9 +607,7 @@ export async function recordWebhookEvent(input: {
   processingStatus: string;
   failureReason?: string | null;
 }) {
-  const payloadStr = truncatePayload(
-    JSON.stringify(sanitizeForStorage(input.payload) ?? {}),
-  );
+  const payloadStr = truncatePayload(JSON.stringify(sanitizeForStorage(input.payload) ?? {}));
 
   if (input.eventId) {
     const existing = await db.paymentWebhookEvent.findUnique({
@@ -580,11 +645,10 @@ export async function resolveSafeReturnUrl(txn: {
   publicId: string;
   status: string;
 }): Promise<string> {
-  const app = txn.appId
-    ? await db.application.findUnique({ where: { id: txn.appId } })
-    : null;
+  const app = txn.appId ? await db.application.findUnique({ where: { id: txn.appId } }) : null;
 
-  const preferred = txn.status === 'PAID' || txn.status === 'PENDING_REVIEW' ? txn.returnUrl : txn.cancelUrl;
+  const preferred =
+    txn.status === 'PAID' || txn.status === 'PENDING_REVIEW' ? txn.returnUrl : txn.cancelUrl;
   if (preferred && isAllowlistedUrl(preferred, app?.allowedOrigins)) {
     try {
       const url = new URL(preferred);
@@ -604,7 +668,7 @@ export function prepareGatewayConfigForSave(
   fields: GatewayConfigField[],
   submitted: GatewayConfig,
   current: GatewayConfig,
-  secretMask: string,
+  secretMask: string
 ): GatewayConfig {
   const merged: GatewayConfig = {};
   for (const field of fields) {
@@ -617,4 +681,3 @@ export function prepareGatewayConfigForSave(
   }
   return sealConfig(fields, merged);
 }
-

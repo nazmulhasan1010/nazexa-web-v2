@@ -196,8 +196,7 @@ export const razorpayAdapter: PaymentGatewayAdapter = {
       input.gatewayPaymentId ||
       input.callbackParams?.razorpay_payment_id ||
       input.callbackParams?.payment_id;
-    const signature =
-      input.callbackParams?.razorpay_signature || input.callbackParams?.signature;
+    const signature = input.callbackParams?.razorpay_signature || input.callbackParams?.signature;
 
     if (orderId && paymentId && signature && keySecret) {
       const expected = hmacHex(keySecret, `${orderId}|${paymentId}`);
@@ -340,7 +339,7 @@ export const razorpayAdapter: PaymentGatewayAdapter = {
         method: 'POST',
         basicAuth: auth(input.config),
         body: amount != null ? { amount } : {},
-      },
+      }
     );
     if (!res.ok || !res.data?.id) {
       return {
@@ -401,15 +400,12 @@ export const razorpayAdapter: PaymentGatewayAdapter = {
 
     const currency = payment?.currency ? normalizeCurrency(payment.currency) : undefined;
     const amount =
-      payment?.amount != null && currency
-        ? fromMinorUnits(payment.amount, currency)
-        : undefined;
+      payment?.amount != null && currency ? fromMinorUnits(payment.amount, currency) : undefined;
 
     return {
       ok: true,
       eventType: body.event,
-      transactionPublicId:
-        payment?.notes?.nazexa_transaction_id || payment?.notes?.transaction_id,
+      transactionPublicId: payment?.notes?.nazexa_transaction_id || payment?.notes?.transaction_id,
       gatewayOrderId: payment?.order_id,
       gatewayPaymentId: payment?.id,
       paid,
@@ -423,7 +419,7 @@ export const razorpayAdapter: PaymentGatewayAdapter = {
 
   async testConnection(
     config: Record<string, string>,
-    environment: PaymentEnvironment,
+    environment: PaymentEnvironment
   ): Promise<TestConnectionResult> {
     const v = this.validateConfig(config);
     if (!v.valid) return { ok: false, message: v.errors.join('; '), liveVerified: false };

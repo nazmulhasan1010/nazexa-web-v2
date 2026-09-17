@@ -38,7 +38,7 @@ function baseUrl(environment: PaymentEnvironment, config: Record<string, string>
 
 async function getAccessToken(
   environment: PaymentEnvironment,
-  config: Record<string, string>,
+  config: Record<string, string>
 ): Promise<{ token?: string; error?: string }> {
   const clientId = cfg(config, 'clientId');
   const clientSecret = cfg(config, 'clientSecret');
@@ -280,7 +280,12 @@ export const paypalAdapter: PaymentGatewayAdapter = {
     const res = await jsonFetch<{
       status?: string;
       purchase_units?: Array<{
-        payments?: { captures?: Array<{ status?: string; amount?: { value?: string; currency_code?: string } }> };
+        payments?: {
+          captures?: Array<{
+            status?: string;
+            amount?: { value?: string; currency_code?: string };
+          }>;
+        };
         amount?: { value?: string; currency_code?: string };
       }>;
     }>(url, { method: 'GET', bearer: auth.token });
@@ -295,7 +300,8 @@ export const paypalAdapter: PaymentGatewayAdapter = {
       paid,
       status: paid ? 'PAID' : 'PENDING',
       amount: capture?.amount?.value || res.data.purchase_units?.[0]?.amount?.value,
-      currency: capture?.amount?.currency_code || res.data.purchase_units?.[0]?.amount?.currency_code,
+      currency:
+        capture?.amount?.currency_code || res.data.purchase_units?.[0]?.amount?.currency_code,
     };
   },
 
@@ -335,7 +341,7 @@ export const paypalAdapter: PaymentGatewayAdapter = {
 
   async testConnection(
     config: Record<string, string>,
-    environment: PaymentEnvironment,
+    environment: PaymentEnvironment
   ): Promise<TestConnectionResult> {
     const v = this.validateConfig(config);
     if (!v.valid) return { ok: false, message: v.errors.join('; '), liveVerified: false };

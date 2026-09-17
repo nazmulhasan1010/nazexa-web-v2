@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 1. Enqueue job
-    const job = await db.aIJob.create({
+    const job = await db.aiJob.create({
       data: {
         appId,
         userId,
@@ -33,14 +33,14 @@ export async function POST(req: NextRequest) {
     // In a real huge-scale system, the client would receive the jobId and poll via a separate endpoint.
     // But since Nazexa-DB currently expects a synchronous answer, we'll wait here up to 45s.
     // We kick off the processing immediately without awaiting it.
-    processAiJob(job.id).catch(err => console.error("Background job error:", err));
+    processAiJob(job.id).catch((err) => console.error('Background job error:', err));
 
     let attempts = 0;
     while (attempts < 45) {
       // Poll DB every 1s
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const currentJob = await db.aIJob.findUnique({ where: { id: job.id } });
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const currentJob = await db.aiJob.findUnique({ where: { id: job.id } });
+
       if (!currentJob) {
         return NextResponse.json({ error: 'Job vanished' }, { status: 500 });
       }
@@ -50,19 +50,21 @@ export async function POST(req: NextRequest) {
           response: currentJob.response,
           provider: currentJob.provider,
           modelUsed: currentJob.modelUsed,
-          jobId: job.id
+          jobId: job.id,
         });
       }
 
       if (currentJob.status === 'failed') {
-        return NextResponse.json({ error: currentJob.error || 'AI processing failed' }, { status: 500 });
+        return NextResponse.json(
+          { error: currentJob.error || 'AI processing failed' },
+          { status: 500 }
+        );
       }
 
       attempts++;
     }
 
     return NextResponse.json({ error: 'Timeout waiting for AI response' }, { status: 504 });
-
   } catch (error: any) {
     console.error('AI Request Endpoint Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

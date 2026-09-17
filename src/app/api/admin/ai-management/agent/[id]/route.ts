@@ -9,11 +9,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     const { id } = await params;
     const body = await req.json();
-    
+
     if (body.isActive) {
-      await prisma.aiagent.updateMany({
+      await prisma.aiAgent.updateMany({
         where: { isActive: true },
-        data: { isActive: false }
+        data: { isActive: false },
       });
     }
 
@@ -26,14 +26,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       updateData.apiKey = body.apiKey;
     }
 
-    const agent = await prisma.aiagent.update({
+    const agent = await prisma.aiAgent.update({
       where: { id },
       data: updateData,
     });
 
     return NextResponse.json(agent);
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -43,12 +46,15 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
   try {
     const { id } = await params;
-    await prisma.aiagent.delete({
+    await prisma.aiAgent.delete({
       where: { id },
     });
 
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Error' },
+      { status: 500 }
+    );
   }
 }

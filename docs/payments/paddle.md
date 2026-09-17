@@ -6,13 +6,13 @@ Merchant of record (VAT/tax). Billing API transactions + webhook signature.
 
 ## Endpoints (`gatewayEndpoints.paddle`)
 
-| Env | Base |
-| --- | --- |
-| Sandbox | `https://sandbox-api.paddle.com` |
-| Production | `https://api.paddle.com` |
+| Env        | Base                             |
+| ---------- | -------------------------------- |
+| Sandbox    | `https://sandbox-api.paddle.com` |
+| Production | `https://api.paddle.com`         |
 
-| Path | Purpose |
-| --- | --- |
+| Path            | Purpose                      |
+| --------------- | ---------------------------- |
 | `/transactions` | Create / manage transactions |
 
 ## Config

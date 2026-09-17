@@ -2,6 +2,7 @@ import { rateLimit } from '@/lib/rate-limit';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { verifyPassword, createSession } from '@/lib/auth';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 export async function POST(request: Request) {
   const ip = request.headers.get('x-forwarded-for') || 'unknown';
@@ -9,9 +10,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
   try {
-    const { email, password } = await request.json();
+    const { email, password, turnstileToken } = await request.json();
     if (!email || !password) {
       return NextResponse.json({ error: 'Missing credentials' }, { status: 400 });
+    }
+
+    const isTurnstileValid = await verifyTurnstile(turnstileToken);
+    if (!isTurnstileValid) {
+      return NextResponse.json({ error: 'Invalid security verification' }, { status: 400 });
     }
 
     const user = await db.user.findUnique({ where: { email } });
@@ -27,8 +33,6 @@ export async function POST(request: Request) {
     if (user.status !== 'active') {
       return NextResponse.json({ error: 'Account is disabled' }, { status: 403 });
     }
-
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
 
     await db.$transaction(async (tx) => {
       await tx.user.update({

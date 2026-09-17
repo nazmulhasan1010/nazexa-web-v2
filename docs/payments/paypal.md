@@ -6,17 +6,17 @@ Orders v2 with `CAPTURE` intent; capture on verify.
 
 ## Endpoints (`gatewayEndpoints.paypal`)
 
-| Env | Base |
-| --- | --- |
-| Sandbox | `https://api-m.sandbox.paypal.com` |
-| Production | `https://api-m.paypal.com` |
+| Env        | Base                               |
+| ---------- | ---------------------------------- |
+| Sandbox    | `https://api-m.sandbox.paypal.com` |
+| Production | `https://api-m.paypal.com`         |
 
-| Path | Purpose |
-| --- | --- |
-| `/v1/oauth2/token` | Client-credentials token |
-| `/v2/checkout/orders` | Create / GET order |
-| `/v2/checkout/orders/{id}/capture` | Capture |
-| `/v2/payments/captures/{id}/refund` | Refund |
+| Path                                | Purpose                  |
+| ----------------------------------- | ------------------------ |
+| `/v1/oauth2/token`                  | Client-credentials token |
+| `/v2/checkout/orders`               | Create / GET order       |
+| `/v2/checkout/orders/{id}/capture`  | Capture                  |
+| `/v2/payments/captures/{id}/refund` | Refund                   |
 
 ## Config
 

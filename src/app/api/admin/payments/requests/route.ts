@@ -8,7 +8,15 @@ import { markTransactionPaid } from '@/lib/payments/orchestration';
 const PAGE_SIZE = 20;
 
 const LEGACY_STATUS_MAP: Record<string, string[]> = {
-  pending: ['pending', 'PENDING', 'PENDING_REVIEW', 'CREATED', 'INITIATED', 'REQUIRES_ACTION', 'PROCESSING'],
+  pending: [
+    'pending',
+    'PENDING',
+    'PENDING_REVIEW',
+    'CREATED',
+    'INITIATED',
+    'REQUIRES_ACTION',
+    'PROCESSING',
+  ],
   approved: ['approved', 'PAID'],
   paid: ['PAID', 'approved'],
   rejected: ['rejected', 'FAILED'],
@@ -34,13 +42,13 @@ export async function GET(req: NextRequest) {
     const mapped = LEGACY_STATUS_MAP[status] || [status];
     where.status = { in: mapped };
   }
-  if (gateway) where.gateway = { code: gateway };
+  if (gateway) where.payment_gateways = { code: gateway };
   if (product) where.product = product;
   if (q) {
     where.OR = [
       { publicId: { contains: q } },
       { reference: { contains: q } },
-      { user: { email: { contains: q } } },
+      { users: { email: { contains: q } } },
     ];
   }
 
@@ -52,9 +60,9 @@ export async function GET(req: NextRequest) {
         skip: (page - 1) * PAGE_SIZE,
         take: PAGE_SIZE,
         include: {
-          user: { select: { id: true, email: true, name: true } },
-          gateway: { select: { code: true, displayName: true } },
-          proofs: { orderBy: { submittedAt: 'desc' }, take: 3 },
+          users: { select: { id: true, email: true, name: true } },
+          payment_gateways: { select: { code: true, displayName: true } },
+          manual_payment_proofs: { orderBy: { submittedAt: 'desc' }, take: 3 },
         },
       }),
       db.paymentTransaction.count({ where }),
@@ -65,7 +73,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       items: items.map((r) => {
-        const def = r.gateway ? getGatewayDef(r.gateway.code) : null;
+        const def = r.payment_gateways ? getGatewayDef(r.payment_gateways.code) : null;
         return {
           id: r.id,
           publicId: r.publicId,
@@ -76,22 +84,26 @@ export async function GET(req: NextRequest) {
           reference: r.reference,
           details: (r.details ?? {}) as Record<string, string>,
           detailLabels: Object.fromEntries(
-            (def?.submissionFields ?? []).map((f) => [f.key, f.label]),
+            (def?.submissionFields ?? []).map((f) => [f.key, f.label])
           ),
           adminNote: r.adminNote,
-          user: r.user,
+          user: r.users,
           planName: r.plan,
           planSlug: r.planId || r.plan,
           product: r.product,
-          gatewayCode: r.gateway?.code || 'unknown',
-          gatewayName: r.gateway?.displayName || def?.name || r.gateway?.code || 'Unknown Gateway',
+          gatewayCode: r.payment_gateways?.code || 'unknown',
+          gatewayName:
+            r.payment_gateways?.displayName ||
+            def?.name ||
+            r.payment_gateways?.code ||
+            'Unknown Gateway',
           gatewayOrderId: r.gatewayOrderId,
           gatewayPaymentId: r.gatewayPaymentId,
           fulfillmentStatus: r.fulfillmentStatus,
           createdAt: r.createdAt.toISOString(),
           paidAt: r.paidAt?.toISOString() ?? null,
           reviewedAt: r.reviewedAt?.toISOString() ?? null,
-          proofs: r.proofs,
+          proofs: r.manual_payment_proofs,
         };
       }),
       total,
@@ -126,12 +138,15 @@ export async function PATCH(req: NextRequest) {
     const note = typeof body.note === 'string' ? body.note.trim().slice(0, 1000) : '';
 
     if (!id || !action) {
-      return NextResponse.json({ error: 'Transaction id and action are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Transaction id and action are required' },
+        { status: 400 }
+      );
     }
 
     const transaction = await db.paymentTransaction.findUnique({
       where: { id },
-      include: { application: true },
+      include: { applications: true },
     });
 
     if (!transaction) {
@@ -142,7 +157,7 @@ export async function PATCH(req: NextRequest) {
     if (action !== 'clarify' && !reviewable.includes(transaction.status)) {
       return NextResponse.json(
         { error: `This transaction was already ${transaction.status}.` },
-        { status: 409 },
+        { status: 409 }
       );
     }
 
@@ -168,7 +183,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (action === 'reject') {
-      await db.paymentTransaction.update({
+      const updated = await db.paymentTransaction.update({
         where: { id },
         data: {
           status: 'FAILED',
@@ -188,6 +203,17 @@ export async function PATCH(req: NextRequest) {
         ip,
       });
 
+      try {
+        const { publishAdminEvent } = await import('@/lib/socket');
+        await publishAdminEvent('payment.request.rejected', {
+          paymentId: updated.id,
+          publicId: updated.publicId,
+          status: updated.status,
+        });
+      } catch (err) {
+        console.error('[socket]', err);
+      }
+
       return NextResponse.json({ id, status: 'FAILED' });
     }
 
@@ -204,7 +230,7 @@ export async function PATCH(req: NextRequest) {
     if (claimed.count === 0) {
       return NextResponse.json(
         { error: 'This request was reviewed by someone else. Reload to see its status.' },
-        { status: 409 },
+        { status: 409 }
       );
     }
 
@@ -226,6 +252,16 @@ export async function PATCH(req: NextRequest) {
       },
       ip,
     });
+
+    try {
+      const { publishAdminEvent } = await import('@/lib/socket');
+      await publishAdminEvent('payment.request.approved', {
+        paymentId: id,
+        status: paid.transaction?.status ?? 'PAID',
+      });
+    } catch (err) {
+      console.error('[socket]', err);
+    }
 
     return NextResponse.json({
       id,

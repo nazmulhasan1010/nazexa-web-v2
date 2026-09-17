@@ -25,7 +25,7 @@ export async function adminLogin(data: { email: string; password: string }) {
     // Update lastLoginAt
     await db.adminUser.update({
       where: { id: user.id },
-      data: { lastLoginAt: new Date() }
+      data: { lastLoginAt: new Date() },
     });
 
     return { success: true };
@@ -46,7 +46,15 @@ export async function getAdminSession() {
 
   let permissions = ['*']; // Default for super_admin
   if (user.role === 'editor') {
-    permissions = ['/admin', '/admin/builder', '/admin/content', '/admin/pages', '/admin/seo', '/admin/messages'];
+    permissions = [
+      '/admin',
+      '/admin/builder',
+      '/admin/content',
+      '/admin/models',
+      '/admin/pages',
+      '/admin/seo',
+      '/admin/messages',
+    ];
   } else if (user.role !== 'super_admin') {
     const role = await db.adminRole.findUnique({ where: { name: user.role } });
     if (role && role.permissions) {

@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" as="image" href="/logos/logo-sm.svg" />
+    <link
+      rel="stylesheet"
+      href="/_next/static/css/app/layout.css?v=1788834023899"
+      data-precedence="next_static/css/app/layout.css"
+    />
+    <link
+      rel="preload"
+      as="script"
+      fetchpriority="low"
+      href="/_next/static/chunks/webpack.js?v=1788834023899"
+    />
+    <script src="/_next/static/chunks/main-app.js?v=1788834023899" async=""></script>
+    <script src="/_next/static/chunks/app-pages-internals.js" async=""></script>
+    <script src="/_next/static/chunks/app/login/page.js" async=""></script>
+    <script src="/_next/static/chunks/app/layout.js" async=""></script>
+    <title>Nazexa — The developer platform for teams who ship</title>
+    <meta
+      name="description"
+      content="Nazexa unifies databases, edge compute, auth, AI and observability into one premium developer platform."
+    />
+    <meta name="application-name" content="Nazexa" />
+    <meta name="author" content="Nazexa" />
+    <meta
+      name="keywords"
+      content="nazexa,developer platform,database,edge compute,AI,observability"
+    />
+    <link rel="canonical" href="https://nazexa.com" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Nazexa" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta property="og:title" content="Nazexa — The developer platform for teams who ship" />
+    <meta
+      property="og:description"
+      content="Nazexa unifies databases, edge compute, auth, AI and observability into one premium developer platform."
+    />
+    <meta property="og:url" content="https://nazexa.com" />
+    <meta property="og:site_name" content="Nazexa" />
+    <meta property="og:image" content="https://nazexa.com/logos/logo.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Nazexa" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@nazexa" />
+    <meta name="twitter:creator" content="@nazexa" />
+    <meta name="twitter:title" content="Nazexa — The developer platform for teams who ship" />
+    <meta
+      name="twitter:description"
+      content="Nazexa unifies databases, edge compute, auth, AI and observability into one premium developer platform."
+    />
+    <meta name="twitter:image" content="https://nazexa.com/logos/logo.png" />
+    <link rel="icon" href="/logos/logo-sm.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link rel="icon" href="/logos/logo-sm.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/logos/logo.png" />
+    <link rel="icon" href="/logos/logo.png" sizes="192x192" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=DM+Sans:opsz,wght@9..40,400;9..40,500&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Nazexa",
+        "url": "https://nazexa.com",
+        "logo": "https://nazexa.com/logos/logo.png",
+        "image": "https://nazexa.com/logos/logo.png",
+        "description": "Developer platform for databases, edge compute, auth, AI and observability.",
+        "sameAs": ["https://twitter.com/nazexa", "https://github.com/nazexa"]
+      }
+    </script>
+    <script src="/_next/static/chunks/polyfills.js" nomodule=""></script>
+  </head>
+  <body>
+    <div
+      aria-hidden="true"
+      class="pointer-events-none fixed inset-0 z-0 hidden md:block"
+      style="
+        background: radial-gradient(
+          340px circle at var(--mx, 50%) var(--my, 30%),
+          color-mix(in oklab, var(--brand-1) 12%, transparent),
+          transparent 70%
+        );
+      "
+    ></div>
+    <div
+      aria-hidden="true"
+      class="pointer-events-none fixed inset-0 z-50 opacity-[0.035] mix-blend-soft-light"
+      style="
+        background-image: url('data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;160&#x27; height=&#x27;160&#x27;%3E%3Cfilter id=&#x27;n&#x27;%3E%3CfeTurbulence type=&#x27;fractalNoise&#x27; baseFrequency=&#x27;0.85&#x27; numOctaves=&#x27;3&#x27;/%3E%3C/filter%3E%3Crect width=&#x27;160&#x27; height=&#x27;160&#x27; filter=&#x27;url(%23n)&#x27;/%3E%3C/svg%3E');
+      "
+    ></div>
+    <header class="fixed inset-x-0 top-0 z-50 bg-transparent transition-all duration-500">
+      <div class="mx-auto flex h-16 max-w-7xl items-center gap-6 px-5">
+        <a class="group flex items-center gap-2.5" href="/"
+          ><img src="/logos/logo-sm.svg" alt="Nazexa" class="h-8 w-8" /><span
+            class="font-display text-lg font-semibold tracking-tight"
+            >Nazexa</span
+          ></a
+        >
+        <nav class="hidden items-center gap-1 lg:flex">
+          <button
+            class="text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors"
+          >
+            Product<svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-chevron-down h-3.5 w-3.5 transition-transform"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6"></path>
+            </svg></button
+          ><button
+            class="text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors"
+          >
+            Solutions<svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-chevron-down h-3.5 w-3.5 transition-transform"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6"></path>
+            </svg></button
+          ><button
+            class="text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors"
+          >
+            Developers<svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-chevron-down h-3.5 w-3.5 transition-transform"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6"></path>
+            </svg></button
+          ><button
+            class="text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors"
+          >
+            Resources<svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-chevron-down h-3.5 w-3.5 transition-transform"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6"></path>
+            </svg></button
+          ><button
+            class="text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors"
+          >
+            Company<svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-chevron-down h-3.5 w-3.5 transition-transform"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6"></path>
+            </svg></button
+          ><button
+            class="text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors outline-none focus:outline-none"
+          >
+            Pricing<svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-chevron-down h-3.5 w-3.5 transition-transform"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </button>
+        </nav>
+        <div class="ml-auto hidden items-center gap-2 lg:flex"></div>
+        <button class="ml-auto rounded-md p-2 lg:hidden" aria-label="Toggle navigation">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-menu h-5 w-5"
+            aria-hidden="true"
+          >
+            <path d="M4 5h16"></path>
+            <path d="M4 12h16"></path>
+            <path d="M4 19h16"></path>
+          </svg>
+        </button>
+      </div>
+      <div
+        class="border-border hidden max-h-0 overflow-hidden transition-all duration-300 lg:block"
+      >
+        <div class="mx-auto grid max-w-7xl grid-cols-3 gap-2 px-5 py-6"></div>
+      </div>
+    </header>
+    <main class="relative z-10">
+      <!--$-->
+      <div class="bg-background text-foreground flex min-h-dvh">
+        <div
+          class="border-border/40 relative hidden items-center justify-center overflow-hidden border-r bg-zinc-950 bg-[radial-gradient(circle_at_0_0,rgba(103,232,249,0.15)_1.4px,transparent_1.5px),linear-gradient(to_right,rgba(148,163,184,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.05)_1px,transparent_1px)] bg-size-[30px_30px] lg:flex lg:w-1/2"
+        >
+          <div
+            class="from-primary/10 to-primary/5 absolute inset-0 bg-linear-to-br via-transparent"
+          ></div>
+          <div class="relative z-10 max-w-md px-8 text-center">
+            <div class="mx-auto mb-1 flex h-16 w-16 items-center justify-center rounded-2xl">
+              <img src="/logos/logo-sm.svg" alt="Nazexa Logo" width="64" height="64" />
+            </div>
+            <h2 class="font-display mt-6 text-3xl font-semibold tracking-tight">Nazexa</h2>
+            <p class="text-muted-foreground mt-4">
+              The platform for designing, building, and deploying modern databases.
+            </p>
+            <div
+              class="border-primary/20 bg-primary/10 text-primary mt-8 flex items-center justify-center gap-2 rounded-full border px-4 py-2 text-xs"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-3 w-3"
+              >
+                <path
+                  d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                ></path></svg
+              >Secured by Nazexa Central Authentication
+            </div>
+          </div>
+        </div>
+        <div class="flex w-full items-center justify-center px-4 py-16 sm:px-6 lg:w-1/2">
+          <div
+            class="border-border/50 bg-card/50 w-full max-w-md rounded-xl border p-6 backdrop-blur-sm sm:p-8"
+          >
+            <a
+              class="font-display mb-6 flex items-center gap-2 text-lg font-semibold lg:hidden"
+              href="/"
+              ><img src="/logos/logo-sm.svg" alt="Nazexa" class="h-7 w-auto" />Nazexa</a
+            >
+            <h1 class="text-2xl font-bold tracking-tight">Welcome back</h1>
+            <p class="text-muted-foreground mt-2 text-sm">
+              Sign in to your Nazexa account to continue.
+            </p>
+            <div class="mt-7 flex flex-col gap-3">
+              <a
+                href="/api/auth/oauth/google/initiate?callback_url=http%3A%2F%2Flocalhost%3A3000%2F"
+                class="focus-visible:ring-ring [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-input hover:text-accent-foreground bg-background hover:bg-muted flex inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium whitespace-nowrap shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                ><svg viewBox="0 0 24 24" class="h-5 w-5" aria-hidden="true">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  ></path>
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  ></path>
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  ></path>
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  ></path></svg
+                >Continue with Google</a
+              ><a
+                href="/api/auth/oauth/github/initiate?callback_url=http%3A%2F%2Flocalhost%3A3000%2F"
+                class="focus-visible:ring-ring [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-input hover:text-accent-foreground bg-background hover:bg-muted flex inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium whitespace-nowrap shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                ><svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                  ></path></svg
+                >Continue with GitHub</a
+              >
+            </div>
+            <div class="relative mt-7">
+              <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                <div class="border-border w-full border-t"></div>
+              </div>
+              <div class="relative flex justify-center text-xs font-medium uppercase">
+                <span class="bg-background text-muted-foreground px-2">Or continue with email</span>
+              </div>
+            </div>
+            <form class="mt-7 space-y-4">
+              <div class="space-y-1.5">
+                <label
+                  class="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  for="email"
+                  >Email address</label
+                ><input
+                  type="email"
+                  class="border-input file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                  id="email"
+                  autocomplete="email"
+                  placeholder="name@example.com"
+                  required=""
+                  value=""
+                />
+              </div>
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <label
+                    class="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    for="password"
+                    >Password</label
+                  ><a class="text-muted-foreground hover:text-foreground text-xs" href="#"
+                    >Forgot password?</a
+                  >
+                </div>
+                <input
+                  type="password"
+                  class="border-input file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                  id="password"
+                  autocomplete="current-password"
+                  placeholder="••••••••"
+                  required=""
+                  value=""
+                />
+              </div>
+              <button
+                class="focus-visible:ring-ring [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 glow-ring inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                type="submit"
+              >
+                Sign in
+              </button>
+            </form>
+            <p class="text-muted-foreground mt-8 text-center text-sm">
+              Don&#x27;t have an account?<!-- -->
+              <a class="text-foreground font-medium hover:underline" href="/register">Sign up</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/$-->
+    </main>
+    <footer class="border-border relative isolate overflow-hidden border-t pt-20">
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 overflow-hidden opacity-40"
+        aria-hidden="true"
+      >
+        <svg
+          viewBox="0 0 1440 320"
+          class="animate-marquee h-full w-[200%]"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="waveGrad" x1="0" x2="1">
+              <stop offset="0%" stop-color="var(--brand-1)" stop-opacity="0.18"></stop>
+              <stop offset="50%" stop-color="var(--brand-2)" stop-opacity="0.12"></stop>
+              <stop offset="100%" stop-color="var(--brand-3)" stop-opacity="0.15"></stop>
+            </linearGradient>
+          </defs>
+          <path
+            fill="url(#waveGrad)"
+            d="M0,192L60,181.3C120,171,240,149,360,160C480,171,600,213,720,213.3C840,213,960,171,1080,154.7C1200,139,1320,149,1380,154.7L1440,160L1440,320L0,320Z"
+          ></path>
+        </svg>
+      </div>
+      <div class="mx-auto max-w-7xl px-5">
+        <div class="grid gap-12 lg:grid-cols-[1.4fr_3fr]">
+          <div>
+            <div class="flex items-center gap-2.5">
+              <img src="/logos/logo-sm.svg" alt="Nazexa" class="h-8 w-8" /><span
+                class="font-display text-lg font-semibold"
+                >Nazexa</span
+              >
+            </div>
+            <p class="text-muted-foreground mt-4 max-w-sm text-sm">
+              The developer platform for teams who ship. Databases, edge compute, AI and
+              observability in one coherent product.
+            </p>
+            <form class="mt-6 flex max-w-sm gap-2">
+              <input
+                type="email"
+                class="border-input file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                placeholder="you@company.com"
+                aria-label="Email address"
+                required=""
+                value=""
+              /><button
+                class="focus-visible:ring-ring [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                type="submit"
+              >
+                Subscribe
+              </button>
+            </form>
+          </div>
+          <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
+            <div>
+              <div class="text-foreground text-xs font-semibold tracking-widest uppercase">
+                Platform
+              </div>
+              <ul class="mt-4 space-y-2.5">
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/products"
+                    >Products</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/db-design"
+                    >Nazexa DB Design</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/dev-tools"
+                    >Nazexa DEV Tools</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/solutions"
+                    >Solutions</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/integrations"
+                    >Integrations</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/pricing"
+                    >Pricing</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/roadmap"
+                    >Roadmap</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/changelog"
+                    >Changelog</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/release-notes"
+                    >Release Notes</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-foreground text-xs font-semibold tracking-widest uppercase">
+                Developers
+              </div>
+              <ul class="mt-4 space-y-2.5">
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/documentation"
+                    >Documentation</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/api-documentation"
+                    >API Reference</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/tutorials"
+                    >Tutorials</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/developer-blog"
+                    >Developer Blog</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/community"
+                    >Community</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/feature-requests"
+                    >Feature Requests</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/download-center"
+                    >Download Center</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-foreground text-xs font-semibold tracking-widest uppercase">
+                Company
+              </div>
+              <ul class="mt-4 space-y-2.5">
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/about"
+                    >About</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/team"
+                    >Team</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/careers"
+                    >Careers</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/customers"
+                    >Customers</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/partners"
+                    >Partners</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/news"
+                    >News</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/press-kit"
+                    >Press Kit</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-foreground text-xs font-semibold tracking-widest uppercase">
+                Resources
+              </div>
+              <ul class="mt-4 space-y-2.5">
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/services"
+                    >Services</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/services/ui-ux-design"
+                    >UI/UX Design</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/services/saas-development"
+                    >SaaS Development</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/case-studies"
+                    >Case Studies</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/portfolio"
+                    >Portfolio</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/blog"
+                    >Blog</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/faq"
+                    >FAQ</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-foreground text-xs font-semibold tracking-widest uppercase">
+                Trust
+              </div>
+              <ul class="mt-4 space-y-2.5">
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/security"
+                    >Security</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/status"
+                    >Status</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/support"
+                    >Support</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/privacy"
+                    >Privacy</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/terms"
+                    >Terms</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/cookie-policy"
+                    >Cookie Policy</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-muted-foreground hover:text-primary text-sm transition-colors"
+                    href="/contact"
+                    >Contact</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-border text-muted-foreground mt-16 flex flex-col gap-3 border-t py-8 text-xs sm:flex-row sm:items-center sm:justify-between"
+        >
+          <span
+            >©
+            <!-- -->2026<!-- -->
+            Nazexa Technologies. All rights reserved.</span
+          ><span class="flex items-center gap-2"
+            ><span class="relative flex h-2 w-2"
+              ><span
+                class="bg-primary absolute inline-flex h-full w-full rounded-full opacity-75"
+              ></span
+              ><span class="bg-primary relative inline-flex h-2 w-2 rounded-full"></span></span
+            >All systems operational</span
+          >
+        </div>
+      </div>
+    </footer>
+    <section
+      aria-label="Notifications alt+T"
+      tabindex="-1"
+      aria-live="polite"
+      aria-relevant="additions text"
+      aria-atomic="false"
+      data-react-aria-top-layer="true"
+    ></section>
+    <script src="/_next/static/chunks/webpack.js?v=1788834023899" async=""></script>
+    <script>
+      (self.__next_f = self.__next_f || []).push([0]);
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        '3:"$Sreact.fragment"\n5:I["(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]\n6:I["(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]\n8:I["(app-pages-browser)/./node_modules/next/dist/client/components/client-page.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ClientPageRoot"]\n9:I["(app-pages-browser)/./src/app/login/page.tsx",["app/login/page","static/chunks/app/login/page.js"],"default"]\na:I["(app-pages-browser)/./node_modules/next/dist/lib/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"OutletBoundary"]\ne:I["(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]\nf:I["(app-pages-browser)/./node_modules/next/dist/client/components/client-segment.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ClientSegmentRoot"]\n10:I["(app-pages-browser)/./node_modules/next/dist/client/components/http-access-fallback/error-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"HTTPAccessFallbackBoundary"]\n11:I["(app-pages-browser)/./node_modules/next/dist/lib/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"MetadataBoundary"]\n12:I["(app-pages-browser)/./node_modules/next/dist/lib/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ViewportBoundary"]\n:HL["/_next/static/css/app/layout.css?v=1788834023899","style"]\n2:{"name":"Preloads","env":"Server","key":null,"owner":null,"props":{"preloadCallbacks":["$E(()=\u003e{ctx.componentMod.preloadStyle(fullHref,ctx.renderOpts.crossOrigin,ctx.nonce)})"]}}\n1:D"$2"\n1:null\n7:{"name":"RootLayout","env":"Server","key":null,"owner":null,"props":{"children":["$","$L5",null,{"parallelRouterKey":"children","segm',
+      ]);
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        'entPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$3",null,{"children":["$","$L6",null,{},null]},null],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","$3",null,{"children":"$Y"},null],"forbidden":"$undefined","unauthorized":"$undefined"},null],"params":"$Y"}}\n4:D"$7"\nc:{"name":"__next_outlet_boundary__","env":"Server","key":null,"owner":null,"props":{"ready":"$E(async function getMetadataAndViewportReady() {\\n        await viewport();\\n        await metadata();\\n        return undefined;\\n    })"}}\nb:D"$c"\n',
+      ]);
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        '13:{"name":"NonIndex","env":"Server","key":null,"owner":null,"props":{"ctx":{"componentMod":{"GlobalError":"$e","__next_app__":{"require":"$E(function __webpack_require__(moduleId) {\\n/******/ \\t\\t// Check if module is in cache\\n/******/ \\t\\tvar cachedModule = __webpack_module_cache__[moduleId];\\n/******/ \\t\\tif (cachedModule !== undefined) {\\n/******/ \\t\\t\\treturn cachedModule.exports;\\n/******/ \\t\\t}\\n/******/ \\t\\t// Create a new module (and put it into the cache)\\n/******/ \\t\\tvar module = __webpack_module_cache__[moduleId] = {\\n/******/ \\t\\t\\tid: moduleId,\\n/******/ \\t\\t\\tloaded: false,\\n/******/ \\t\\t\\texports: {}\\n/******/ \\t\\t};\\n/******/ \\t\\n/******/ \\t\\t// Execute the module function\\n/******/ \\t\\tvar threw = true;\\n/******/ \\t\\ttry {\\n/******/ \\t\\t\\t__webpack_modules__[moduleId](module, module.exports, __webpack_require__);\\n/******/ \\t\\t\\tthrew = false;\\n/******/ \\t\\t} finally {\\n/******/ \\t\\t\\tif(threw) delete __webpack_module_cache__[moduleId];\\n/******/ \\t\\t}\\n/******/ \\t\\n/******/ \\t\\t// Flag the module as loaded\\n/******/ \\t\\tmodule.loaded = true;\\n/******/ \\t\\n/******/ \\t\\t// Return the exports of the module\\n/******/ \\t\\treturn module.exports;\\n/******/ \\t})","loadChunk":"$E(() =\u003e Promise.resolve())"},"pages":["P:\\\\Projects\\\\nazexa-web\\\\src\\\\app\\\\login\\\\page.tsx"],"routeModule":{"userland":{"loaderTree":["",{"children":"$Y"},"$Y"]},"definition":"$Y"},"tree":"$Y","ClientPageRoot":"$8","ClientSegmentRoot":"$f","HTTPAccessFallbackBoundary":"$10","LayoutRouter":"$5","MetadataBoundary":"$11","OutletBoundary":"$a","Postpone":"$E(function Postpone({ reason, route }) {\\n    const prerenderStore = _workunitasyncstorageexternal.workUnitAsyncStorage.getStore();\\n    const dynamicTracking = prerenderStore \u0026\u0026 prerenderStore.type === \'prerender-ppr\' ? prerenderStore.dynamicTracking : null;\\n    postponeWithTracking(route, reason, dynamicTracking);\\n})","RenderFromTemplateContext":"$6","ViewportBoundary":"$12","actionAsyncStorage":"$Y","collectSegmentData":"$E(async function collectSegmentData(fullPageDataBuffer, staleTime, clientModules, serverConsumerManifest) {\\n    // Traverse the router tree and generate a prefetch response for each segment.\\n    // A mutable map to collect the results as we traverse the route tree.\\n    const resultMap = new Map();\\n    // Before we start, warm up the module cache by decoding the page data once.\\n    // Then we can assume that any remaining async tasks that occur the next time\\n    // are due to hanging promises caused by dynamic data access. Note we only\\n    // have to do this once per page, not per individual segment.\\n    //\\n    try {\\n        await (0, _clientedge.createFromReadableStream)((0, _nodewebstreamshelper.streamFromBuffer)(fullPageDataBuffer), {\\n            serverConsumerManifest\\n        });\\n        await (0, _scheduler.waitAtLeastOneReactRenderTask)();\\n    } catch  {}\\n    // Create an abort controller that we\'ll use to stop the stream.\\n    const abortController = new AbortController();\\n    const onCompletedProcessingRouteTree = async ()=\u003e{\\n        // Since all we\'re doing is decoding and re-encoding a cached prerender, if\\n        // serializing the stream takes longer than a microtask, it must because of\\n        // hanging promises caused by dynamic data.\\n        await (0, _scheduler.waitAtLeastOneReactRenderTask)();\\n        abortController.abort();\\n    };\\n    // Generate a stream for the route tree prefetch. While we\'re walking the\\n    // tree, we\'ll also spawn additional tasks to generate the segment prefetches.\\n    // The promises for these tasks are pushed to a mutable array that we will\\n    // await once the route tree is fully rendered.\\n    const segmentTasks = [];\\n    const { prelude: treeStream } = await (0, _staticedge.prerender)(// RootTreePrefetch is not a valid return type for a React component, but\\n    // we need to use a component so that when we decode the original stream\\n    // inside of it, the side effects are transferred to the new stream.\\n    // @ts-expect-error\\n    /*#__PURE__*/ (0, _jsxruntime.jsx)(PrefetchTreeData, {\\n        fullPageDataBuffer: fullPageDataBuffer,\\n        serverConsumerManifest: serverConsumerManifest,\\n        clientModules: clientModules,\\n        staleTime: staleTime,\\n        segmentTasks: segmentTasks,\\n        onCompletedProcessingRouteTree: onCompletedProcessingRouteTree\\n    }), clientModules, {\\n        signal: abortController.signal,\\n        onError () {\\n        // Ignore any errors. These would have already been reported when\\n        // we created the full page data.\\n        }\\n    });\\n    // Write the route tree to a special `/_tree` segment.\\n    const treeBuffer = await (0, _nodewebstreamshelper.streamToBuffer)(treeStream);\\n    resultMap.set(\'/_tree\', treeBuffer);\\n    // Now that we\'ve finished rendering the route tree, all the segment tasks\\n    // should have been spawned. Await them in parallel and write the segment\\n    // prefetches to the result map.\\n    for (const [segmentPath, buffer] of (await Promise.all(segmentTasks))){\\n        resultMap.set(segmentPath, buffer);\\n    }\\n    return resultMap;\\n})","createMetadataComponents":"$E(function createMetadataComponents({ tree, searchParams, metadataContext, getDynamicParamFromSegment, appUsingSizeAdjustment, errorType, createServerParamsForMetadata, workStore, MetadataBoundary, ViewportBoundary }) {\\n    function MetadataRoot() {\\n        return /*#__PURE__*/ (0, _jsxruntime.jsxs)(_jsxruntime.Fragment, {\\n            children: [\\n                /*#__PURE__*/ (0, _jsxruntime.jsx)(MetadataBoundary, {\\n                    children: /*#__PURE__*/ (0, _jsxruntime.jsx)(Metadata, {})\\n                }),\\n                /*#__PURE__*/ (0, _jsxruntime.jsx)(ViewportBoundary, {\\n                    children: /*#__PURE__*/ (0, _jsxruntime.jsx)(Viewport, {})\\n                }),\\n                appUsingSizeAdjustment ? /*#__PURE__*/ (0, _jsxruntime.jsx)(\\"meta\\", {\\n                    name: \\"next-size-adjust\\",\\n                    content: \\"\\"\\n                }) : null\\n            ]\\n        });\\n    }\\n    async function viewport() {\\n        return getResolvedViewport(tree, searchParams, getDynamicParamFromSegment, createServerParamsForMetadata, workStore, errorType);\\n    }\\n    async function Viewport() {\\n        try {\\n            return await viewport();\\n        } catch (error) {\\n            if (!errorType \u0026\u0026 (0, _httpaccessfallback.isHTTPAccessFallbackError)(error)) {\\n                try {\\n                    return await getNotFoundViewport(tree, searchParams, getDynamicParamFromSegment, createServerParamsForMetadata, workStore);\\n                } catch  {}\\n            }\\n            // We don\'t actually want to error in this component. We will\\n            // also error in the MetadataOutlet which causes the error to\\n            // bubble from the right position in the page to be caught by the\\n            // appropriate boundaries\\n            return null;\\n        }\\n    }\\n    Viewport.displayName = _metadataconstants.VIEWPORT_BOUNDARY_NAME;\\n    async function metadata() {\\n        return getResolvedMetadata(tree, searchParams, getDynamicParamFromSegment, metadataContext, createServerParamsForMetadata, workStore, errorType);\\n    }\\n    async function Metadata() {\\n        try {\\n            return await metadata();\\n        } catch (error) {\\n            if (!errorType \u0026\u0026 (0, _httpaccessfallback.isHTTPAccessFallbackError)(error)) {\\n                try {\\n                    return await getNotFoundMetadata(tree, searchParams, getDynamicParamFromSegment, metadataContext, createServerParamsForMetadata, workStore);\\n                } catch  {}\\n            }\\n            // We don\'t actually want to error in this component. We will\\n            // also error in the MetadataOutlet which causes the error to\\n            // bubble from the right position in the page to be caught by the\\n            // appropriate boundaries\\n            return null;\\n        }\\n    }\\n    Metadata.displayName = _metadataconstants.METADATA_BOUNDARY_NAME;\\n    async function getMetadataAndViewportReady() {\\n        await viewport();\\n        await metadata();\\n        return undefined;\\n    }\\n    return [\\n        MetadataRoot,\\n        getMetadataAndViewportReady\\n    ];\\n})","createPrerenderParamsForClientSegment":"$E(function createPrerenderParamsForClientSegment(underlyingParams, workStore) {\\n    const prerenderStore = _workunitasyncstorageexternal.workUnitAsyncStorage.getStore();\\n    if (prerenderStore \u0026\u0026 prerenderStore.type === \'prerender\') {\\n        const fallbackParams = workStore.fallbackRouteParams;\\n        if (fallbackParams) {\\n            for(let key in underlyingParams){\\n                if (fallbackParams.has(key)) {\\n                    // This params object has one of more fallback params so we need to consider\\n                    // the awaiting of this params object \\"dynamic\\". Since we are in dynamicIO mode\\n                    // we encode this as a promise that never resolves\\n                    return (0, _dynamicrenderingutils.makeHangingPromise)(prerenderStore.renderSignal, \'`params`\');\\n                }\\n            }\\n        }\\n    }\\n    // We\'re prerendering in a mode that does not abort. We resolve the promise without\\n    // any tracking because we\'re just transporting a value from server to client where the tracking\\n    // will be applied.\\n    return Promise.resolve(underlyingParams);\\n})","createPrerenderSearchParamsForClientPage":"$E(function createPrerenderSearchParamsForClientPage(workStore) {\\n    if (workStore.forceStatic) {\\n        // When using forceStatic we override all other logic and always just return an empty\\n        // dictionary object.\\n        return Promise.resolve({});\\n    }\\n    const prerenderStore = _workunitasyncstorageexternal.workUnitAsyncStorage.getStore();\\n    if (prerenderStore \u0026\u0026 prerenderStore.type === \'prerender\') {\\n        // dynamicIO Prerender\\n        // We\'re prerendering in a mode that aborts (dynamicIO) and should stall\\n        // the promise to ensure the RSC side is considered dynamic\\n        return (0, _dynamicrenderingutils.makeHangingPromise)(prerenderStore.renderSignal, \'`searchParams`\');\\n    }\\n    // We\'re prerendering in a mode that does not aborts. We resolve the promise without\\n    // any tracking because we\'re just transporting a value from server to client where the tracking\\n    // will be applied.\\n    return Promise.resolve({});\\n})","createServerParamsForMetadata":"$E(function createServerParamsForServerSegment(underlyingParams, workStore) {\\n    const workUnitStore = _workunitasyncstorageexternal.workUnitAsyncStorage.getStore();\\n    if (workUnitStore) {\\n        switch(workUnitStore.type){\\n            case \'prerender\':\\n            case \'prerender-ppr\':\\n            case \'prerender-legacy\':\\n                return createPrerenderParams(underlyingParams, workStore, workUnitStore);\\n            default:\\n        }\\n    }\\n    return createRenderParams(underlyingParams, workStore);\\n})","createServerParamsForServerSegment":"$E(function createServerParamsForServerSegment(underlyingParams, workStore) {\\n    const workUnitStore = _workunitasyncstorageexternal.workUnitAsyncStorage.getStore();\\n    if (workUnitStore) {\\n        switch(workUnitStore.type){\\n            case \'prerender\':\\n            case \'prerender-ppr\':\\n            case \'prerender-legacy\':\\n                return createPrerenderParams(underlyingParams, workStore, workUnitStore);\\n            default:\\n        }\\n    }\\n    return createRenderParams(underlyingParams, workStore);\\n})","createServerSearchParamsForMetadata":"$E(function createServerSearchParamsForServerPage(underlyingSearchParams, workStore) {\\n    const workUnitStore = _workunitasyncstorageexternal.workUnitAsyncStorage.getStore();\\n    if (workUnitStore) {\\n        switch(workUnitStore.type){\\n            case \'prerender\':\\n            case \'prerender-ppr\':\\n            case \'prerender-legacy\':\\n                return createPrerenderSearchParams(workStore, workUnitStore);\\n            default:\\n        }\\n    }\\n    return createRenderSearchParams(underlyingSearchParams, workStore);\\n})","createServerSearchParamsForServerPage":"$E(function createServerSearchParamsForServerPage(underlyingSearchParams, workStore) {\\n    const workUnitStore = _workunitasyncstorageexternal.workUnitAsyncStorage.getStore();\\n    if (workUnitStore) {\\n        switch(workUnitStore.type){\\n            case \'prerender\':\\n            case \'prerender-ppr\':\\n            case \'prerender-legacy\':\\n                return createPrerenderSearchParams(workStore, workUnitStore);\\n            default:\\n        }\\n    }\\n    return createRenderSearchParams(underlyingSearchParams, workStore);\\n})","createTemporaryReferenceSet":"$E(function(){return new WeakMap})","decodeAction":"$E(function(body,serverManifest){var formData=new FormData,action=null;return body.forEach(function(value1,key){key.startsWith(\\"$ACTION_\\")?key.startsWith(\\"$ACTION_REF_\\")?(value1=decodeBoundActionMetaData(body,serverManifest,value1=\\"$ACTION_\\"+key.slice(12)+\\":\\"),action=loadServerReference(serverManifest,value1.id,value1.bound)):key.startsWith(\\"$ACTION_ID_\\")\u0026\u0026(action=loadServerReference(serverManifest,value1=key.slice(11),null)):formData.append(key,value1)}),null===action?null:action.then(function(fn){return fn.bind(null,formData)})})","decodeFormState":"$E(function(actionResult,body,serverManifest){var keyPath=body.get(\\"$ACTION_KEY\\");if(\\"string\\"!=typeof keyPath)return Promise.resolve(null);var metaData=null;if(body.forEach(function(value1,key){key.startsWith(\\"$ACTION_REF_\\")\u0026\u0026(metaData=decodeBoundActionMetaData(body,serverManifest,\\"$ACTION_\\"+key.slice(12)+\\":\\"))}),null===metaData)return Promise.resolve(null);var referenceId=metaData.id;return Promise.resolve(metaData.bound).then(function(bound){return null===bound?null:[actionResult,keyPath,referenceId,bound.length-1]})})","decodeReply":"$E(function(body,webpackMap,options){if(\\"string\\"==typeof body){var form=new FormData;form.append(\\"0\\",body),body=form}return webpackMap=getChunk(body=createResponse(webpackMap,\\"\\",options?options.temporaryReferences:void 0,body),0),close(body),webpackMap})","patchFetch":"$E(function patchFetch() {\\n    return (0, _patchfetch.patchFetch)({\\n        workAsyncStorage: _workasyncstorageexternal.workAsyncStorage,\\n        workUnitAsyncStorage: _workunitasyncstorageexternal.workUnitAsyncStorage\\n    });\\n})","preconnect":"$E(function preconnect(href, crossOrigin, nonce) {\\n    const opts = {};\\n    if (typeof crossOrigin === \'string\') {\\n        opts.crossOrigin = crossOrigin;\\n    }\\n    if (typeof nonce === \'string\') {\\n        opts.nonce = nonce;\\n    }\\n    ;\\n    _reactdom.default.preconnect(href, opts);\\n})","preloadFont":"$E(function preloadFont(href, type, crossOrigin, nonce) {\\n    const opts = {\\n        as: \'font\',\\n        type\\n    };\\n    if (typeof crossOrigin === \'string\') {\\n        opts.crossOrigin = crossOrigin;\\n    }\\n    if (typeof nonce === \'string\') {\\n        opts.nonce = nonce;\\n    }\\n    _reactdom.default.preload(href, opts);\\n})","preloadStyle":"$E(function preloadStyle(href, crossOrigin, nonce) {\\n    const opts = {\\n        as: \'style\'\\n    };\\n    if (typeof crossOrigin === \'string\') {\\n        opts.crossOrigin = crossOrigin;\\n    }\\n    if (typeof nonce === \'string\') {\\n        opts.nonce = nonce;\\n    }\\n    _reactdom.default.preload(href, opts);\\n})","prerender":"$undefined","renderToReadableStream":"$E(function(model,webpackMap,options){var request=new RequestInstance(20,model,webpackMap,options?options.onError:void 0,options?options.identifierPrefix:void 0,options?options.onPostpone:void 0,options?options.temporaryReferences:void 0,options?options.environmentName:void 0,options?options.filterStackFrame:void 0,noop,noop);if(options\u0026\u0026options.signal){var signal=options.signal;if(signal.aborted)abort(request,signal.reason);else{var listener=function(){abort(request,signal.reason),signal.removeEventListener(\\"abort\\",listener)};signal.addEventListener(\\"abort\\",listener)}}return new ReadableStream({type:\\"bytes\\",start:function(){request.flushScheduled=null!==request.destination,supportsRequestStorage?scheduleMicrotask(function(){requestStorage.run(request,performWork,request)}):scheduleMicrotask(function(){return performWork(request)}),setTimeoutOrImmediate(function(){request.status===OPENING\u0026\u0026(request.status=11)},0)},pull:function(controller){if(request.status===CLOSING)request.status=CLOSED,closeWithError(controller,request.fatalError);else if(request.status!==CLOSED\u0026\u0026null===request.destination){request.destination=controller;try{flushCompletedChunks(request,controller)}catch(error){logRecoverableError(request,error,null),fatalError(request,error)}}},cancel:function(reason){request.destination=null,abort(request,reason)}},{highWaterMark:0})})","serverHooks":"$Y","taintObjectReference":"$E(function notImplemented() {\\n    throw new Error(\'Taint can only be used with the taint flag.\');\\n})","workAsyncStorage":"$Y","workUnitAsyncStorage":"$Y"},"url":"$Y","renderOpts":"$Y","workStore":"$Y","parsedRequestHeaders":"$Y","getDynamicParamFromSegment":"$E(function(segment){let segmentParam=getSegmentParam(segment);if(!segmentParam)return null;let key=segmentParam.param,value1=params[key];if(fallbackRouteParams\u0026\u0026fallbackRouteParams.has(segmentParam.param)?value1=fallbackRouteParams.get(segmentParam.param):Array.isArray(value1)?value1=value1.map(i=\u003eencodeURIComponent(i)):\\"string\\"==typeof value1\u0026\u0026(value1=encodeURIComponent(value1)),!value1){let isCatchall=\\"catchall\\"===segmentParam.type,isOptionalCatchall=\\"optional-catchall\\"===segmentParam.type;if(isCatchall||isOptionalCatchall){let dynamicParamType=dynamicParamTypes[segmentParam.type];return isOptionalCatchall?{param:key,value:null,type:dynamicParamType,treeSegment:[key,\\"\\",dynamicParamType]}:{param:key,value:value1=pagePath.split(\\"/\\").slice(1).flatMap(pathSegment=\u003e{let param=function(param){let match=param.match(PARAMETER_PATTERN);return match?parseMatchedParameter(match[1]):parseMatchedParameter(param)}(pathSegment);return params[param.key]??param.key}),type:dynamicParamType,treeSegment:[key,value1.join(\\"/\\"),dynamicParamType]}}}let type=function(type){let short=dynamicParamTypes[type];if(!short)throw Error(\\"Unknown dynamic param type\\");return short}(segmentParam.type);return{param:key,value:value1,treeSegment:[key,Array.isArray(value1)?value1.join(\\"/\\"):value1,type],type:type}})","query":"$0:f:0:1:2:children:2:children:1:props:children:0:props:searchParams","isPrefetch":false,"isAction":false,"requestTimestamp":1788834023899,"appUsingSizeAdjustment":false,"flightRouterState":"$undefined","requestId":"HWQfynIgIg9B8kPvkp243","pagePath":"/login","clientReferenceManifest":"$Y","assetPrefix":"","isNotFoundPath":false,"nonce":"$undefined","res":"$Y"}}}\n',
+      ]);
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        'd:D"$13"\nd:null\n15:{"name":"MetadataRoot","env":"Server","key":"HWQfynIgIg9B8kPvkp243","owner":null,"props":{}}\n14:D"$15"\n17:{"name":"__next_metadata_boundary__","env":"Server","key":null,"owner":"$15","props":{}}\n16:D"$17"\n19:{"name":"__next_viewport_boundary__","env":"Server","key":null,"owner":"$15","props":{}}\n18:D"$19"\n14:["$","$3","HWQfynIgIg9B8kPvkp243",{"children":[["$","$L11",null,{"children":"$L16"},"$15"],["$","$L12",null,{"children":"$L18"},"$15"],null]},null]\n1a:[]\n0:{"P":"$1","b":"development","p":"","c":["","login"],"i":false,"f":[[["",{"children":["login",{"children":["__PAGE__",{}]}]},"$undefined","$undefined",true],["",["$","$3","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/app/layout.css?v=1788834023899","precedence":"next_static/css/app/layout.css","crossOrigin":"$undefined","nonce":"$undefined"},null]],"$L4"]},null],{"children":["login",["$","$3","c",{"children":[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","login","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{},null],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"},null]]},null],{"children":["__PAGE__",["$","$3","c",{"children":[["$","$L8",null,{"Component":"$9","searchParams":{},"params":{}},null],null,["$","$La",null,{"children":"$Lb"},null]]},null],{},null,false]},null,false]},null,false],["$","$3","h",{"children":["$d","$14"]},null],false]],"m":"$W1a","G":["$e","$undefined"],"s":false,"S":false}\n18:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"},"$c"]]\n',
+      ]);
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        '16:[["$","meta","0",{"charSet":"utf-8"},"$17"],["$","title","1",{"children":"Nazexa — The developer platform for teams who ship"},"$17"],["$","meta","2",{"name":"description","content":"Nazexa unifies databases, edge compute, auth, AI and observability into one premium developer platform."},"$17"],["$","meta","3",{"name":"application-name","content":"Nazexa"},"$17"],["$","meta","4",{"name":"author","content":"Nazexa"},"$17"],["$","meta","5",{"name":"keywords","content":"nazexa,developer platform,database,edge compute,AI,observability"},"$17"],["$","link","6",{"rel":"canonical","href":"https://nazexa.com"},"$17"],["$","meta","7",{"name":"mobile-web-app-capable","content":"yes"},"$17"],["$","meta","8",{"name":"apple-mobile-web-app-title","content":"Nazexa"},"$17"],["$","meta","9",{"name":"apple-mobile-web-app-status-bar-style","content":"default"},"$17"],["$","meta","10",{"property":"og:title","content":"Nazexa — The developer platform for teams who ship"},"$17"],["$","meta","11",{"property":"og:description","content":"Nazexa unifies databases, edge compute, auth, AI and observability into one premium developer platform."},"$17"],["$","meta","12",{"property":"og:url","content":"https://nazexa.com"},"$17"],["$","meta","13",{"property":"og:site_name","content":"Nazexa"},"$17"],["$","meta","14",{"property":"og:image","content":"https://nazexa.com/logos/logo.png"},"$17"],["$","meta","15",{"property":"og:image:width","content":"1200"},"$17"],["$","meta","16",{"property":"og:image:height","content":"630"},"$17"],["$","meta","17",{"property":"og:image:alt","content":"Nazexa"},"$17"],["$","meta","18",{"property":"og:type","content":"website"},"$17"],["$","meta","19",{"name":"twitter:card","content":"summary_large_image"},"$17"],["$","meta","20",{"name":"twitter:site","content":"@nazexa"},"$17"],["$","meta","21",{"name":"twitter:creator","content":"@nazexa"},"$17"],["$","meta","22",{"name":"twitter:title","content":"Nazexa — The developer platform for teams who ship"},"$17"],["$","meta","23",{"name":"twitter:description","content":"Nazexa unifies databases, edge compute, auth, AI and observability into one premium developer platform."},"$17"],["$","meta","24",{"name":"twitter:image","content":"https://nazexa.com/logos/logo.png"},"$17"],["$","link","25",{"rel":"icon","href":"/logos/logo-sm.svg"},"$17"]]\n',
+      ]);
+    </script>
+    <script>
+      self.__next_f.push([1, 'b:null\n']);
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        '1d:I["(app-pages-browser)/./src/app/Providers.tsx",["app/layout","static/chunks/app/layout.js"],"Providers"]\n1c:{"name":"JsonLd","env":"Server","key":null,"owner":"$7","props":{"schema":{"@context":"https://schema.org","@type":"Organization","name":"Nazexa","url":"https://nazexa.com","logo":"https://nazexa.com/logos/logo.png","image":"https://nazexa.com/logos/logo.png","description":"Developer platform for databases, edge compute, auth, AI and observability.","sameAs":["https://twitter.com/nazexa","https://github.com/nazexa"]}}}\n1b:D"$1c"\n1b:["$","script",null,{"type":"application/ld+json","dangerouslySetInnerHTML":{"__html":"{\\"@context\\":\\"https://schema.org\\",\\"@type\\":\\"Organization\\",\\"name\\":\\"Nazexa\\",\\"url\\":\\"https://nazexa.com\\",\\"logo\\":\\"https://nazexa.com/logos/logo.png\\",\\"image\\":\\"https://nazexa.com/logos/logo.png\\",\\"description\\":\\"Developer platform for databases, edge compute, auth, AI and observability.\\",\\"sameAs\\":[\\"https://twitter.com/nazexa\\",\\"https://github.com/nazexa\\"]}"}},"$1c"]\n1f:{"name":"NotFound","env":"Server","key":null,"owner":null,"props":{}}\n1e:D"$1f"\n20:{"name":"HTTPAccessErrorFallback","env":"Server","key":null,"owner":"$1f","props":{"status":404,"message":"This page could not be found."}}\n1e:D"$20"\n1e:[["$","title",null,{"children":"404: This page could not be found."},"$20"],["$","div",null,{"style":{"fontFamily":"system-ui,\\"Segoe UI\\",Roboto,Helvetica,Arial,sans-serif,\\"Apple Color Emoji\\",\\"Segoe UI Emoji\\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}},"$20"],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0',
+      ]);
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        ' 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404},"$20"],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."},"$20"]},"$20"]]},"$20"]},"$20"]]\n',
+      ]);
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        '4:["$","html",null,{"lang":"en","children":[["$","head",null,{"children":[["$","link",null,{"rel":"preconnect","href":"https://fonts.googleapis.com"},"$7"],["$","link",null,{"rel":"preconnect","href":"https://fonts.gstatic.com","crossOrigin":"anonymous"},"$7"],["$","link",null,{"rel":"stylesheet","href":"https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700\u0026family=DM+Sans:opsz,wght@9..40,400;9..40,500\u0026family=JetBrains+Mono:wght@400;500\u0026display=swap"},"$7"],["$","link",null,{"rel":"icon","href":"/logos/logo-sm.svg","type":"image/svg+xml"},"$7"],["$","link",null,{"rel":"apple-touch-icon","href":"/logos/logo.png"},"$7"],["$","link",null,{"rel":"icon","href":"/logos/logo.png","sizes":"192x192"},"$7"],"$1b"]},"$7"],["$","body",null,{"children":["$","$L1d",null,{"products":[{"id":"c79d28b3-7788-4e37-9cd3-69cb5f6f184c","collection":"products","slug":"nazexa-core","position":12,"published":true,"title":"Nazexa Core","subtitle":"Core","body":"\u003cp\u003eManaged Postgres with instant branching, an edge function runtime, object storage, queues and cron — all behind one typed API and one permission model.\u003c/p\u003e","icon":null,"tone":null,"category":null,"image_url":null,"link_url":null,"link_label":null,"data":{}},{"id":"90efa587-0cb1-48de-acc8-a62b3967cd3d","collection":"products","slug":"nazexa-ai","position":13,"published":true,"title":"Nazexa AI","subtitle":"AI","body":"\u003cp\u003eEmbeddings, hybrid retrieval, agent orchestration and offline evaluation with per-token billing and no separate vector database to operate.\u003c/p\u003e","icon":null,"tone":null,"category":null,"image_url":null,"link_url":null,"link_label":null,"data":{}},{"id":"69b3e179-5e1d-4870-bf4f-b83523424f87","collection":"products","slug":"nazexa-insight","position":14,"published":true,"title":"Nazexa Insight","subtitle":"Insight","body":"\u003cp\u003eProduct analytics, distributed tracing, logs and alerting collected by the runtime itself — no agents, no sampling surprises, no extra sidecars.\u003c/p\u003e","icon":null,"tone":null,"category":null,"image_url":null,"link_url":null,"link_label":null,"data":{}},{"id":"e517dceb-eec3-4b3e-a359-8baaaa218de7","collection":"products","slug":"db-design","position":15,"published":true,"title":"Nazexa DB Design","subtitle":"Visual database design, from first entity to production migration","body":"\u003cp\u003eDesign schemas, ERDs, tables, columns, indexes and relationships on an infinite canvas, then export clean SQL, JSON or Laravel migrations for MySQL, PostgreSQL, SQLite and more.\u003c/p\u003e\u003cul\u003e\u003cli\u003eDrag \u0026 drop ERD designer with snap-to-grid, minimap and auto-layout\u003c/li\u003e\u003cli\u003eRelationship validation before a single migration runs\u003c/li\u003e\u003cli\u003eSQL / JSON import \u0026 export plus Laravel model and migration generation\u003c/li\u003e\u003c/ul\u003e","icon":null,"tone":"brand-1","category":null,"image_url":null,"link_url":"/db-design","link_label":"Explore Nazexa DB Design","data":{}},{"id":"721040bb-7408-4b3c-97df-bc8ae31b41c9","collection":"products","slug":"dev-tools","position":16,"published":true,"title":"Nazexa DEV Tools","subtitle":"The everyday developer toolbox, in one fast workspace","body":"\u003cp\u003eJSON, API, JWT, SQL and Laravel utilities in a single place — formatters, validators, request builders, decoders and generators, with AI assistance where it genuinely helps.\u003c/p\u003e\u003cul\u003e\u003cli\u003eJSON formatter, validator and minifier\u003c/li\u003e\u003cli\u003eAPI request builder and JWT inspector\u003c/li\u003e\u003cli\u003eSQL formatting plus Laravel code generators\u003c/li\u003e\u003c/ul\u003e","icon":null,"tone":"brand-2","category":null,"image_url":null,"link_url":"/dev-tools","link_label":"Explore Nazexa DEV Tools","data":{}}],"children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{},null],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[],"$1e"],"forbidden":"$undefined","unauthorized":"$undefined"},null]},"$7"]},"$7"]]},"$7"]\n',
+      ]);
+    </script>
+  </body>
+</html>

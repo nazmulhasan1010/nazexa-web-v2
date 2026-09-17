@@ -17,15 +17,7 @@ function parseOAuthState(stateParam: string | null): OAuthState {
   }
 }
 
-function resolveProductBase(from: string | undefined): string | null {
-  if (from === 'nazexa-db') {
-    return process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000';
-  }
-  if (from === 'nazexa-socket-platform') {
-    return process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000';
-  }
-  return null;
-}
+
 
 /**
  * After Google login, return the user to the product SSO endpoint with a
@@ -159,11 +151,12 @@ export async function GET(request: NextRequest) {
     if (state.callback_url) {
       try {
         const parsed = new URL(state.callback_url);
+        const apps = await db.application.findMany({ select: { allowedOrigins: true } });
+        const dynamicOrigins = apps.flatMap(a => (a.allowedOrigins || '').split(',').map(s => s.trim()).filter(Boolean));
         const allowedOrigins = [
           baseUrl,
-          process.env.NEXT_PUBLIC_NAZEXA_DB_URL || 'http://localhost:8000',
-          process.env.NEXT_PUBLIC_NAZEXA_SOCKET_URL || 'http://localhost:4000',
-        ].filter(Boolean);
+          ...dynamicOrigins
+        ].filter(Boolean) as string[];
         const isValidOrigin = allowedOrigins.some((origin) => {
           try {
             return parsed.origin === new URL(origin).origin;
@@ -181,14 +174,19 @@ export async function GET(request: NextRequest) {
         // ignore
       }
     } else {
-      // 2) Fallback: auth_perform_from → default product SSO path
-      const productBase = resolveProductBase(authPerformFrom);
+      let productBase = null;
+      if (authPerformFrom) {
+        const app = await db.application.findUnique({ where: { clientId: authPerformFrom } });
+        if (app && app.redirectUris) {
+          productBase = new URL(app.redirectUris.split(',')[0].trim()).origin;
+        }
+      }
+
       if (productBase) {
         redirectUrl = `${productBase.replace(/\/$/, '')}/api/auth/sso?redirect=${encodeURIComponent('/dashboard')}`;
       } else if (!user.emailVerified) {
         redirectUrl = `${baseUrl}/verify`;
       } else if (!user.password_hash) {
-        // Only when staying on central web — never block product SSO
         redirectUrl = `${baseUrl}/set-password`;
       }
     }

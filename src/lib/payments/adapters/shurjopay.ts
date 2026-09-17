@@ -36,7 +36,7 @@ function baseUrl(environment: PaymentEnvironment, config: Record<string, string>
 
 async function getToken(
   environment: PaymentEnvironment,
-  config: Record<string, string>,
+  config: Record<string, string>
 ): Promise<{
   token?: string;
   storeId?: string | number;
@@ -222,7 +222,9 @@ export const shurjopayAdapter: PaymentGatewayAdapter = {
     const paid =
       code === '1000' ||
       String(row.bank_status || '').toLowerCase() === 'success' ||
-      String(row.sp_message || '').toLowerCase().includes('success');
+      String(row.sp_message || '')
+        .toLowerCase()
+        .includes('success');
 
     const amount = row.amount != null ? String(row.amount) : undefined;
     const amountOk = amount == null || amountsMatch(input.amount, amount);
@@ -281,7 +283,7 @@ export const shurjopayAdapter: PaymentGatewayAdapter = {
 
   async testConnection(
     config: Record<string, string>,
-    environment: PaymentEnvironment,
+    environment: PaymentEnvironment
   ): Promise<TestConnectionResult> {
     const v = this.validateConfig(config);
     if (!v.valid) return { ok: false, message: v.errors.join('; '), liveVerified: false };

@@ -26,7 +26,10 @@ async function paramsFromBody(req: NextRequest): Promise<Record<string, string>>
       const json = await req.json().catch(() => ({}));
       if (json && typeof json === 'object') {
         for (const [k, v] of Object.entries(json)) {
-          if (v != null && (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean')) {
+          if (
+            v != null &&
+            (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean')
+          ) {
             out[k] = String(v);
           }
         }
@@ -51,14 +54,14 @@ async function paramsFromBody(req: NextRequest): Promise<Record<string, string>>
  */
 export async function GET(
   req: NextRequest,
-  ctx: { params: Promise<{ gateway: string; outcome: string }> },
+  ctx: { params: Promise<{ gateway: string; outcome: string }> }
 ) {
   return handleCallback(req, ctx, paramsFromSearch(req));
 }
 
 export async function POST(
   req: NextRequest,
-  ctx: { params: Promise<{ gateway: string; outcome: string }> },
+  ctx: { params: Promise<{ gateway: string; outcome: string }> }
 ) {
   // Some gateways POST form bodies (e.g. SSLCOMMERZ) — merge body + query.
   const bodyParams = await paramsFromBody(req);
@@ -69,7 +72,7 @@ export async function POST(
 async function handleCallback(
   req: NextRequest,
   ctx: { params: Promise<{ gateway: string; outcome: string }> },
-  params: Record<string, string>,
+  params: Record<string, string>
 ) {
   const { gateway: gatewayCode, outcome } = await ctx.params;
 
@@ -94,13 +97,14 @@ async function handleCallback(
             { gatewayPaymentId: params.paymentID || params.payment_id || undefined },
           ],
         },
-        include: { gateway: true, application: true },
+        include: { payment_gateways: true, applications: true },
       })
     : null;
 
   // Fallback: match by gateway payment/order ids in query/body
   if (!txn) {
-    const orderId = params.token || params.order_id || params.session_id || params.paymentID || params.val_id;
+    const orderId =
+      params.token || params.order_id || params.session_id || params.paymentID || params.val_id;
     if (orderId) {
       txn = await db.paymentTransaction.findFirst({
         where: {
@@ -110,7 +114,7 @@ async function handleCallback(
             { gatewayTransactionId: orderId },
           ],
         },
-        include: { gateway: true, application: true },
+        include: { payment_gateways: true, applications: true },
       });
     }
   }
@@ -135,13 +139,15 @@ async function handleCallback(
   }
 
   // success path — verify with adapter; do not trust redirect alone
-  const gatewayRow = txn.gateway;
+  const gatewayRow = txn.payment_gateways;
   const def = gatewayRow ? getGatewayDef(gatewayRow.code) : getGatewayDef(gatewayCode);
   const adapter = getAdapter(gatewayRow?.code || gatewayCode);
 
   if (gatewayRow && def && adapter) {
     const config = unsealConfig(def.fields, parseConfig(gatewayRow.config));
-    const environment = (gatewayRow.environment === 'production' ? 'production' : 'sandbox') as PaymentEnvironment;
+    const environment = (
+      gatewayRow.environment === 'production' ? 'production' : 'sandbox'
+    ) as PaymentEnvironment;
 
     const verification = await adapter.verifyPayment({
       transactionId: txn.id,

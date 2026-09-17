@@ -31,22 +31,26 @@ export default async function CheckoutPage({ params }: { params: Promise<{ id: s
 
   if (txn.userId !== user.id) {
     return (
-              <div className="flex min-h-screen items-center justify-center bg-background">
-          <div className="w-full max-w-md rounded-lg bg-card p-6 text-center shadow-sm border">
-            <h2 className="text-destructive font-bold text-lg mb-2">Account Mismatch</h2>
-            <p className="text-muted-foreground mb-4">
-              This checkout session belongs to a different Nazexa account. You are currently logged into Nazexa Web with a different email.
-            </p>
-            <p className="text-sm mb-6">
-              Please log out and log back in with the account you used on the product page.
-            </p>
-            <form action="/api/auth/logout" method="POST">
-              <button type="submit" className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">
-                Log Out
-              </button>
-            </form>
-          </div>
+      <div className="bg-background flex min-h-screen items-center justify-center">
+        <div className="bg-card w-full max-w-md rounded-lg border p-6 text-center shadow-sm">
+          <h2 className="text-destructive mb-2 text-lg font-bold">Account Mismatch</h2>
+          <p className="text-muted-foreground mb-4">
+            This checkout session belongs to a different Nazexa account. You are currently logged
+            into Nazexa Web with a different email.
+          </p>
+          <p className="mb-6 text-sm">
+            Please log out and log back in with the account you used on the product page.
+          </p>
+          <form action="/api/auth/logout" method="POST">
+            <button
+              type="submit"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 rounded px-4 py-2"
+            >
+              Log Out
+            </button>
+          </form>
         </div>
+      </div>
     );
   }
 
@@ -66,8 +70,8 @@ export default async function CheckoutPage({ params }: { params: Promise<{ id: s
   };
 
   return (
-    <div className="bg-background min-h-screen px-4 py-12 sm:px-6 lg:px-8 grid place-items-center">
-      <div className="bg-card text-card-foreground border-border mx-auto min-w-lg rounded-xl border p-6 shadow-sm sm:p-8">
+    <div className="bg-background grid min-h-screen place-items-center px-4 py-12 sm:px-6 lg:px-8">
+      <div className="bg-card text-card-foreground border-border mx-auto mt-10 min-w-lg rounded-xl border p-6 shadow-sm sm:p-8">
         <div className="mb-8 text-center">
           <h1 className="text-foreground text-2xl font-bold">Complete Payment</h1>
           <p className="text-muted-foreground mt-2">

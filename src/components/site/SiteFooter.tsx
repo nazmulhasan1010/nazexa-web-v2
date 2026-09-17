@@ -4,7 +4,7 @@ import { Sparkles } from 'lucide-react';
 
 import { WaveBackground } from '@/components/backgrounds/AnimatedBackground';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { NewsletterSubscription } from './NewsletterSubscription';
 import { footerColumns } from '@/lib/site-content';
 
 export function SiteFooter() {
@@ -22,10 +22,7 @@ export function SiteFooter() {
               The developer platform for teams who ship. Databases, edge compute, AI and
               observability in one coherent product.
             </p>
-            <form className="mt-6 flex max-w-sm gap-2" onSubmit={(e) => e.preventDefault()}>
-              <Input type="email" placeholder="you@company.com" aria-label="Email address" />
-              <Button type="submit">Subscribe</Button>
-            </form>
+            <NewsletterSubscription />
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
