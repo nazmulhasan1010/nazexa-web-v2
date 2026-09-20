@@ -237,8 +237,8 @@ export default function TeamPage() {
             </CardContent>
           </Card>
 
-          <div className="bg-card rounded-md border">
-            <table className="w-full text-left text-sm">
+          <div className="bg-card rounded-md border overflow-x-auto">
+            <table className="w-full text-left text-sm min-w-[600px]">
               <thead className="bg-muted/50 border-b">
                 <tr>
                   <th className="px-4 py-3 font-medium">Name</th>
@@ -359,8 +359,8 @@ export default function TeamPage() {
             </CardContent>
           </Card>
 
-          <div className="bg-card rounded-md border">
-            <table className="w-full text-left text-sm">
+          <div className="bg-card rounded-md border overflow-x-auto">
+            <table className="w-full text-left text-sm min-w-[600px]">
               <thead className="bg-muted/50 border-b">
                 <tr>
                   <th className="px-4 py-3 font-medium">Role Name</th>

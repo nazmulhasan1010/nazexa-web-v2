@@ -30,5 +30,5 @@ export function ContentPreviewClient({
     return () => window.removeEventListener('message', onMessage);
   }, []);
 
-  return <div className="px-4 py-10">{renderContentPreview(collection, item)}</div>;
+  return <div className="px-4 pb-10 pt-28">{renderContentPreview(collection, item)}</div>;
 }

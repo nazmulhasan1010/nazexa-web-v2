@@ -1,6 +1,5 @@
 'use server';
 
-import { queryOptions } from '@tanstack/react-query';
 import { revalidatePath } from 'next/cache';
 import { db } from './db';
 import { PAGE_USAGE, HOME_SECTIONS_FOR_COLLECTION, type UsageRef } from './content-relationships';
@@ -15,13 +14,14 @@ export type HomeSection = {
   content: Record<string, unknown>;
 };
 
-export type SiteTheme = {
-  brand1?: string;
-  brand2?: string;
-  brand3?: string;
-  radius?: string;
-  glow?: boolean;
+import { type SiteThemeConfig } from './theme-registry';
+
+export type GlobalThemeState = {
+  frontend: SiteThemeConfig;
+  admin: SiteThemeConfig;
 };
+
+export type SiteTheme = GlobalThemeState;
 
 export type SiteSettings = {
   id: string;
@@ -82,10 +82,30 @@ export async function fetchSiteSettings() {
     where: { id: 'default' },
   });
   if (!settings) return null;
+  
+  let raw: any;
+  try {
+    raw = JSON.parse(settings.theme);
+  } catch {
+    raw = {};
+  }
+  
+  // Migration & fallback structure
+  const themeObj = {
+    frontend: raw.frontend || {
+      activeThemeId: raw.activeThemeId || 'preset-aurora',
+      customThemes: raw.customThemes || []
+    },
+    admin: raw.admin || {
+      activeThemeId: 'preset-midnight',
+      customThemes: []
+    }
+  };
+
   return {
     ...settings,
-    theme: JSON.parse(settings.theme) as SiteTheme,
-  } as SiteSettings;
+    theme: themeObj,
+  } as any;
 }
 
 export async function fetchCmsPages() {
@@ -261,9 +281,16 @@ export async function saveSiteSettings(settings: Partial<SiteSettings>) {
     payload.default_seo_description = settings.default_seo_description;
   if (settings.theme !== undefined) payload.theme = JSON.stringify(settings.theme);
 
-  await db.siteSettings.update({
+  await db.siteSettings.upsert({
     where: { id: 'default' },
-    data: payload,
+    update: payload,
+    create: {
+      id: 'default',
+      site_name: settings.site_name || 'Nazexa',
+      tagline: settings.tagline || '',
+      theme: payload.theme || '{}',
+      ...payload
+    },
   });
   revalidatePath('/', 'layout');
   return true;
@@ -621,6 +648,49 @@ export async function publishHomepage(sections: HomeSection[]) {
 
   await db.builderDraft.deleteMany({ where: { key: 'home' } });
   revalidatePath('/');
+  return { success: true };
+}
+
+// --- Theme draft / publish workflow ---
+export type ThemeDraft = { config: SiteThemeConfig; updatedAt: string };
+
+export async function fetchThemeDraft(target: 'frontend' | 'admin'): Promise<ThemeDraft | null> {
+  const row = await db.builderDraft.findUnique({ where: { key: `theme_${target}` } });
+  if (!row) return null;
+  try {
+    const config = JSON.parse(row.data) as SiteThemeConfig;
+    return { config, updatedAt: row.updatedAt.toISOString() };
+  } catch {
+    return null;
+  }
+}
+
+export async function saveThemeDraft(target: 'frontend' | 'admin', config: SiteThemeConfig) {
+  const payload = JSON.stringify(config);
+  await db.builderDraft.upsert({
+    where: { key: `theme_${target}` },
+    create: { key: `theme_${target}`, data: payload },
+    update: { data: payload },
+  });
+  return { success: true };
+}
+
+export async function discardThemeDraft(target: 'frontend' | 'admin') {
+  await db.builderDraft.deleteMany({ where: { key: `theme_${target}` } });
+  return { success: true };
+}
+
+export async function publishTheme(target: 'frontend' | 'admin', config: SiteThemeConfig) {
+  const current = await fetchSiteSettings();
+  const theme = current?.theme || {
+    frontend: { activeThemeId: 'preset-aurora', customThemes: [] },
+    admin: { activeThemeId: 'preset-midnight', customThemes: [] }
+  };
+  
+  theme[target] = config;
+  
+  await saveSiteSettings({ theme: theme as any });
+  await discardThemeDraft(target);
   return { success: true };
 }
 

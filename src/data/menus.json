@@ -1,0 +1,197 @@
+[
+  {
+    "label": "Product",
+    "items": [
+      {
+        "title": "Products",
+        "to": "/products",
+        "description": "The full Nazexa platform suite"
+      },
+      {
+        "title": "Nazexa DB Design",
+        "to": "/db-design",
+        "description": "Visual ERD & database designer"
+      },
+      {
+        "title": "Nazexa DEV Tools",
+        "to": "/dev-tools",
+        "description": "JSON, API, JWT & SQL toolkit"
+      },
+      {
+        "title": "Integrations",
+        "to": "/integrations",
+        "description": "150+ tools that plug straight in"
+      },
+      {
+        "title": "Changelog",
+        "to": "/changelog",
+        "description": "Shipped this week"
+      },
+      {
+        "title": "Roadmap",
+        "to": "/roadmap",
+        "description": "What we're building next"
+      },
+      {
+        "title": "Download Center",
+        "to": "/download-center",
+        "description": "CLI, SDKs and desktop apps"
+      }
+    ]
+  },
+  {
+    "label": "Solutions",
+    "items": [
+      {
+        "title": "Solutions",
+        "to": "/solutions",
+        "description": "Outcomes by team and stage"
+      },
+      {
+        "title": "All Services",
+        "to": "/services",
+        "description": "13 delivery practices for client projects"
+      },
+      {
+        "title": "Custom Software",
+        "to": "/services/custom-software-development",
+        "description": "Bespoke platforms and internal systems"
+      },
+      {
+        "title": "Android Apps",
+        "to": "/services/android-app-development",
+        "description": "Native and cross-platform mobile"
+      },
+      {
+        "title": "Web & Websites",
+        "to": "/services/web-development",
+        "description": "Web apps, portals and marketing sites"
+      },
+      {
+        "title": "Cloud & DevOps",
+        "to": "/services/cloud-deployment",
+        "description": "Infrastructure, CI/CD and monitoring"
+      },
+      {
+        "title": "Tech Consulting",
+        "to": "/services/technology-consulting",
+        "description": "Audits, architecture and advisory"
+      },
+      {
+        "title": "Industries",
+        "to": "/industries",
+        "description": "Fintech, health, commerce and more"
+      },
+      {
+        "title": "Case Studies",
+        "to": "/case-studies",
+        "description": "Measured customer outcomes"
+      }
+    ]
+  },
+  {
+    "label": "Developers",
+    "items": [
+      {
+        "title": "Documentation",
+        "to": "/documentation",
+        "description": "Guides and concepts"
+      },
+      {
+        "title": "API Documentation",
+        "to": "/api-documentation",
+        "description": "REST, GraphQL and webhooks"
+      },
+      {
+        "title": "Tutorials",
+        "to": "/tutorials",
+        "description": "Build something in 20 minutes"
+      },
+      {
+        "title": "Developer Blog",
+        "to": "/developer-blog",
+        "description": "Engineering deep dives"
+      },
+      {
+        "title": "Community",
+        "to": "/community",
+        "description": "20k builders, one Discord"
+      },
+      {
+        "title": "Status Page",
+        "to": "/status",
+        "description": "Live uptime and incidents"
+      }
+    ]
+  },
+  {
+    "label": "Resources",
+    "items": [
+      {
+        "title": "Resources",
+        "to": "/resources",
+        "description": "Reports, templates, playbooks"
+      },
+      {
+        "title": "Learning Center",
+        "to": "/learning-center",
+        "description": "Structured learning paths"
+      },
+      {
+        "title": "Company Blog",
+        "to": "/blog",
+        "description": "Product and company stories"
+      },
+      {
+        "title": "News",
+        "to": "/news",
+        "description": "Press and announcements"
+      },
+      {
+        "title": "Events",
+        "to": "/events",
+        "description": "Conferences and meetups"
+      },
+      {
+        "title": "Support",
+        "to": "/support",
+        "description": "Get help fast"
+      }
+    ]
+  },
+  {
+    "label": "Company",
+    "items": [
+      {
+        "title": "About",
+        "to": "/about",
+        "description": "Why Nazexa exists"
+      },
+      {
+        "title": "Team",
+        "to": "/team",
+        "description": "The people behind the platform"
+      },
+      {
+        "title": "Careers",
+        "to": "/careers",
+        "description": "Open roles worldwide"
+      },
+      {
+        "title": "Customers",
+        "to": "/customers",
+        "description": "Teams shipping on Nazexa"
+      },
+      {
+        "title": "Partners",
+        "to": "/partners",
+        "description": "Build and resell with us"
+      },
+      {
+        "title": "Press Kit",
+        "to": "/press-kit",
+        "description": "Logos, brand and boilerplate"
+      }
+    ]
+  }
+]

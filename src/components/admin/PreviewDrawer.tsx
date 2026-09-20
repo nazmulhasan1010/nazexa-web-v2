@@ -68,7 +68,7 @@ export function PreviewDrawer({
         side="right"
         className="flex w-full flex-col gap-0 p-0 sm:w-[72vw] sm:max-w-none"
       >
-        <SheetHeader className="flex flex-row items-center justify-between space-y-0 border-b px-4 py-3">
+        <SheetHeader className="flex flex-row items-center justify-between space-y-0 border-b px-4 py-3 pr-14">
           <SheetTitle className="truncate text-base">{title}</SheetTitle>
           <div className="flex items-center gap-2">
             <div className="bg-muted/50 flex items-center rounded-md p-0.5">

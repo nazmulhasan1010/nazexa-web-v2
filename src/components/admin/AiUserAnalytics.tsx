@@ -247,8 +247,8 @@ export function AiUserAnalytics() {
                             </span>
                           </div>
                           {e.status === 'error' ? (
-                            <div className="text-destructive max-w-[420px] truncate text-xs">
-                              {e.errorMessage || 'Failed'}
+                            <div className="text-destructive max-w-[200px] sm:max-w-[420px] truncate text-xs">
+                              {e.errorMessage || 'Unknown error'}
                             </div>
                           ) : (
                             <div className="text-muted-foreground text-xs">

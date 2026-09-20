@@ -890,14 +890,14 @@ export default function CheckoutClient({
               value={details[field.key] || ''}
               onChange={(e) => setDetails({ ...details, [field.key]: e.target.value })}
             />
-            {field.help && <p className="mt-1 text-xs text-gray-500">{field.help}</p>}
+            {field.help && <p className="mt-1 text-xs text-muted-foreground">{field.help}</p>}
           </div>
         ))}
 
         <button
           type="submit"
           disabled={loading || selectedGateway.submissionFields.length === 0}
-          className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+          className="w-full rounded bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           {loading ? 'Submitting...' : 'Submit payment proof'}
         </button>

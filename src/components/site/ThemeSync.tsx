@@ -1,23 +1,49 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import type { FullThemeVars } from '@/lib/theme-registry';
 
-import { siteSettingsQuery } from '@/lib/queries';
-
-/** Applies CMS theme tokens onto the document as CSS variables. */
+/** 
+ * ThemeSync handles:
+ * 1. Updating the data-theme attribute during client-side SPA navigations.
+ * 2. Live Preview messages from the Theme Builder.
+ * 
+ * Initial rendering is handled synchronously via ServerThemeSync in RootLayout.
+ */
 export function ThemeSync() {
-  const { data } = useQuery(siteSettingsQuery);
+  const pathname = usePathname();
+
+  // Sync data-theme on client-side SPA navigations
+  useEffect(() => {
+    if (pathname?.startsWith('/admin')) {
+      document.documentElement.setAttribute('data-theme', 'admin');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }, [pathname]);
 
   useEffect(() => {
-    const theme = data?.theme;
-    if (!theme) return;
-    const root = document.documentElement;
-    if (theme.brand1) root.style.setProperty('--brand-1', theme.brand1);
-    if (theme.brand2) root.style.setProperty('--brand-2', theme.brand2);
-    if (theme.brand3) root.style.setProperty('--brand-3', theme.brand3);
-    if (theme.radius) root.style.setProperty('--radius', theme.radius);
-  }, [data]);
+    // Listen for live preview updates from Theme Builder
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data?.type === 'NAZEXA_THEME_PREVIEW' && e.data.theme) {
+        const previewVars = e.data.theme as FullThemeVars;
+        const root = document.documentElement;
+        for (const [key, value] of Object.entries(previewVars)) {
+          const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+          root.style.setProperty(`--${kebabKey}`, value as string);
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    
+    // Announce readiness to the parent (if we are in an iframe)
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'NAZEXA_THEME_READY' }, '*');
+    }
+
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   return null;
 }

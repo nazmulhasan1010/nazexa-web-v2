@@ -12,6 +12,7 @@ import { Toaster } from '@/components/ui/sonner';
 import type { ContentItem } from '@/lib/cms';
 
 import { AdminAuthProvider } from '@/hooks/useAdminAuth';
+import { SiteSearch } from '@/components/site/SiteSearch';
 
 export function Providers({
   children,
@@ -21,8 +22,10 @@ export function Providers({
   products: ContentItem[];
 }) {
   const [queryClient] = useState(() => new QueryClient());
+  const [searchOpen, setSearchOpen] = useState(false);
   const pathname = usePathname();
   const bare = pathname?.startsWith('/admin') || pathname?.startsWith('/auth');
+  const hideFooter = bare || pathname?.startsWith('/preview');
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -33,8 +36,9 @@ export function Providers({
           <NoiseOverlay />
           {!bare && <SiteHeader products={products} />}
           <main className="relative z-10">{children}</main>
-          {!bare && <SiteFooter />}
-          <Toaster position={pathname?.startsWith('/admin') ? 'top-right' : 'bottom-right'} />
+          {!hideFooter && <SiteFooter />}
+          <Toaster position="top-center" />
+          {!pathname?.startsWith('/admin') && <SiteSearch open={searchOpen} onOpenChange={setSearchOpen} />}
         </AdminAuthProvider>
       </AuthProvider>
     </QueryClientProvider>

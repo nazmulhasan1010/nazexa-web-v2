@@ -20,8 +20,15 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Trash2, Copy, RefreshCw, AppWindow, Check, AlertTriangle } from 'lucide-react';
+import { Trash2, Copy, RefreshCw, AppWindow, Check, AlertTriangle, Edit } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 export default function ApplicationsPage() {
   const { user } = useAdminAuth();
@@ -36,6 +43,7 @@ export default function ApplicationsPage() {
   const [paymentWebhookUrl, setPaymentWebhookUrl] = useState('');
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [editingApp, setEditingApp] = useState<any>(null);
 
   const fetchData = async () => {
     try {
@@ -79,6 +87,24 @@ export default function ApplicationsPage() {
       fetchData();
     } catch (err: any) {
       toast.error(err.message || 'Failed to register application');
+    }
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingApp || !editingApp.name || !editingApp.redirectUris) return;
+    try {
+      await updateApplication(editingApp.id, {
+        name: editingApp.name,
+        redirectUris: editingApp.redirectUris,
+        allowedOrigins: editingApp.allowedOrigins,
+        paymentWebhookUrl: editingApp.paymentWebhookUrl,
+      });
+      toast.success('Application updated successfully');
+      setEditingApp(null);
+      fetchData();
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update application');
     }
   };
 
@@ -331,6 +357,14 @@ export default function ApplicationsPage() {
                         <Button
                           variant="ghost"
                           size="icon"
+                          onClick={() => setEditingApp({ ...app })}
+                          title="Edit Application"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleDelete(app.id, app.name)}
                           title="Delete Application"
                         >
@@ -345,6 +379,56 @@ export default function ApplicationsPage() {
           </table>
         </div>
       </div>
+
+      <Dialog open={!!editingApp} onOpenChange={(open) => !open && setEditingApp(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Application</DialogTitle>
+          </DialogHeader>
+          {editingApp && (
+            <form onSubmit={handleEditSubmit} className="space-y-4 pt-4">
+              <div className="space-y-1.5">
+                <Label>Application Name</Label>
+                <Input
+                  required
+                  value={editingApp.name || ''}
+                  onChange={(e) => setEditingApp({ ...editingApp, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Redirect URIs</Label>
+                <Input
+                  required
+                  value={editingApp.redirectUris || ''}
+                  onChange={(e) => setEditingApp({ ...editingApp, redirectUris: e.target.value })}
+                />
+                <p className="text-muted-foreground text-xs">Comma-separated SSO callback URLs.</p>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Allowed Origins (CORS)</Label>
+                <Input
+                  value={editingApp.allowedOrigins || ''}
+                  onChange={(e) => setEditingApp({ ...editingApp, allowedOrigins: e.target.value })}
+                />
+                <p className="text-muted-foreground text-xs">Comma-separated frontend origins.</p>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Payment Webhook URL</Label>
+                <Input
+                  value={editingApp.paymentWebhookUrl || ''}
+                  onChange={(e) => setEditingApp({ ...editingApp, paymentWebhookUrl: e.target.value })}
+                />
+              </div>
+              <DialogFooter className="pt-4">
+                <Button variant="outline" type="button" onClick={() => setEditingApp(null)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Save Changes</Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
