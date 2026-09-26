@@ -39,9 +39,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${baseUrl}/login?error=no_code`);
   }
 
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const redirectUri = `${baseUrl}/api/auth/callback/google`;
+  const { ConfigService } = await import('@/lib/config/service');
+  
+  const clientId = await ConfigService.getConfig<string>('oauth.google.clientId', process.env.GOOGLE_CLIENT_ID);
+  const clientSecret = await ConfigService.getSecretConfig('oauth.google.clientSecret') || process.env.GOOGLE_CLIENT_SECRET;
+  const redirectUri = await ConfigService.getConfig<string>('oauth.google.redirectUri', process.env.GOOGLE_REDIRECT_URI) || `${baseUrl}/api/auth/callback/google`;
 
   if (!clientId || !clientSecret) {
     return NextResponse.redirect(`${baseUrl}/login?error=google_not_configured`);

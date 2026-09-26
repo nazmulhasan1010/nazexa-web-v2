@@ -18,21 +18,28 @@ async function handleTokenIssue(_req: NextRequest) {
 
   const adminSession = await getAdminSession();
   const admin = adminSession?.user;
-
+  
   if (admin && admin.status !== 'suspended') {
     userId = admin.id;
     username = admin.name || 'Admin';
     userEmail = admin.email;
     userRole = 'ADMIN';
   } else {
-    // In nazexa-web, maybe we only care about admins for the socket right now.
-    // If you need users to connect too, you'd add user session checking here.
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const { getSession } = await import('@/lib/auth');
+    const user = await getSession();
+    if (user && user.status !== 'suspended') {
+      userId = user.id;
+      username = user.name || 'User';
+      userEmail = user.email;
+      userRole = 'USER';
+    } else {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
   }
 
-  let config: ReturnType<typeof getSocketPlatformConfig>;
+  let config: Awaited<ReturnType<typeof getSocketPlatformConfig>>;
   try {
-    config = getSocketPlatformConfig();
+    config = await getSocketPlatformConfig();
   } catch {
     return NextResponse.json({ error: 'Socket is not configured' }, { status: 503 });
   }
@@ -69,6 +76,7 @@ async function handleTokenIssue(_req: NextRequest) {
       expiresAt: data.expiresAt,
       userId,
       role: userRole,
+      socketUrl: config.socketUrl,
     });
   } catch (err: unknown) {
     console.error('[Socket Token API] Could not connect to socket server:', err);

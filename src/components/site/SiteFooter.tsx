@@ -1,13 +1,30 @@
+'use client';
+
 import Link from 'next/link';
 
 import { Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
 import { WaveBackground } from '@/components/backgrounds/AnimatedBackground';
 import { Button } from '@/components/ui/button';
 import { NewsletterSubscription } from './NewsletterSubscription';
 import { footerColumns } from '@/lib/site-content';
+import { useLogo } from '@/hooks/useLogo';
+import type { NavMenu, NavItemWithChildren } from '@/lib/navigation';
 
-export function SiteFooter() {
+export function SiteFooter({ footerMenu }: { footerMenu?: NavMenu }) {
+  const { frontendLogo } = useLogo();
+
+  const displayCols = footerMenu?.items?.length ? footerMenu.items : footerColumns.map(c => ({
+    id: c.title,
+    label: c.title,
+    children: c.links.map(l => ({
+      id: l.to,
+      label: l.label,
+      url: l.to
+    }))
+  })) as any as NavItemWithChildren[];
+
   return (
     <footer className="border-border relative isolate overflow-hidden border-t pt-20">
       <WaveBackground />
@@ -15,8 +32,7 @@ export function SiteFooter() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_3fr]">
           <div>
             <div className="flex items-center gap-2.5">
-              <img src="/logos/logo-sm.svg" alt="Nazexa" className="h-8 w-8" />
-              <span className="font-display text-lg font-semibold">Nazexa</span>
+              <Image src={frontendLogo} alt="Nazexa" width={100} height={32} className="h-8 w-auto object-contain" />
             </div>
             <p className="text-muted-foreground mt-4 max-w-sm text-sm">
               The developer platform for teams who ship. Databases, edge compute, AI and
@@ -26,16 +42,16 @@ export function SiteFooter() {
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
-            {footerColumns.map((col) => (
-              <div key={col.title}>
+            {displayCols.map((col) => (
+              <div key={col.id || col.label}>
                 <div className="text-foreground text-xs font-semibold tracking-widest uppercase">
-                  {col.title}
+                  {col.label}
                 </div>
                 <ul className="mt-4 space-y-2.5">
-                  {col.links.map((l) => (
-                    <li key={l.to}>
+                  {col.children?.map((l: any) => (
+                    <li key={l.id || l.url || l.label}>
                       <Link
-                        href={l.to}
+                        href={l.url || '#'}
                         className="text-muted-foreground hover:text-primary text-sm transition-colors"
                       >
                         {l.label}

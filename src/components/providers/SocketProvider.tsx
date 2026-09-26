@@ -64,7 +64,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const socketUrl =
-        process.env.NEXT_PUBLIC_SOCKET_URL ||
+        tokenData.socketUrl ||
         (typeof window !== 'undefined'
           ? `${window.location.protocol}//${window.location.hostname}:4000`
           : 'http://localhost:4000');
@@ -91,6 +91,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       const joinStandardRooms = () => {
         if (tokenData.role === 'ADMIN') {
           socketInstance.emit('room:join', 'admin:events');
+        } else if (tokenData.userId) {
+          socketInstance.emit('room:join', `user:${tokenData.userId}`);
         }
       };
 

@@ -6,9 +6,9 @@ export async function publishAdminEvent(
   room?: string,
   rooms?: string[]
 ) {
-  let config: ReturnType<typeof getSocketPlatformConfig>;
+  let config: Awaited<ReturnType<typeof getSocketPlatformConfig>>;
   try {
-    config = getSocketPlatformConfig();
+    config = await getSocketPlatformConfig();
   } catch (error) {
     console.error('[Socket Emitter] Socket is not configured; skipping emit', error);
     return;
@@ -16,24 +16,24 @@ export async function publishAdminEvent(
 
   try {
     const url = `${config.socketUrl}/internal/emit`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        projectId: config.projectId,
-        secret: config.secretKey,
-        event,
-        data: payload,
-        room: room || (!rooms ? 'admin:events' : undefined),
-        rooms,
-      }),
-    });
-
-    if (!res.ok) {
-      console.warn(`[Socket Emitter] Failed to emit event ${event}: ${res.statusText}`);
-    }
+    
+    const targetRooms = rooms || [room || 'admin:events'];
+    
+    await Promise.all(targetRooms.map(r => 
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectId: config.projectId,
+          secret: config.secretKey,
+          event,
+          data: payload,
+          room: r,
+        }),
+      })
+    ));
   } catch (error) {
     console.error(
       `[Socket Emitter] Could not connect to socket server at ${config.socketUrl}/internal/emit to emit ${event}:`,

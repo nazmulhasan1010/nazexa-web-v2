@@ -13,13 +13,23 @@ import type { ContentItem } from '@/lib/cms';
 
 import { AdminAuthProvider } from '@/hooks/useAdminAuth';
 import { SiteSearch } from '@/components/site/SiteSearch';
+import { LogoProvider } from '@/hooks/useLogo';
+import type { NavMenu } from '@/lib/navigation';
 
 export function Providers({
   children,
   products,
+  frontendLogo,
+  adminLogo,
+  headerMenu,
+  footerMenu,
 }: {
   children: React.ReactNode;
   products: ContentItem[];
+  frontendLogo: string;
+  adminLogo: string;
+  headerMenu?: NavMenu;
+  footerMenu?: NavMenu;
 }) {
   const [queryClient] = useState(() => new QueryClient());
   const [searchOpen, setSearchOpen] = useState(false);
@@ -31,14 +41,16 @@ export function Providers({
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AdminAuthProvider>
-          <ThemeSync />
-          {!bare && <MouseGlow />}
-          <NoiseOverlay />
-          {!bare && <SiteHeader products={products} />}
-          <main className="relative z-10">{children}</main>
-          {!hideFooter && <SiteFooter />}
-          <Toaster position="top-center" />
-          {!pathname?.startsWith('/admin') && <SiteSearch open={searchOpen} onOpenChange={setSearchOpen} />}
+          <LogoProvider frontendLogo={frontendLogo} adminLogo={adminLogo}>
+            <ThemeSync />
+            {!bare && <MouseGlow />}
+            <NoiseOverlay />
+            {!bare && <SiteHeader products={products} headerMenu={headerMenu} />}
+            <main className="relative z-10">{children}</main>
+            {!hideFooter && <SiteFooter footerMenu={footerMenu} />}
+            <Toaster position="top-center" />
+            {!pathname?.startsWith('/admin') && <SiteSearch open={searchOpen} onOpenChange={setSearchOpen} />}
+          </LogoProvider>
         </AdminAuthProvider>
       </AuthProvider>
     </QueryClientProvider>

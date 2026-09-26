@@ -1,17 +1,15 @@
-import { db } from './db';
+import { ConfigService } from './config/service';
 
 export async function verifyTurnstile(token: string | null | undefined): Promise<boolean> {
   if (!token) return false;
 
-  const config = await db.securitySettings.findUnique({
-    where: { id: 'global' }
-  });
+  const turnstileEnabled = await ConfigService.getConfig<boolean>('captcha.turnstile.enabled', false);
 
-  if (!config?.turnstileEnabled) {
+  if (!turnstileEnabled) {
     return true; // If disabled globally, bypass check
   }
 
-  const secret = config.turnstileSecretKey;
+  const secret = await ConfigService.getSecretConfig('captcha.turnstile.secretKey') || process.env.TURNSTILE_SECRET_KEY;
   if (!secret) {
     console.warn('TURNSTILE_SECRET_KEY is missing from Security Settings.');
     return false;

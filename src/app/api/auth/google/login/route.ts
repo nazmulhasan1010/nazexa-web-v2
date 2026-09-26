@@ -5,12 +5,13 @@ export async function GET(request: Request) {
   const protocol = host.includes('localhost') ? 'http' : 'https';
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
 
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  const redirectUri = `${baseUrl}/api/auth/callback/google`;
+  const { ConfigService } = await import('@/lib/config/service');
+  const clientId = await ConfigService.getConfig<string>('oauth.google.clientId', process.env.GOOGLE_CLIENT_ID);
+  const redirectUri = await ConfigService.getConfig<string>('oauth.google.redirectUri', process.env.GOOGLE_REDIRECT_URI) || `${baseUrl}/api/auth/callback/google`;
 
   if (!clientId) {
     return NextResponse.json(
-      { error: 'Google OAuth not configured in environment' },
+      { error: 'Google OAuth not configured' },
       { status: 500 }
     );
   }

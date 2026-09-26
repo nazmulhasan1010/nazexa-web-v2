@@ -16,6 +16,7 @@ import {
   Bot,
   Users,
   Mail,
+  Inbox,
   BookOpen,
   Boxes,
   LogOut,
@@ -24,8 +25,10 @@ import {
   AppWindow,
   Shield,
   Menu,
+  LifeBuoy,
+  Settings,
 } from 'lucide-react';
-import { useEffect, useState, useCallback, Suspense } from 'react';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
@@ -33,6 +36,7 @@ import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
 import { useAdminAuth, useAdminSignOut } from '@/hooks/useAdminAuth';
 import { SocketProvider } from '@/components/providers/SocketProvider';
 import { AdminSocketListeners } from '@/components/admin/AdminSocketListeners';
+import { useLogo } from '@/hooks/useLogo';
 import { cn } from '@/lib/utils';
 import { CONTENT_SCHEMA } from '@/lib/content-schema';
 import { MODEL_REGISTRY, MODEL_KEYS } from '@/lib/cms-models/registry';
@@ -72,7 +76,7 @@ type FlatNavItem = {
   label: string;
   icon: React.ElementType;
   exact?: boolean;
-  badge?: 'payments' | 'messages';
+  badge?: 'payments' | 'messages' | 'mailbox';
 };
 
 type GroupNavItem = {
@@ -87,6 +91,7 @@ type NavItem = ({ kind: 'flat' } & FlatNavItem) | ({ kind: 'group' } & GroupNavI
 const nav: NavItem[] = [
   { kind: 'flat', to: '/admin', label: 'Overview', icon: LayoutDashboard, exact: true },
   { kind: 'flat', to: '/admin/builder', label: 'Homepage builder', icon: Layers },
+  { kind: 'flat', to: '/admin/navigation/header', label: 'Navigation Builder', icon: Menu },
   {
     kind: 'group',
     label: 'Content Library',
@@ -139,11 +144,30 @@ const nav: NavItem[] = [
     icon: MessageSquare,
     badge: 'messages',
   },
-  { kind: 'flat', to: '/admin/contact-settings', label: 'Contact Config', icon: PhoneCall },
+  { kind: 'flat', to: '/admin/support', label: 'Support Desk', icon: LifeBuoy },
+  { kind: 'flat', to: '/admin/mailbox', label: 'Mailbox', icon: Inbox, badge: 'mailbox' },
   { kind: 'flat', to: '/admin/ai-management', label: 'AI Management', icon: Bot },
   { kind: 'flat', to: '/admin/payments', label: 'Payments', icon: CreditCard, badge: 'payments' },
   { kind: 'flat', to: '/admin/team', label: 'Team & Roles', icon: Users },
-  { kind: 'flat', to: '/admin/security', label: 'Security', icon: Shield },
+  {
+    kind: 'group',
+    label: 'Configuration',
+    icon: Settings,
+    href: '/admin/configuration',
+    children: [
+      { to: '/admin/configuration', label: 'Dashboard' },
+      { to: '/admin/configuration/general', label: 'General Settings' },
+      { to: '/admin/configuration/contact', label: 'Contact Settings' },
+      { to: '/admin/configuration/email', label: 'Email Settings' },
+      { to: '/admin/emails/templates', label: 'Email Templates' },
+      { to: '/admin/configuration/authentication', label: 'Authentication' },
+      { to: '/admin/configuration/security', label: 'Security Settings' },
+      { to: '/admin/configuration/realtime', label: 'Realtime / Socket' },
+      { to: '/admin/configuration/captcha', label: 'CAPTCHA' },
+      { to: '/admin/configuration/social', label: 'Social Login' },
+      { to: '/admin/configuration/logs', label: 'Configuration Logs' },
+    ],
+  },
 ];
 
 // ── GroupNavRow — label navigates, chevron toggles ────────────────────────────
@@ -241,6 +265,7 @@ function GroupNavRow({
 // ── Layout ────────────────────────────────────────────────────────────────────
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
+  const { adminLogo } = useLogo();
   const { user, loading } = useAdminAuth();
   const router = useRouter();
   const signOut = useAdminSignOut();
@@ -251,6 +276,8 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
   const [pendingPaymentCount, setPendingPaymentCount] = useState<number>(0);
   const [unreadMessageCount, setUnreadMessageCount] = useState<number>(0);
+  const [unreadSupportCount, setUnreadSupportCount] = useState<number>(0);
+  const [mailboxUnreadCount, setMailboxUnreadCount] = useState<number>(0);
   const queryClient = useQueryClient();
 
   // Keep the Overview AI section live even when the dashboard page is not mounted.
@@ -289,7 +316,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  // Messages badge
+  // Messages & Support badges
   useEffect(() => {
     if (user && (user.permissions.includes('*') || user.permissions.includes('/admin/messages'))) {
       if (pathname === '/admin/messages') {
@@ -303,6 +330,27 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           .catch(console.error);
       }
     }
+
+    if (user && (user.permissions.includes('*') || user.permissions.includes('/admin/support'))) {
+      if (pathname === '/admin/support') {
+        // We can keep it active if we want, or clear it. Usually we keep it but it'll refresh anyway.
+      }
+      fetch('/api/admin/support/unread-count')
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.success) setUnreadSupportCount(d.count);
+        })
+        .catch(console.error);
+    }
+
+    if (user && (user.permissions.includes('*') || user.permissions.includes('/admin/mailbox'))) {
+      fetch('/api/admin/mailbox/unread-count')
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.total !== undefined) setMailboxUnreadCount(d.total);
+        })
+        .catch(console.error);
+    }
   }, [pathname, user]);
 
   if (loading || !user) {
@@ -315,10 +363,12 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <SocketProvider>
-      <div className="flex min-h-screen">
+      <div className="flex h-screen overflow-hidden">
         <AdminSocketListeners
           setPendingPaymentCount={setPendingPaymentCount}
           setUnreadMessageCount={setUnreadMessageCount}
+          setUnreadSupportCount={setUnreadSupportCount}
+          setMailboxUnreadCount={setMailboxUnreadCount}
           onAiUsage={onAiUsage}
         />
 
@@ -333,7 +383,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
                 className="flex min-w-0 flex-1 items-center gap-2"
               >
                 <div className="relative flex h-10 w-32 shrink-0 items-center justify-center">
-                  <Image src={'/logos/logo-light.webp'} alt="Logo" width={200} height={200} />
+                  <Image src={adminLogo} alt="Logo" width={200} height={200} />
                   <p className="absolute top-7 right-1 text-[9px] text-muted-foreground uppercase">CMS</p>
                 </div>
               </div>
@@ -394,13 +444,23 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
                     <span className="truncate">{item.label}</span>
                   </div>
                   {item.badge === 'payments' && pendingPaymentCount > 0 && (
-                    <span className="bg-primary text-primary-foreground flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
+                    <span className="bg-primary text-primary-foreground flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
                       {pendingPaymentCount}
                     </span>
                   )}
                   {item.badge === 'messages' && unreadMessageCount > 0 && (
-                    <span className="bg-primary text-primary-foreground flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
+                    <span className="bg-primary text-primary-foreground flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
                       {unreadMessageCount}
+                    </span>
+                  )}
+                  {item.badge === 'support' && unreadSupportCount > 0 && (
+                    <span className="bg-primary text-primary-foreground flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
+                      {unreadSupportCount}
+                    </span>
+                  )}
+                  {item.badge === 'mailbox' && mailboxUnreadCount > 0 && (
+                    <span className="bg-primary text-primary-foreground flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
+                      {mailboxUnreadCount}
                     </span>
                   )}
                 </Link>
@@ -430,11 +490,11 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           </div>
         </aside>
 
-        <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <main className={`flex-1 flex flex-col min-w-0 ${pathname.startsWith('/admin/mailbox') ? 'overflow-hidden' : 'overflow-y-auto'}`}>
           {/* Mobile Header */}
           <div className="md:hidden sticky top-0 z-40 flex h-14 items-center justify-between border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="relative flex h-8 w-24 items-center justify-center">
-              <Image src={'/logos/logo-light.webp'} alt="Logo" width={150} height={150} />
+              <Image src={adminLogo} alt="Logo" width={150} height={150} />
             </div>
             <div className="flex items-center gap-2">
               <Button 
@@ -463,7 +523,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
                   >
                     <div className="flex min-w-0 flex-1 items-center gap-2">
                       <div className="relative flex h-10 w-32 shrink-0 items-center justify-center">
-                        <Image src={'/logos/logo-light.webp'} alt="Logo" width={200} height={200} />
+                        <Image src={adminLogo} alt="Logo" width={200} height={200} />
                         <p className="absolute top-7 right-1 text-[9px] text-muted-foreground uppercase">CMS</p>
                       </div>
                     </div>
@@ -520,6 +580,16 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
                               {unreadMessageCount}
                             </span>
                           )}
+                          {item.badge === 'support' && unreadSupportCount > 0 && (
+                            <span className="bg-primary text-primary-foreground flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
+                              {unreadSupportCount}
+                            </span>
+                          )}
+                          {item.badge === 'mailbox' && mailboxUnreadCount > 0 && (
+                            <span className="bg-primary text-primary-foreground flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold">
+                              {mailboxUnreadCount}
+                            </span>
+                          )}
                         </Link>
                       );
                     })}
@@ -550,7 +620,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          <div className="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8 w-full">{children}</div>
+          <div className={pathname.startsWith('/admin/mailbox') ? 'relative flex-1 flex flex-col w-full overflow-hidden' : 'mx-auto max-w-6xl p-4 sm:p-6 lg:p-8 w-full'}>{children}</div>
         </main>
         <AdminSearch open={adminSearchOpen} onOpenChange={setAdminSearchOpen} />
       </div>

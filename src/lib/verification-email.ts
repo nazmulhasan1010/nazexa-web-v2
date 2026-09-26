@@ -1,4 +1,4 @@
-import { appBaseUrl, sendEmail, type SendEmailResult } from '@/lib/email';
+import { appBaseUrl, sendEmail, sendTemplateEmail, type SendEmailResult } from '@/lib/email';
 
 function escapeHtml(value: string): string {
   return value
@@ -62,6 +62,23 @@ export async function sendVerificationEmail(params: {
   </body>
 </html>`;
 
+  // Attempt to use the dynamic centralized template first
+  const templateResult = await sendTemplateEmail('auth.verification', params.to, {
+    user: {
+      name: displayName,
+      email: params.to,
+      firstName: displayName.split(' ')[0],
+    },
+    verification: {
+      code: code
+    }
+  });
+
+  if (templateResult.sent) {
+    return templateResult;
+  }
+
+  // Fallback to hardcoded template if DB template is missing or unpublished
   return sendEmail({
     to: params.to,
     subject,

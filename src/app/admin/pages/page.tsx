@@ -131,6 +131,11 @@ function PagesAdmin() {
             >
               {page.published ? 'Published' : 'Draft'}
             </span>
+            <Button variant="secondary" size="sm" asChild>
+              <a href={`/admin/builder/pages/${page.id}`}>
+                Design in Builder
+              </a>
+            </Button>
             <Button
               variant="ghost"
               size="sm"

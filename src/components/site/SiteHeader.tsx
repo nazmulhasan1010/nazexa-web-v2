@@ -12,8 +12,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 import { navGroups } from '@/lib/site-content';
+import type { NavMenu, NavItemWithChildren } from '@/lib/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth, useSignOut } from '@/hooks/useAuth';
+import { useLogo } from '@/hooks/useLogo';
+import Image from 'next/image';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { ContentItem } from '@/lib/cms';
 import { Input } from '@/components/ui/input';
 import { openSiteSearch } from '@/components/site/SiteSearch';
+import { DynamicIcon } from '@/components/DynamicIcon';
 
 const GROUP_ICONS: Record<string, any> = {
   'Product': Box,
@@ -58,7 +62,7 @@ function MobileNavGroup({
   onClose 
 }: { 
   label: string; 
-  items: { title: string; to: string; description?: string }[]; 
+  items: { title: string; to: string; description?: string; icon?: string | null }[]; 
   onClose: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -134,7 +138,7 @@ function MobileNavGroup({
                         
                         <div className="flex items-center gap-4">
                           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary/30 text-muted-foreground transition-all duration-300 group-hover:bg-primary/15 group-hover:text-primary group-hover:shadow-[0_0_12px_rgba(var(--primary),0.15)] group-hover:scale-105">
-                            <SubIcon className="h-4 w-4 transition-transform duration-300" />
+                            {item.icon ? <DynamicIcon name={item.icon} className="h-4 w-4 transition-transform duration-300" /> : <SubIcon className="h-4 w-4 transition-transform duration-300" />}
                           </div>
                           <div className="flex flex-1 items-center justify-between">
                             <span className="text-sm font-semibold tracking-tight text-foreground/80 transition-colors duration-300 group-hover:text-foreground">
@@ -197,10 +201,11 @@ function MobileNavGroup({
     </div>
   );
 }
-export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
+export function SiteHeader({ products = [], headerMenu }: { products?: ContentItem[], headerMenu?: NavMenu }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [group, setGroup] = useState<string | null>(null);
+  const { frontendLogo } = useLogo();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -223,6 +228,19 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
   const { user, loading } = useAuth();
   const signOut = useSignOut();
 
+  const displayItems = headerMenu?.items?.length ? headerMenu.items : navGroups.map(g => ({
+    id: g.label,
+    label: g.label,
+    url: null,
+    children: g.items.map(i => ({
+      id: i.to,
+      label: i.title,
+      url: i.to,
+      description: i.description,
+      children: []
+    }))
+  })) as any as NavItemWithChildren[];
+
   return (
     <>
       <header
@@ -234,46 +252,39 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-5">
         <Link href="/" className="group flex items-center gap-2.5">
-          <img src="/logos/logo-sm.svg" alt="Nazexa" className="h-8 w-8" />
-          <span className="font-display text-lg font-semibold tracking-tight">Nazexa</span>
+          <Image src={frontendLogo} alt="Nazexa" width={100} height={32} className="h-8 w-auto object-contain" priority />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
-          {navGroups.map((g) => (
-            <button
-              key={g.label}
-              onMouseEnter={() => setGroup(g.label)}
-              onFocus={() => setGroup(g.label)}
-              className={cn(
-                'text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors',
-                group === g.label && 'text-foreground'
-              )}
-            >
-              {g.label}
-              <ChevronDown
+          {displayItems.map((g) => (
+            g.children && g.children.length > 0 ? (
+              <button
+                key={g.id || g.label}
+                onMouseEnter={() => setGroup(g.label)}
+                onFocus={() => setGroup(g.label)}
                 className={cn(
-                  'h-3.5 w-3.5 transition-transform',
-                  group === g.label && 'rotate-180'
+                  'text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors',
+                  group === g.label && 'text-foreground'
                 )}
-              />
-            </button>
+              >
+                {g.label}
+                <ChevronDown
+                  className={cn(
+                    'h-3.5 w-3.5 transition-transform',
+                    group === g.label && 'rotate-180'
+                  )}
+                />
+              </button>
+            ) : (
+              <Link
+                key={g.id || g.label}
+                href={g.url || '#'}
+                className="text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors"
+              >
+                {g.label}
+              </Link>
+            )
           ))}
-          <button
-            onMouseEnter={() => setGroup('Pricing')}
-            onFocus={() => setGroup('Pricing')}
-            className={cn(
-              'text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md px-3 py-2 text-sm transition-colors outline-none focus:outline-none',
-              group === 'Pricing' && 'text-foreground'
-            )}
-          >
-            Pricing
-            <ChevronDown
-              className={cn(
-                'h-3.5 w-3.5 transition-transform',
-                group === 'Pricing' && 'rotate-180'
-              )}
-            />
-          </button>
         </nav>
 
         <div className="ml-auto hidden items-center gap-2 lg:flex">
@@ -316,6 +327,13 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
                   <Link href="/profile" className="flex cursor-pointer items-center">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/support/tickets" className="flex cursor-pointer items-center">
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    <span>Support Tickets</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -379,62 +397,21 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
         )}
       >
         <div className="mx-auto grid max-w-7xl grid-cols-3 gap-3 px-5 py-8">
-          {group === 'Pricing' ? (
-            <>
-              {products.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/${p.slug}/pricing`}
-                  onClick={() => setGroup(null)}
-                  className="group relative flex flex-col rounded-xl border border-transparent bg-transparent p-4 transition-all hover:bg-card hover:border-border/50 hover:shadow-sm"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary/50 text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                      <CreditCard className="h-4 w-4" />
-                    </div>
-                    <span className="text-sm font-semibold tracking-tight text-foreground/90 transition-colors group-hover:text-primary">
-                      {p.title} Pricing
-                    </span>
-                  </div>
-                  <p className="mt-2 pl-11 text-xs text-muted-foreground line-clamp-2 transition-colors group-hover:text-foreground/70">
-                    View pricing plans for {p.title}
-                  </p>
-                </Link>
-              ))}
-              <Link
-                href="/pricing"
-                onClick={() => setGroup(null)}
-                className="group relative flex flex-col rounded-xl border border-transparent bg-transparent p-4 transition-all hover:bg-card hover:border-border/50 hover:shadow-sm"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary/50 text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                    <Compass className="h-4 w-4" />
-                  </div>
-                  <span className="text-sm font-semibold tracking-tight text-foreground/90 transition-colors group-hover:text-primary">
-                    All Pricing
-                  </span>
-                </div>
-                <p className="mt-2 pl-11 text-xs text-muted-foreground line-clamp-2 transition-colors group-hover:text-foreground/70">
-                  Compare all plans side-by-side
-                </p>
-              </Link>
-            </>
-          ) : (
-            navGroups
+            {displayItems
               .find((g) => g.label === group)
-              ?.items.map((item) => (
+              ?.children?.map((item) => (
                 <Link
-                  key={item.to}
-                  href={item.to}
+                  key={item.id || item.url || item.label}
+                  href={item.url || '#'}
                   onClick={() => setGroup(null)}
                   className="group relative flex flex-col rounded-xl border border-transparent bg-transparent p-4 transition-all hover:bg-card hover:border-border/50 hover:shadow-sm"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary/50 text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                      {item.icon ? <DynamicIcon name={item.icon} className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /> : <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />}
                     </div>
                     <span className="text-sm font-semibold tracking-tight text-foreground/90 transition-colors group-hover:text-primary">
-                      {item.title}
+                      {item.label}
                     </span>
                   </div>
                   {item.description && (
@@ -443,10 +420,9 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
                     </p>
                   )}
                 </Link>
-              ))
-          )}
+              ))}
+          </div>
         </div>
-      </div>
       </header>
 
       {/* Mobile menu (Full Screen Overlay) */}
@@ -533,47 +509,39 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
               </div>
 
               <div className="flex flex-col gap-3">
-                {navGroups.map((g, i) => (
+                {displayItems.map((g, i) => (
                   <motion.div
-                    key={g.label}
+                    key={g.id || g.label}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 + 0.15 }}
                   >
-                    <MobileNavGroup label={g.label} items={g.items} onClose={() => setOpen(false)} />
+                    {g.children && g.children.length > 0 ? (
+                      <MobileNavGroup 
+                        label={g.label} 
+                        items={g.children.map((c: any) => ({ title: c.label, to: c.url || '#', description: c.description || undefined, icon: c.icon }))} 
+                        onClose={() => setOpen(false)} 
+                      />
+                    ) : (
+                      <Link
+                        href={g.url || '#'}
+                        onClick={() => setOpen(false)}
+                        className="flex items-center gap-4 p-4 rounded-3xl border border-border/50 bg-card/30 hover:bg-card/50 transition-colors"
+                      >
+                        <div className="text-base font-bold tracking-tight">{g.label}</div>
+                      </Link>
+                    )}
                   </motion.div>
                 ))}
 
-                {/* Products/Pricing Section */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: navGroups.length * 0.05 + 0.2 }}
-                >
-                  <MobileNavGroup 
-                    label="Pricing" 
-                    items={[
-                      ...products.map(p => ({ 
-                        title: `${p.title} Pricing`, 
-                        to: `/${p.slug}/pricing`,
-                        description: `View pricing plans for ${p.title}`
-                      })),
-                      { 
-                        title: 'All Pricing', 
-                        to: '/pricing',
-                        description: 'Compare all plans side-by-side'
-                      }
-                    ]} 
-                    onClose={() => setOpen(false)} 
-                  />
-                </motion.div>
+                
               </div>
               
               {/* Bottom Actions */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navGroups.length * 0.05 + 0.25 }}
+                transition={{ delay: displayItems.length * 0.05 + 0.25 }}
                 className="mt-8"
               >
                 <div className="flex flex-col gap-3">
@@ -602,3 +570,8 @@ export function SiteHeader({ products = [] }: { products?: ContentItem[] }) {
     </>
   );
 }
+
+
+
+
+

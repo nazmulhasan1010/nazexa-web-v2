@@ -43,9 +43,10 @@ export async function GET(request: NextRequest) {
   const isProd = process.env.NODE_ENV === 'production';
   cookieStore.delete('oauth_state');
 
-  const clientId = process.env.GITHUB_CLIENT_ID;
-  const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-  const redirectUri = `${baseUrl}/api/auth/callback/github`;
+  const { ConfigService } = await import('@/lib/config/service');
+  const clientId = await ConfigService.getConfig<string>('oauth.github.clientId', process.env.GITHUB_CLIENT_ID);
+  const clientSecret = await ConfigService.getSecretConfig('oauth.github.clientSecret') || process.env.GITHUB_CLIENT_SECRET;
+  const redirectUri = await ConfigService.getConfig<string>('oauth.github.redirectUri') || `${baseUrl}/api/auth/callback/github`;
 
   if (!clientId || !clientSecret) {
     return NextResponse.redirect(`${baseUrl}/login?error=github_not_configured`);

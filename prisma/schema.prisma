@@ -42,18 +42,53 @@ model SiteSettings {
 }
 
 model Page {
-  id              String   @id @default(uuid())
-  slug            String   @unique
-  title           String
-  eyebrow         String?
-  description     String?  @db.Text
+  id          String  @id @default(uuid())
+  slug        String  @unique
+  title       String
+  eyebrow     String?
+  description String? @db.Text
+
+  // Page Builder Data
+  draftData     String? @db.LongText // JSON schema of the draft page
+  publishedData String? @db.LongText // JSON schema of the published page
+  version       Int     @default(1)
+
   seo_title       String?
-  seo_description String?  @db.Text
+  seo_description String? @db.Text
   og_image_url    String?
-  published       Boolean  @default(false)
-  updated_at      DateTime @updatedAt
+  published       Boolean @default(false)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  revisions PageRevision[]
 
   @@map("pages")
+}
+
+model PageRevision {
+  id        String   @id @default(uuid())
+  pageId    String
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  version   Int
+  schema    String   @db.LongText
+  createdBy String?
+  createdAt DateTime @default(now())
+
+  @@map("page_revisions")
+}
+
+model BuilderComponent {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  category    String  @default("General")
+  schema      String  @db.LongText
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("builder_components")
 }
 
 model ContentItem {
@@ -219,7 +254,7 @@ model Release {
   published       Boolean            @default(false)
   position        Int                @default(0)
   seo_title       String?
-  seo_description String?             @db.Text
+  seo_description String?            @db.Text
   created_at      DateTime           @default(now())
   updated_at      DateTime           @default(now()) @updatedAt
   artifacts       DownloadArtifact[]
@@ -417,6 +452,7 @@ model User {
   emailVerificationCodes EmailVerificationCode[]
   payment_transactions   PaymentTransaction[]
   sessions               Session[]
+  supportTickets         SupportTicket[]
 
   @@map("users")
 }
@@ -476,18 +512,19 @@ model EmailVerificationCode {
 }
 
 model Application {
-  id                   String                 @id @default(uuid())
-  clientId             String                 @unique
+  id                   String               @id @default(uuid())
+  clientId             String               @unique
   clientSecret         String
   name                 String
-  status               String                 @default("active")
-  redirectUris         String                 @db.Text
-  allowedOrigins       String?                @db.Text
-  paymentWebhookUrl    String?                @db.Text
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @default(now()) @updatedAt
+  status               String               @default("active")
+  redirectUris         String               @db.Text
+  allowedOrigins       String?              @db.Text
+  paymentWebhookUrl    String?              @db.Text
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @default(now()) @updatedAt
   authorizations       Authorization[]
   payment_transactions PaymentTransaction[]
+  supportTickets       SupportTicket[]
 
   @@map("applications")
 }
@@ -550,6 +587,7 @@ model AiProviderConfig {
   googleApiKey   String?  @db.Text
   googleModel    String?
   updatedAt      DateTime @default(now()) @updatedAt
+
   @@map("aiproviderconfig")
 }
 
@@ -562,6 +600,7 @@ model AiAgent {
   isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+
   @@map("aiagent")
 }
 
@@ -587,11 +626,12 @@ model AdminRole {
   permissions String   @db.LongText
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
+
   @@map("admin_roles")
 }
 
 model AdminSession {
-  id          String      @id @default(uuid())
+  id          String    @id @default(uuid())
   userId      String
   expiresAt   DateTime
   admin_users AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -601,16 +641,18 @@ model AdminSession {
 }
 
 model AdminUser {
-  id             String           @id @default(uuid())
-  name           String?
-  email          String           @unique
-  password_hash  String
-  role           String           @default("admin")
-  status         String           @default("active")
-  lastLoginAt    DateTime?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @default(now())
-  admin_sessions AdminSession[]
+  id              String          @id @default(uuid())
+  name            String?
+  email           String          @unique
+  password_hash   String
+  role            String          @default("admin")
+  status          String          @default("active")
+  lastLoginAt     DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @default(now())
+  admin_sessions  AdminSession[]
+  assignedTickets SupportTicket[]
+
   @@map("admin_users")
 }
 
@@ -658,6 +700,154 @@ model AiUsageRecord {
   @@index([status])
   @@index([userId, createdAt])
   @@map("ai_usage_records")
+}
+
+// ----------------------------------------------------------------------------
+// CENTRAL SUPPORT & TICKET SYSTEM
+// ----------------------------------------------------------------------------
+
+model SupportTicket {
+  id          String @id @default(uuid())
+  number      Int    @unique @default(autoincrement())
+  subject     String
+  description String @db.LongText
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  applicationId String?
+  application   Application? @relation(fields: [applicationId], references: [id])
+
+  categoryId String?
+  category   SupportCategory? @relation(fields: [categoryId], references: [id])
+
+  priority String @default("MEDIUM") // LOW | MEDIUM | HIGH | URGENT
+  status   String @default("OPEN") // OPEN | IN_PROGRESS | WAITING_FOR_USER | WAITING_FOR_SUPPORT | RESOLVED | CLOSED
+
+  assignedToId String?
+  assignedTo   AdminUser? @relation(fields: [assignedToId], references: [id])
+
+  messages  SupportMessage[]
+  tags      SupportTicketTag[]
+  histories SupportTicketHistory[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  closedAt      DateTime?
+  completedAt   DateTime?
+  completedById String?
+  skippedAt     DateTime?
+  skippedById   String?
+  lastReplyAt   DateTime  @default(now())
+
+  resolution String? @db.LongText
+
+  @@index([userId])
+  @@index([status])
+  @@index([priority])
+  @@index([assignedToId])
+  @@map("support_tickets")
+}
+
+model SupportTicketHistory {
+  id       String        @id @default(uuid())
+  ticketId String
+  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  previousStatus String?
+  newStatus      String
+
+  changedBy   String // "USER" or "ADMIN"
+  changedById String
+
+  note String? @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@index([ticketId])
+  @@map("support_ticket_history")
+}
+
+model SupportMessage {
+  id       String        @id @default(uuid())
+  ticketId String
+  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  senderType String // USER | ADMIN | SYSTEM | AI
+
+  // Can be a central User ID or Admin ID depending on senderType
+  senderId String?
+
+  body         String  @db.LongText
+  internalNote Boolean @default(false)
+
+  attachments SupportAttachment[]
+
+  createdAt DateTime @default(now())
+
+  @@index([ticketId])
+  @@map("support_messages")
+}
+
+model SupportAttachment {
+  id        String         @id @default(uuid())
+  messageId String
+  message   SupportMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  fileName   String
+  fileSize   Int
+  mimeType   String
+  storageKey String
+
+  createdAt DateTime @default(now())
+
+  @@index([messageId])
+  @@map("support_attachments")
+}
+
+model SupportCategory {
+  id          String          @id @default(uuid())
+  name        String          @unique
+  description String?
+  active      Boolean         @default(true)
+  tickets     SupportTicket[]
+  createdAt   DateTime        @default(now())
+
+  @@map("support_categories")
+}
+
+model SupportTag {
+  id      String             @id @default(uuid())
+  name    String             @unique
+  color   String?
+  tickets SupportTicketTag[]
+
+  @@map("support_tags")
+}
+
+model SupportTicketTag {
+  ticketId String
+  tagId    String
+
+  ticket SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  tag    SupportTag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([ticketId, tagId])
+  @@map("support_ticket_tags")
+}
+
+model SupportEmailTemplate {
+  id          String   @id @default(uuid())
+  name        String   @unique // e.g., "TICKET_CREATED", "TICKET_RESOLVED"
+  subject     String
+  body        String   @db.LongText
+  description String?
+  active      Boolean  @default(true)
+  variables   String?  @db.Text // Comma separated list of available variables
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("support_email_templates")
 }
 
 /// Per-user daily rollup of AI usage. Powers the contribution heatmap,
@@ -709,11 +899,11 @@ model AiProviderStat {
 }
 
 model ManualPaymentProof {
-  id                   String               @id @default(uuid())
+  id                   String             @id @default(uuid())
   transactionId        String
   fields               Json
-  note                 String?              @db.Text
-  submittedAt          DateTime             @default(now())
+  note                 String?            @db.Text
+  submittedAt          DateTime           @default(now())
   payment_transactions PaymentTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
   @@index([transactionId])
@@ -721,17 +911,17 @@ model ManualPaymentProof {
 }
 
 model PaymentAttempt {
-  id                   String               @id @default(uuid())
+  id                   String             @id @default(uuid())
   transactionId        String
   gatewayCode          String
   status               String
   gatewayTransactionId String?
   gatewayOrderId       String?
   gatewayPaymentId     String?
-  requestSummary       String?              @db.Text
-  responseSummary      String?              @db.Text
-  errorMessage         String?              @db.Text
-  createdAt            DateTime             @default(now())
+  requestSummary       String?            @db.Text
+  responseSummary      String?            @db.Text
+  errorMessage         String?            @db.Text
+  createdAt            DateTime           @default(now())
   payment_transactions PaymentTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
   @@index([transactionId])
@@ -739,28 +929,28 @@ model PaymentAttempt {
 }
 
 model PaymentGateway {
-  id                   String                 @id @default(uuid())
-  code                 String                 @unique
+  id                   String               @id @default(uuid())
+  code                 String               @unique
   displayName          String?
-  type                 String                 @default("manual")
-  instructions         String?                @db.Text
+  type                 String               @default("manual")
+  instructions         String?              @db.Text
   config               Json?
-  isEnabled            Boolean                @default(false)
-  environment          String                 @default("sandbox")
-  priority             Int                    @default(100)
-  sortOrder            Int                    @default(0)
-  supportedCurrencies  String?                @db.Text
-  allowedApplications  String?                @db.Text
-  allowedProducts      String?                @db.Text
-  supportsRecurring    Boolean                @default(false)
-  supportsRefund       Boolean                @default(false)
-  supportsWebhook      Boolean                @default(false)
-  supportsManualReview Boolean                @default(true)
+  isEnabled            Boolean              @default(false)
+  environment          String               @default("sandbox")
+  priority             Int                  @default(100)
+  sortOrder            Int                  @default(0)
+  supportedCurrencies  String?              @db.Text
+  allowedApplications  String?              @db.Text
+  allowedProducts      String?              @db.Text
+  supportsRecurring    Boolean              @default(false)
+  supportsRefund       Boolean              @default(false)
+  supportsWebhook      Boolean              @default(false)
+  supportsManualReview Boolean              @default(true)
   lastTestAt           DateTime?
   lastTestStatus       String?
-  lastTestMessage      String?                @db.Text
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @default(now())
+  lastTestMessage      String?              @db.Text
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @default(now())
   payment_transactions PaymentTransaction[]
 
   @@index([isEnabled, priority])
@@ -786,18 +976,18 @@ model PaymentProductPlan {
 }
 
 model PaymentRefund {
-  id                   String               @id @default(uuid())
+  id                   String             @id @default(uuid())
   transactionId        String
-  amount               Decimal              @db.Decimal(12, 2)
+  amount               Decimal            @db.Decimal(12, 2)
   currency             String
-  status               String               @default("REFUND_REQUESTED")
+  status               String             @default("REFUND_REQUESTED")
   gatewayRefundId      String?
-  reason               String?              @db.Text
-  isManual             Boolean              @default(false)
+  reason               String?            @db.Text
+  isManual             Boolean            @default(false)
   requestedBy          String?
-  failureReason        String?              @db.Text
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @default(now())
+  failureReason        String?            @db.Text
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @default(now())
   completedAt          DateTime?
   payment_transactions PaymentTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
@@ -807,45 +997,45 @@ model PaymentRefund {
 }
 
 model PaymentTransaction {
-  id                     String                   @id @default(uuid())
-  publicId               String                   @unique
+  id                     String                @id @default(uuid())
+  publicId               String                @unique
   userId                 String
   appId                  String?
   product                String
   productId              String?
   plan                   String
   planId                 String?
-  amount                 Decimal                  @db.Decimal(12, 2)
-  currency               String                   @default("USD")
-  amountUsd              Decimal                  @default(0.00) @db.Decimal(12, 2)
+  amount                 Decimal               @db.Decimal(12, 2)
+  currency               String                @default("USD")
+  amountUsd              Decimal               @default(0.00) @db.Decimal(12, 2)
   gatewayId              String?
   gatewayTransactionId   String?
   gatewayOrderId         String?
   gatewayPaymentId       String?
-  status                 String                   @default("CREATED")
-  failureReason          String?                  @db.Text
+  status                 String                @default("CREATED")
+  failureReason          String?               @db.Text
   source                 String?
-  metadata               String?                  @db.Text
+  metadata               String?               @db.Text
   reference              String?
   details                Json?
-  adminNote              String?                  @db.Text
+  adminNote              String?               @db.Text
   reviewedBy             String?
   reviewedAt             DateTime?
-  idempotencyKey         String?                  @unique
-  returnUrl              String?                  @db.Text
-  cancelUrl              String?                  @db.Text
-  fulfillmentStatus      String                   @default("PENDING")
+  idempotencyKey         String?               @unique
+  returnUrl              String?               @db.Text
+  cancelUrl              String?               @db.Text
+  fulfillmentStatus      String                @default("PENDING")
   fulfilledAt            DateTime?
   expiresAt              DateTime?
-  createdAt              DateTime                 @default(now())
-  updatedAt              DateTime                 @default(now())
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @default(now())
   paidAt                 DateTime?
   manual_payment_proofs  ManualPaymentProof[]
   payment_attempts       PaymentAttempt[]
   payment_refunds        PaymentRefund[]
-  applications           Application?             @relation(fields: [appId], references: [id])
-  payment_gateways       PaymentGateway?        @relation(fields: [gatewayId], references: [id])
-  users                  User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications           Application?          @relation(fields: [appId], references: [id])
+  payment_gateways       PaymentGateway?       @relation(fields: [gatewayId], references: [id])
+  users                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   payment_webhook_events PaymentWebhookEvent[]
 
   @@index([appId])
@@ -858,15 +1048,15 @@ model PaymentTransaction {
 }
 
 model PaymentWebhookEvent {
-  id                   String                @id @default(uuid())
+  id                   String              @id @default(uuid())
   gateway              String
   eventId              String?
   transactionId        String?
   eventType            String?
-  processingStatus     String                @default("RECEIVED")
-  failureReason        String?               @db.Text
-  payload              String?               @db.MediumText
-  receivedAt           DateTime              @default(now())
+  processingStatus     String              @default("RECEIVED")
+  failureReason        String?             @db.Text
+  payload              String?             @db.MediumText
+  receivedAt           DateTime            @default(now())
   processedAt          DateTime?
   payment_transactions PaymentTransaction? @relation(fields: [transactionId], references: [id])
 
@@ -885,28 +1075,28 @@ model Subscriber {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @default(now()) @updatedAt
 
-  deliveries     NewsletterDelivery[]
+  deliveries NewsletterDelivery[]
 
   @@index([status])
   @@map("subscribers")
 }
 
 model NewsletterCampaign {
-  id              String   @id @default(uuid())
-  type            String   // "NEWS" | "CUSTOM"
+  id              String    @id @default(uuid())
+  type            String // "NEWS" | "CUSTOM"
   subject         String
-  contentHtml     String?  @db.LongText
-  status          String   @default("DRAFT") // "DRAFT" | "QUEUED" | "PROCESSING" | "COMPLETED" | "PARTIALLY_FAILED" | "FAILED"
-  totalRecipients Int      @default(0)
-  sentCount       Int      @default(0)
-  failedCount     Int      @default(0)
-  newsId          String?  // Reference to the published news ID to prevent duplicate campaigns
+  contentHtml     String?   @db.LongText
+  status          String    @default("DRAFT") // "DRAFT" | "QUEUED" | "PROCESSING" | "COMPLETED" | "PARTIALLY_FAILED" | "FAILED"
+  totalRecipients Int       @default(0)
+  sentCount       Int       @default(0)
+  failedCount     Int       @default(0)
+  newsId          String? // Reference to the published news ID to prevent duplicate campaigns
   startedAt       DateTime?
   completedAt     DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now()) @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
 
-  deliveries      NewsletterDelivery[]
+  deliveries NewsletterDelivery[]
 
   @@index([newsId])
   @@index([status])
@@ -914,11 +1104,11 @@ model NewsletterCampaign {
 }
 
 model NewsletterDelivery {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   campaignId   String
   subscriberId String
-  status       String   @default("PENDING") // "PENDING" | "SENT" | "FAILED"
-  error        String?  @db.Text
+  status       String    @default("PENDING") // "PENDING" | "SENT" | "FAILED"
+  error        String?   @db.Text
   sentAt       DateTime?
 
   campaign   NewsletterCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
@@ -939,3 +1129,307 @@ model SecuritySettings {
   @@map("security_settings")
 }
 
+// ----------------------------------------------------------------------------
+// WEBMAIL / MAILBOX SYSTEM
+// ----------------------------------------------------------------------------
+
+model MailAccount {
+  id          String @id @default(uuid())
+  displayName String
+  email       String
+  provider    String @default("custom") // gmail | outlook | yahoo | custom
+
+  // IMAP config
+  imapHost        String
+  imapPort        Int    @default(993)
+  imapSecurity    String @default("SSL/TLS") // SSL/TLS | STARTTLS | NONE
+  imapUsername    String
+  imapPasswordEnc String @db.Text // AES-256-GCM encrypted
+
+  // SMTP config
+  smtpHost        String
+  smtpPort        Int    @default(587)
+  smtpSecurity    String @default("STARTTLS") // SSL/TLS | STARTTLS | NONE
+  smtpUsername    String
+  smtpPasswordEnc String @db.Text // AES-256-GCM encrypted
+
+  // Signature
+  signature String? @db.LongText
+
+  // Status
+  status        String    @default("active") // active | error | disconnected
+  lastSyncAt    DateTime?
+  lastSyncError String?   @db.Text
+  lastSyncCount Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  folders  MailFolder[]
+  messages MailMessage[]
+  drafts   MailDraft[]
+
+  @@index([email])
+  @@map("mail_accounts")
+}
+
+model MailFolder {
+  id        String      @id @default(uuid())
+  accountId String
+  account   MailAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  name        String // IMAP folder name e.g. "INBOX", "Sent"
+  displayName String // Human-readable label
+  type        String @default("custom") // inbox | sent | drafts | trash | spam | archive | custom
+  uidValidity Int?
+  unreadCount Int    @default(0)
+  totalCount  Int    @default(0)
+
+  messages MailMessage[]
+
+  @@unique([accountId, name])
+  @@index([accountId])
+  @@map("mail_folders")
+}
+
+model MailMessage {
+  id        String      @id @default(uuid())
+  accountId String
+  account   MailAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  folderId  String?
+  folder    MailFolder? @relation(fields: [folderId], references: [id])
+
+  // IMAP identifiers (prevent duplicate sync)
+  uid       Int
+  messageId String? // RFC822 Message-ID header
+  threadId  String? // Derived from References/In-Reply-To
+
+  // Headers
+  fromName     String?
+  fromEmail    String
+  toAddresses  String   @db.Text // JSON array of { name, email }
+  ccAddresses  String?  @db.Text
+  bccAddresses String?  @db.Text
+  subject      String
+  date         DateTime
+
+  // Body
+  bodyHtml String? @db.LongText
+  bodyText String? @db.LongText
+  preview  String? @db.Text // First 200 chars of plain text
+
+  // Flags
+  isRead        Boolean @default(false)
+  isStarred     Boolean @default(false)
+  isImportant   Boolean @default(false)
+  hasAttachment Boolean @default(false)
+
+  // Status: inbox | sent | draft | trash | spam | archive
+  folderType String @default("inbox")
+
+  attachments MailAttachment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([accountId, folderId, uid])
+  @@index([accountId])
+  @@index([folderId])
+  @@index([date])
+  @@index([isRead])
+  @@index([messageId])
+  @@map("mail_messages")
+}
+
+model MailAttachment {
+  id        String      @id @default(uuid())
+  messageId String
+  message   MailMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  fileName   String
+  mimeType   String
+  fileSize   Int
+  storageKey String // filename under .data/mail-attachments/
+  cid        String? // Content-ID for inline images
+
+  @@index([messageId])
+  @@map("mail_attachments")
+}
+
+model MailDraft {
+  id        String      @id @default(uuid())
+  accountId String
+  account   MailAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  toAddresses       String? @db.Text // JSON
+  ccAddresses       String? @db.Text
+  bccAddresses      String? @db.Text
+  subject           String?
+  bodyHtml          String? @db.LongText
+  bodyText          String? @db.LongText
+  attachments       String? @db.Text // JSON array of storageKeys
+  templateId        String?
+  templateVersionId String?
+  variableValues    String? @db.LongText // JSON
+  designSnapshot    String? @db.LongText // JSON
+  replyToId         String? // MailMessage id being replied to
+  forwardOfId       String? // MailMessage id being forwarded
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([accountId])
+  @@map("mail_drafts")
+}
+
+model MailTemplate {
+  id         String                @id @default(uuid())
+  name       String
+  subject    String
+  bodyHtml   String                @db.LongText
+  bodyText   String?               @db.LongText
+  variables  String?               @db.Text // comma-separated available vars
+  categoryId String?
+  category   MailTemplateCategory? @relation(fields: [categoryId], references: [id])
+  active     Boolean               @default(true)
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @default(now()) @updatedAt
+
+  @@index([categoryId])
+  @@map("mail_templates")
+}
+
+model MailTemplateCategory {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  templates MailTemplate[]
+  createdAt DateTime       @default(now())
+
+  @@map("mail_template_categories")
+}
+
+model MailAuditLog {
+  id        String   @id @default(uuid())
+  actorId   String // AdminUser id
+  action    String // account_connected | email_sent | email_deleted | template_created ...
+  accountId String?
+  messageId String?
+  details   String?  @db.Text // human-readable (NO credentials)
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([accountId])
+  @@index([createdAt])
+  @@map("mail_audit_logs")
+}
+
+model SystemEmailTemplate {
+  id          String  @id @default(uuid())
+  name        String
+  key         String  @unique // e.g. "auth.verification"
+  category    String  @default("System")
+  subject     String
+  contentHtml String  @db.LongText // Compiled email-safe HTML
+  designJson  String  @db.LongText // Builder structural state
+  status      String  @default("draft") // draft | published | archived
+  description String?
+  version     Int     @default(1)
+
+  createdBy String
+  updatedBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  versions SystemEmailTemplateVersion[]
+
+  @@index([key])
+  @@index([status])
+  @@map("system_email_templates")
+}
+
+model SystemEmailTemplateVersion {
+  id          String   @id @default(uuid())
+  templateId  String
+  version     Int
+  subject     String
+  contentHtml String   @db.LongText
+  designJson  String   @db.LongText
+  createdBy   String
+  createdAt   DateTime @default(now())
+
+  template SystemEmailTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId])
+  @@map("system_email_template_versions")
+}
+
+model SystemConfig {
+  id             String   @id @default(uuid())
+  key            String   @unique
+  category       String
+  valuePlain     String?  @db.LongText
+  valueEncrypted String?  @db.LongText
+  valueType      String   @default("string") // string, number, boolean, json, secret, url, email
+  isSecret       Boolean  @default(false)
+  isPublic       Boolean  @default(false)
+  isRequired     Boolean  @default(false)
+  isEnabled      Boolean  @default(true)
+  description    String?  @db.Text
+  metadata       String?  @db.LongText
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+  updatedBy      String?
+
+  @@index([category])
+  @@map("system_configs")
+}
+
+model SystemConfigLog {
+  id        String   @id @default(uuid())
+  configKey String
+  action    String // created, updated, deleted, tested
+  actorId   String?
+  actorName String?
+  details   String?  @db.LongText // JSON diff (never include raw secrets)
+  createdAt DateTime @default(now())
+
+  @@index([configKey])
+  @@index([createdAt])
+  @@map("system_config_logs")
+}
+
+model NavigationMenu {
+  id        String           @id @default(uuid())
+  type      String // "header" | "footer"
+  status    String           @default("draft") // "draft" | "published"
+  version   Int              @default(1)
+  items     NavigationItem[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@map("navigation_menus")
+}
+
+model NavigationItem {
+  id     String         @id @default(uuid())
+  menuId String
+  menu   NavigationMenu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   NavigationItem?  @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  children NavigationItem[] @relation("MenuHierarchy")
+
+  label       String
+  url         String?
+  source      String? // e.g., "custom", "page", "content_library", "service"
+  sourceId    String? // Stable ID of the referenced CMS entity
+  target      String  @default("_self")
+  icon        String?
+  description String?
+
+  order     Int     @default(0)
+  isVisible Boolean @default(true)
+  metadata  String? @db.Text // JSON for additional config (e.g. megaMenu toggles)
+
+  @@map("navigation_items")
+}

@@ -3,8 +3,10 @@ import { Providers } from './Providers';
 import { constructMetadata, generateOrganizationSchema } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 import { fetchContentItems, fetchSiteSettings } from '@/lib/cms';
+import { getNavigationMenu } from '@/lib/navigation';
 import { PRESET_THEMES, type FullThemeVars } from '@/lib/theme-registry';
 import { ServerThemeSync } from '@/components/site/ServerThemeSync';
+import { resolveThemeLogo } from '@/lib/theme-utils';
 import '../styles.css';
 
 export const metadata: Metadata = {
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
   }),
   title: {
     template: '%s | Nazexa',
-    default: 'Nazexa — The developer platform for teams who ship',
+    default: 'Nazexa - The developer platform for teams who ship',
   },
   authors: [{ name: 'Nazexa' }],
   keywords: ['nazexa', 'developer platform', 'database', 'edge compute', 'AI', 'observability'],
@@ -25,9 +27,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [dynamicProducts, siteSettings] = await Promise.all([
+  const [dynamicProducts, siteSettings, headerMenu, footerMenu] = await Promise.all([
     fetchContentItems('products'),
     fetchSiteSettings(),
+    getNavigationMenu('header', 'published'),
+    getNavigationMenu('footer', 'published'),
   ]);
 
   let frontendVars: FullThemeVars | undefined;
@@ -56,6 +60,9 @@ export default async function RootLayout({
   if (!frontendVars) frontendVars = PRESET_THEMES.find((p) => p.id === 'preset-aurora')?.vars;
   if (!adminVars) adminVars = PRESET_THEMES.find((p) => p.id === 'preset-midnight')?.vars;
 
+  const frontendLogo = resolveThemeLogo(frontendVars?.background);
+  const adminLogo = resolveThemeLogo(adminVars?.background);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -79,7 +86,15 @@ export default async function RootLayout({
         <JsonLd schema={generateOrganizationSchema()} />
       </head>
       <body>
-        <Providers products={dynamicProducts}>{children}</Providers>
+        <Providers 
+          products={dynamicProducts} 
+          frontendLogo={frontendLogo} 
+          adminLogo={adminLogo}
+          headerMenu={headerMenu}
+          footerMenu={footerMenu}
+        >
+          {children}
+        </Providers>
       </body>
     </html>
   );

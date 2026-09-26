@@ -1,4 +1,5 @@
 import { pageOverrides } from './page-blocks';
+import { products } from './products';
 
 export type NavGroup = {
   label: string;
@@ -156,6 +157,7 @@ export const navGroups: NavGroup[] = [
         description: 'Conferences and meetups',
       },
       { title: 'Support', to: '/support', description: 'Get help fast' },
+      { title: 'Support Tickets', to: '/support/tickets', description: 'Manage your support tickets' },
     ],
   },
   {
@@ -183,6 +185,21 @@ export const navGroups: NavGroup[] = [
         to: '/press-kit',
         description: 'Logos, brand and boilerplate',
       },
+    ],
+  },
+  {
+    label: 'Pricing',
+    items: [
+      {
+        title: 'Platform Pricing',
+        to: '/pricing',
+        description: 'Pricing for Nazexa platform',
+      },
+      ...products.map((p) => ({
+        title: p.name,
+        to: `/pricing/${p.slug}`,
+        description: `Pricing for ${p.name}`,
+      })),
     ],
   },
 ];
@@ -247,6 +264,7 @@ export const footerColumns: {
       { label: 'Security', to: '/security' },
       { label: 'Status', to: '/status' },
       { label: 'Support', to: '/support' },
+      { label: 'Support Tickets', to: '/support/tickets' },
       { label: 'Privacy', to: '/privacy' },
       { label: 'Terms', to: '/terms' },
       { label: 'Cookie Policy', to: '/cookie-policy' },

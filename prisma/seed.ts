@@ -220,6 +220,77 @@ async function main() {
     },
   });
 
+  // Seed Homepage collections
+  console.log('Seeding Homepage Collections...');
+  
+  await insertItems([
+    // Pillars
+    {
+      collection: 'pillars',
+      title: 'Custom Software Engineering',
+      body: 'Full-cycle development from architecture to deployment.',
+      icon: 'code2',
+      data: JSON.stringify({ visual: 'build' })
+    },
+    {
+      collection: 'pillars',
+      title: 'Cloud & Infrastructure',
+      body: 'Scalable architectures on AWS, GCP, and Azure.',
+      icon: 'cloud',
+      data: JSON.stringify({ visual: 'cloud' })
+    },
+    {
+      collection: 'pillars',
+      title: 'Mobile Applications',
+      body: 'Native iOS and Android apps that users love.',
+      icon: 'smartphone',
+      data: JSON.stringify({ visual: 'mobile' })
+    },
+
+    // Mission / Vision
+    {
+      collection: 'missionvision',
+      title: 'Build software that businesses run on',
+      subtitle: 'Our Mission',
+      body: 'We aim to deliver reliable and scalable software that solves hard problems.',
+      icon: 'rocket',
+      data: JSON.stringify({ points: ['High code quality', 'Transparent communication'] })
+    },
+    {
+      collection: 'missionvision',
+      title: 'Become the standard for engineering',
+      subtitle: 'Our Vision',
+      body: 'To set the bar for how software should be built and deployed globally.',
+      icon: 'eye',
+      data: JSON.stringify({ points: ['Global reach', 'Industry leadership'] })
+    },
+
+    // Technologies
+    { collection: 'technologies', category: 'Frontend', title: 'React', icon: 'code2' },
+    { collection: 'technologies', category: 'Frontend', title: 'Next.js', icon: 'zap' },
+    { collection: 'technologies', category: 'Backend', title: 'Node.js', icon: 'terminal' },
+    { collection: 'technologies', category: 'Backend', title: 'Go', icon: 'code2' },
+    { collection: 'technologies', category: 'Database', title: 'PostgreSQL', icon: 'database' },
+    { collection: 'technologies', category: 'Cloud', title: 'AWS', icon: 'cloud' },
+
+    // Values
+    { collection: 'values', title: 'Quality First', body: 'We never compromise on the quality of our code or the user experience.', icon: 'star' },
+    { collection: 'values', title: 'Transparency', body: 'Honest communication about timelines, challenges, and progress.', icon: 'message-square' },
+    { collection: 'values', title: 'Ownership', body: 'We treat your project as if it were our own product.', icon: 'shield' },
+
+    // Process
+    { collection: 'process', title: 'Discovery & Planning', body: 'We understand your goals and map out the architecture.', icon: 'map' },
+    { collection: 'process', title: 'Development', body: 'Iterative, agile sprints with regular updates and demos.', icon: 'code2' },
+    { collection: 'process', title: 'Testing & QA', body: 'Rigorous automated and manual testing to ensure reliability.', icon: 'check-circle' },
+    { collection: 'process', title: 'Deployment & Support', body: 'Smooth launch and ongoing maintenance and monitoring.', icon: 'rocket' },
+
+    // Stats
+    { collection: 'stats', title: '150+', subtitle: 'Projects Delivered' },
+    { collection: 'stats', title: '99.9%', subtitle: 'Average Uptime' },
+    { collection: 'stats', title: '50+', subtitle: 'Engineers' },
+    { collection: 'stats', title: '24/7', subtitle: 'Support Available' },
+  ]);
+
   // 5. Seed Applications for SSO + Central Payment
   await prisma.application.upsert({
     where: { clientId: 'nazexa-db' },
@@ -263,7 +334,7 @@ async function main() {
 
   // 6. Seed AdminUser from environment variables
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@nazexa.com';
-  const adminPassword = process.env.ADMIN_PASSWORD || '15697908nazexa';
+  const adminPassword = process.env.ADMIN_PASSWORD || '15697908';
   const adminName = process.env.ADMIN_NAME || 'Nazexa';
 
   const existingAdmin = await prisma.adminUser.findUnique({ where: { email: adminEmail } });
@@ -423,6 +494,76 @@ async function main() {
     },
   });
   console.log('Seeded bank_transfer gateway (enabled, sandbox)');
+
+  // 7. Seed System Configurations
+  const { ConfigService } = await import('@/lib/config/service');
+  
+  const systemConfigs = [
+    { key: 'oauth.google.clientId', category: 'OAuth', value: 'YOUR_GOOGLE_CLIENT_ID' },
+    { key: 'oauth.google.clientSecret', category: 'OAuth', value: 'YOUR_GOOGLE_CLIENT_SECRET', isSecret: true },
+    { key: 'oauth.google.redirectUri', category: 'OAuth', value: 'http://localhost:3000/api/auth/callback/google' },
+    
+    { key: 'oauth.github.clientId', category: 'OAuth', value: 'YOUR_GITHUB_CLIENT_ID' },
+    { key: 'oauth.github.clientSecret', category: 'OAuth', value: 'YOUR_GITHUB_CLIENT_SECRET', isSecret: true },
+    
+    { key: 'smtp.host', category: 'Email', value: 'smtp.gmail.com' },
+    { key: 'smtp.port', category: 'Email', value: 587, valueType: 'number' },
+    { key: 'smtp.user', category: 'Email', value: 'your_email@gmail.com' },
+    { key: 'smtp.pass', category: 'Email', value: 'YOUR_SMTP_PASSWORD', isSecret: true },
+    { key: 'email.from.address', category: 'Email', value: 'Nazexa <onboarding@yourdomain.com>' },
+    
+    { key: 'socket.url', category: 'Realtime', value: 'https://ws.nazexa.com' },
+    { key: 'socket.projectId', category: 'Realtime', value: 'cmu5iawh30003xzsoa34az77q' },
+    { key: 'socket.secretKey', category: 'Realtime', value: 'YOUR_SOCKET_SECRET_KEY', isSecret: true },
+    
+    { key: 'captcha.turnstile.siteKey', category: 'CAPTCHA', value: '0x4AAAAAAEz4XZrG4XDvB1H9' },
+    { key: 'captcha.turnstile.secretKey', category: 'CAPTCHA', value: 'YOUR_TURNSTILE_SECRET_KEY', isSecret: true }
+  ];
+
+  console.log('Seeding System Configurations...');
+  for (const config of systemConfigs) {
+    await ConfigService.updateConfig({
+      key: config.key,
+      category: config.category,
+      value: config.value,
+      valueType: config.valueType || 'string',
+      isSecret: config.isSecret,
+      actorName: 'Seeder',
+    });
+  }
+
+  // 8. Seed Homepage Sections
+  console.log('Seeding Homepage Sections...');
+  await prisma.homeSection.deleteMany();
+  
+  const defaultSections = [
+    'hero',
+    'trusted',
+    'whatwedo',
+    'servicesfull',
+    'mission',
+    'technologies',
+    'stats',
+    'why',
+    'process',
+    'ourproducts',
+    'testimonials',
+    'faq',
+    'clientcta',
+  ];
+  for (let i = 0; i < defaultSections.length; i++) {
+    await prisma.homeSection.create({
+      data: {
+        id: `default-${defaultSections[i]}`,
+        type: defaultSections[i],
+        position: i,
+        visible: true,
+        title: null,
+        subtitle: null,
+        content: '{}',
+      },
+    });
+  }
 
   console.log('Database seeded successfully!');
 }
