@@ -86,8 +86,22 @@ export class ConfigService {
 
     const stringValue = this.stringifyValue(value, valueType);
 
+    let isSecretPreserved = false;
     if (isSecret) {
-      valueEncrypted = encryptSecret(stringValue);
+      const isMasked = stringValue.includes('•') || stringValue === '***' || stringValue === '__KEEP_EXISTING__';
+      if (isMasked || stringValue === '') {
+        const existing = await db.systemConfig.findUnique({ where: { key } });
+        if (existing?.valueEncrypted) {
+          valueEncrypted = existing.valueEncrypted;
+          isSecretPreserved = true;
+        } else if (isMasked) {
+          valueEncrypted = null;
+        } else {
+          valueEncrypted = encryptSecret(stringValue);
+        }
+      } else {
+        valueEncrypted = encryptSecret(stringValue);
+      }
     } else {
       valuePlain = stringValue;
     }
@@ -130,7 +144,7 @@ export class ConfigService {
           valueType,
           isSecret,
           // Never log the raw secret!
-          value: isSecret ? '*** SECRET UPDATED ***' : valuePlain
+          value: isSecret ? (isSecretPreserved ? '*** SECRET UNCHANGED ***' : '*** SECRET UPDATED ***') : valuePlain
         })
       }
     });

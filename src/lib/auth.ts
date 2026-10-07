@@ -57,6 +57,7 @@ export async function createSession(userId: string) {
 
   const cookieStore = await cookies();
   cookieStore.set('nazexa_session', token, getCookieOptions(expiresAt));
+  return { token, expiresAt };
 }
 
 export async function getSession(options?: { requiredScope?: string }) {

@@ -21,12 +21,29 @@ export type SendEmailInput = {
 export type SendEmailResult =
   { sent: true; provider: 'resend' | 'smtp' } | { sent: false; skipped: true; reason: string };
 
-async function getFromAddress(): Promise<string> {
-  const name = await ConfigService.getConfig('email.from.name', '');
-  const addr = await ConfigService.getConfig('email.from.address', '');
-  if (name && addr) return `${name} <${addr}>`;
-  if (addr) return addr;
-  return process.env.EMAIL_FROM || process.env.SMTP_FROM || 'Nazexa<noreply@localhost>';
+export function formatFromAddress(name?: string | null, address?: string | null): string {
+  const cleanAddr = (address || '').trim();
+  const cleanName = (name || '').trim();
+
+  // If address already looks like "Name <email@domain.com>", extract parts cleanly
+  const match = cleanAddr.match(/^(.*?)\s*<([^>]+)>$/);
+  if (match) {
+    const extractedName = match[1].replace(/["']/g, '').trim();
+    const extractedEmail = match[2].trim();
+    const finalName = cleanName || extractedName;
+    return finalName ? `"${finalName}" <${extractedEmail}>` : extractedEmail;
+  }
+
+  if (cleanName && cleanAddr) {
+    return `"${cleanName}" <${cleanAddr}>`;
+  }
+  return cleanAddr || process.env.EMAIL_FROM || process.env.SMTP_FROM || 'Nazexa <noreply@localhost>';
+}
+
+export async function getFromAddress(): Promise<string> {
+  const name = await ConfigService.getConfig<string>('email.from.name', '');
+  const addr = await ConfigService.getConfig<string>('email.from.address', '');
+  return formatFromAddress(name, addr);
 }
 
 function getAppBaseUrl(): string {
@@ -40,9 +57,9 @@ export function appBaseUrl(): string {
 export async function isEmailConfigured(): Promise<boolean> {
   if (process.env.RESEND_API_KEY) return true;
   
-  const host = await ConfigService.getConfig('smtp.host');
-  const user = await ConfigService.getConfig('smtp.user');
-  const pass = await ConfigService.getSecretConfig('smtp.pass');
+  const host = await ConfigService.getConfig<string>('smtp.host', process.env.SMTP_HOST);
+  const user = await ConfigService.getConfig<string>('smtp.user', process.env.SMTP_USER);
+  const pass = (await ConfigService.getSecretConfig('smtp.pass')) || process.env.SMTP_PASS;
   
   if (host && user && pass) return true;
   return false;
@@ -76,20 +93,22 @@ async function sendViaResend(input: SendEmailInput): Promise<SendEmailResult> {
 
 async function sendViaSmtp(input: SendEmailInput): Promise<SendEmailResult> {
   const host = await ConfigService.getConfig<string>('smtp.host', process.env.SMTP_HOST);
-  const port = await ConfigService.getConfig<number>('smtp.port', Number(process.env.SMTP_PORT || 587));
+  const rawPort = await ConfigService.getConfig<number | string>('smtp.port', process.env.SMTP_PORT || 587);
+  const port = Number(rawPort) || 587;
   const user = await ConfigService.getConfig<string>('smtp.user', process.env.SMTP_USER);
-  const pass = await ConfigService.getSecretConfig('smtp.pass') || process.env.SMTP_PASS;
-  const secure = await ConfigService.getConfig<boolean>('smtp.secure', port === 465);
+  const pass = (await ConfigService.getSecretConfig('smtp.pass')) || process.env.SMTP_PASS;
+  const secureConfig = await ConfigService.getConfig<boolean>('smtp.secure');
+  const secure = typeof secureConfig === 'boolean' ? secureConfig : port === 465;
   const from = await getFromAddress();
 
   const transporter = nodemailer.createTransport({
     host,
     port,
     secure,
-    auth: {
+    auth: user ? {
       user,
-      pass,
-    },
+      pass: pass || '',
+    } : undefined,
   });
 
   await transporter.sendMail({

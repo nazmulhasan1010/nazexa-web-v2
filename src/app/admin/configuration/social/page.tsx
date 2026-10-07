@@ -15,9 +15,11 @@ export default function SocialLoginSettingsPage() {
     'oauth.google.enabled': false,
     'oauth.google.clientId': '',
     'oauth.google.clientSecret': '',
+    'oauth.google.redirectUri': '',
     'oauth.github.enabled': false,
     'oauth.github.clientId': '',
     'oauth.github.clientSecret': '',
+    'oauth.github.redirectUri': '',
   });
 
   const keys = Object.keys(configs);
@@ -29,20 +31,34 @@ export default function SocialLoginSettingsPage() {
       }
       setFetching(false);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (key: string, value: any) => setConfigs(prev => ({ ...prev, [key]: value }));
 
   const handleSave = async () => {
     setLoading(true);
-    const payload = [
+    const payload: Array<{
+      key: string;
+      category: string;
+      value: any;
+      valueType?: string;
+      isSecret?: boolean;
+    }> = [
       { key: 'oauth.google.enabled', category: 'OAuth', value: configs['oauth.google.enabled'], valueType: 'boolean' },
       { key: 'oauth.google.clientId', category: 'OAuth', value: configs['oauth.google.clientId'] },
-      { key: 'oauth.google.clientSecret', category: 'OAuth', value: configs['oauth.google.clientSecret'], isSecret: true },
+      { key: 'oauth.google.redirectUri', category: 'OAuth', value: configs['oauth.google.redirectUri'] },
       { key: 'oauth.github.enabled', category: 'OAuth', value: configs['oauth.github.enabled'], valueType: 'boolean' },
       { key: 'oauth.github.clientId', category: 'OAuth', value: configs['oauth.github.clientId'] },
-      { key: 'oauth.github.clientSecret', category: 'OAuth', value: configs['oauth.github.clientSecret'], isSecret: true },
+      { key: 'oauth.github.redirectUri', category: 'OAuth', value: configs['oauth.github.redirectUri'] },
     ];
+
+    if (configs['oauth.google.clientSecret'] !== '••••••••••••••••••') {
+      payload.push({ key: 'oauth.google.clientSecret', category: 'OAuth', value: configs['oauth.google.clientSecret'], isSecret: true });
+    }
+    if (configs['oauth.github.clientSecret'] !== '••••••••••••••••••') {
+      payload.push({ key: 'oauth.github.clientSecret', category: 'OAuth', value: configs['oauth.github.clientSecret'], isSecret: true });
+    }
     const result = await saveConfigAction(payload);
     if (result.success) toast.success('Saved successfully.');
     else toast.error(result.error || 'Failed to save.');
@@ -66,6 +82,7 @@ export default function SocialLoginSettingsPage() {
           </div>
           <div className="space-y-2"><Label>Client ID</Label><Input value={configs['oauth.google.clientId'] || ''} onChange={e => handleChange('oauth.google.clientId', e.target.value)} /></div>
           <div className="space-y-2"><Label>Client Secret</Label><Input type="password" value={configs['oauth.google.clientSecret'] || ''} onChange={e => handleChange('oauth.google.clientSecret', e.target.value)} placeholder="••••••••••••••••••" /></div>
+          <div className="space-y-2"><Label>Redirect URI</Label><Input value={configs['oauth.google.redirectUri'] || ''} onChange={e => handleChange('oauth.google.redirectUri', e.target.value)} placeholder="e.g. https://yourdomain.com/api/auth/callback/google" /></div>
         </CardContent>
       </Card>
       <Card>
@@ -77,6 +94,7 @@ export default function SocialLoginSettingsPage() {
           </div>
           <div className="space-y-2"><Label>Client ID</Label><Input value={configs['oauth.github.clientId'] || ''} onChange={e => handleChange('oauth.github.clientId', e.target.value)} /></div>
           <div className="space-y-2"><Label>Client Secret</Label><Input type="password" value={configs['oauth.github.clientSecret'] || ''} onChange={e => handleChange('oauth.github.clientSecret', e.target.value)} placeholder="••••••••••••••••••" /></div>
+          <div className="space-y-2"><Label>Redirect URI</Label><Input value={configs['oauth.github.redirectUri'] || ''} onChange={e => handleChange('oauth.github.redirectUri', e.target.value)} placeholder="e.g. https://yourdomain.com/api/auth/callback/github" /></div>
         </CardContent>
       </Card>
       <div className="flex justify-end"><Button onClick={handleSave} disabled={loading}>{loading ? 'Saving...' : 'Save'}</Button></div>

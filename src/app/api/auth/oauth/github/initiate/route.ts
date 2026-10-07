@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
 import { getAppUrlsAction } from '@/lib/app-urls.actions';
+import { db } from '@/lib/db';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -14,6 +15,12 @@ export async function GET(request: NextRequest) {
   const urls = await getAppUrlsAction();
 
   const { ConfigService } = await import('@/lib/config/service');
+  const isEnabled = await ConfigService.getConfig<boolean>('oauth.github.enabled', false);
+
+  if (!isEnabled) {
+    return NextResponse.json({ error: 'GitHub Login is disabled' }, { status: 403 });
+  }
+
   const clientId = await ConfigService.getConfig<string>('oauth.github.clientId', process.env.GITHUB_CLIENT_ID);
   const redirectUri = await ConfigService.getConfig<string>('oauth.github.redirectUri') || `${baseUrl}/api/auth/callback/github`;
 
@@ -28,9 +35,27 @@ export async function GET(request: NextRequest) {
   if (rawCallbackUrl) {
     try {
       const parsed = new URL(rawCallbackUrl);
-      const allowedOrigins = [baseUrl, urls['nazexa-db'], urls['nazexa-socket-platform']].filter(
-        Boolean
-      ) as string[];
+      const apps = await db.application.findMany({ select: { allowedOrigins: true, redirectUris: true } });
+      const dynamicOrigins = apps.flatMap((a) => [
+        ...(a.allowedOrigins || '').split(','),
+        ...(a.redirectUris || '').split(','),
+      ])
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((u) => {
+          try {
+            return new URL(u).origin;
+          } catch {
+            return '';
+          }
+        })
+        .filter(Boolean);
+
+      const allowedOrigins = [
+        baseUrl,
+        ...Object.values(urls),
+        ...dynamicOrigins,
+      ].filter(Boolean) as string[];
 
       const isValidOrigin = allowedOrigins.some((origin) => {
         try {

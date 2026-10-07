@@ -12,9 +12,10 @@ export default function AuthenticationSettingsPage() {
   const [fetching, setFetching] = useState(true);
   const [configs, setConfigs] = useState<Record<string, any>>({
     'auth.emailPasswordEnabled': true,
-    'auth.emailVerificationRequired': false,
     'auth.registrationEnabled': true,
+    'auth.emailVerificationRequired': false,
     'auth.passwordResetEnabled': true,
+    'auth.ssoEnabled': true,
   });
 
   const keys = Object.keys(configs);
@@ -45,15 +46,50 @@ export default function AuthenticationSettingsPage() {
     <div className="space-y-6 max-w-4xl mx-auto">
       <div>
         <h1 className="text-3xl font-bold">Authentication Settings</h1>
-        <p className="text-muted-foreground mt-2">Core login, registration, and session policies.</p>
+        <p className="text-muted-foreground mt-2">Core login, registration, and session policies across the Nazexa ecosystem.</p>
       </div>
       <Card>
         <CardHeader><CardTitle>Core Policies</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2"><Switch checked={configs['auth.emailPasswordEnabled'] === true} onCheckedChange={v => handleChange('auth.emailPasswordEnabled', v)} /><Label>Enable Email/Password Login</Label></div>
-          <div className="flex items-center space-x-2"><Switch checked={configs['auth.registrationEnabled'] === true} onCheckedChange={v => handleChange('auth.registrationEnabled', v)} /><Label>Allow Public Registration</Label></div>
-          <div className="flex items-center space-x-2"><Switch checked={configs['auth.emailVerificationRequired'] === true} onCheckedChange={v => handleChange('auth.emailVerificationRequired', v)} /><Label>Require Email Verification</Label></div>
-          <div className="flex items-center space-x-2"><Switch checked={configs['auth.passwordResetEnabled'] === true} onCheckedChange={v => handleChange('auth.passwordResetEnabled', v)} /><Label>Enable Password Reset</Label></div>
+        <CardContent className="space-y-6">
+          <div className="flex items-start justify-between space-x-4">
+            <div className="space-y-0.5">
+              <Label className="text-base font-medium">Enable Email/Password Login</Label>
+              <p className="text-sm text-muted-foreground">Allow users to log in using their email address and password across all applications.</p>
+            </div>
+            <Switch checked={configs['auth.emailPasswordEnabled'] === true} onCheckedChange={v => handleChange('auth.emailPasswordEnabled', v)} />
+          </div>
+
+          <div className="flex items-start justify-between space-x-4">
+            <div className="space-y-0.5">
+              <Label className="text-base font-medium">Allow Public Registration</Label>
+              <p className="text-sm text-muted-foreground">Allow new visitors to register for accounts. When disabled, public registration is blocked.</p>
+            </div>
+            <Switch checked={configs['auth.registrationEnabled'] === true} onCheckedChange={v => handleChange('auth.registrationEnabled', v)} />
+          </div>
+
+          <div className="flex items-start justify-between space-x-4">
+            <div className="space-y-0.5">
+              <Label className="text-base font-medium">Require Email Verification</Label>
+              <p className="text-sm text-muted-foreground">Require newly registered users to verify their email before accessing protected resources.</p>
+            </div>
+            <Switch checked={configs['auth.emailVerificationRequired'] === true} onCheckedChange={v => handleChange('auth.emailVerificationRequired', v)} />
+          </div>
+
+          <div className="flex items-start justify-between space-x-4">
+            <div className="space-y-0.5">
+              <Label className="text-base font-medium">Enable Password Reset</Label>
+              <p className="text-sm text-muted-foreground">Allow users to request password reset emails and reset forgotten passwords.</p>
+            </div>
+            <Switch checked={configs['auth.passwordResetEnabled'] === true} onCheckedChange={v => handleChange('auth.passwordResetEnabled', v)} />
+          </div>
+
+          <div className="flex items-start justify-between space-x-4 border-t pt-4">
+            <div className="space-y-0.5">
+              <Label className="text-base font-medium">Enable Central Authentication / Nazexa SSO</Label>
+              <p className="text-sm text-muted-foreground">Allow cross-app Single Sign-On and &quot;Continue with Nazexa SSO&quot; across all Nazexa projects.</p>
+            </div>
+            <Switch checked={configs['auth.ssoEnabled'] === true} onCheckedChange={v => handleChange('auth.ssoEnabled', v)} />
+          </div>
         </CardContent>
       </Card>
       <div className="flex justify-end"><Button onClick={handleSave} disabled={loading}>{loading ? 'Saving...' : 'Save'}</Button></div>

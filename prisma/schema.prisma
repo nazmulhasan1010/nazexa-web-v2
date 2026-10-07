@@ -1282,32 +1282,6 @@ model MailDraft {
   @@map("mail_drafts")
 }
 
-model MailTemplate {
-  id         String                @id @default(uuid())
-  name       String
-  subject    String
-  bodyHtml   String                @db.LongText
-  bodyText   String?               @db.LongText
-  variables  String?               @db.Text // comma-separated available vars
-  categoryId String?
-  category   MailTemplateCategory? @relation(fields: [categoryId], references: [id])
-  active     Boolean               @default(true)
-  createdAt  DateTime              @default(now())
-  updatedAt  DateTime              @default(now()) @updatedAt
-
-  @@index([categoryId])
-  @@map("mail_templates")
-}
-
-model MailTemplateCategory {
-  id        String         @id @default(uuid())
-  name      String         @unique
-  templates MailTemplate[]
-  createdAt DateTime       @default(now())
-
-  @@map("mail_template_categories")
-}
-
 model MailAuditLog {
   id        String   @id @default(uuid())
   actorId   String // AdminUser id

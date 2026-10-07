@@ -30,6 +30,7 @@ import { IconPicker } from './IconPicker';
 import { DynamicIcon } from '@/components/DynamicIcon';
 import type { NavMenu, NavItemWithChildren } from '@/lib/navigation';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 function SortableItem({ item, onEdit, onDelete, children, hasChildren }: { item: any, onEdit: () => void, onDelete: () => void, children?: React.ReactNode, hasChildren: boolean }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -317,9 +318,11 @@ export function NavigationBuilder({ type }: { type: 'header' | 'footer' }) {
 
       setSaving(false);
       setHasChanges(false);
+      toast.success('Navigation published successfully!');
     } catch (e) {
       console.error(e);
       setSaving(false);
+      toast.error('Failed to publish navigation. Please try again.');
     }
   };
 

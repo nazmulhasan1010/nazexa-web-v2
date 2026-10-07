@@ -66,7 +66,11 @@ export async function GET(request: NextRequest) {
       }),
     });
     const tokenData = await tokenRes.json();
-    if (!tokenData.access_token) throw new Error('No access token');
+    if (!tokenData.access_token) {
+      console.error('[google callback] Token exchange failed:', tokenData);
+      require('fs').writeFileSync('google-oauth-error.log', JSON.stringify({ tokenData, clientId, clientSecret, redirectUri }, null, 2));
+      throw new Error(`Token exchange failed: ${tokenData.error_description || tokenData.error || 'No access token'}`);
+    }
 
     const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },

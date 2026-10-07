@@ -48,7 +48,7 @@ export function Providers({
             {!bare && <SiteHeader products={products} headerMenu={headerMenu} />}
             <main className="relative z-10">{children}</main>
             {!hideFooter && <SiteFooter footerMenu={footerMenu} />}
-            <Toaster position="top-center" />
+            <Toaster position="top-right" />
             {!pathname?.startsWith('/admin') && <SiteSearch open={searchOpen} onOpenChange={setSearchOpen} />}
           </LogoProvider>
         </AdminAuthProvider>

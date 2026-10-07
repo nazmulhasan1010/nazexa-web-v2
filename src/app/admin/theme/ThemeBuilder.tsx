@@ -20,10 +20,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Select,
+  SelectGroup,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectLabel,
+  SelectSeparator,
 } from '@/components/ui/select';
 
 import { siteSettingsQuery } from '@/lib/queries';
@@ -84,20 +87,26 @@ export function ThemeBuilder({
   const [previewPath, setPreviewPath] = useState(defaultPaths[0].value);
 
   useEffect(() => {
+    if (settingsLoading) return;
+
     async function init() {
-      if (!settingsData) return;
-      const draft = await fetchThemeDraft(target);
-      if (draft) {
-        setConfig(draft.config);
-        setHasDraft(true);
-      } else if (settingsData.theme?.[target]) {
-        setConfig(settingsData.theme[target]);
-        setHasDraft(false);
+      try {
+        const draft = await fetchThemeDraft(target);
+        if (draft) {
+          setConfig(draft.config);
+          setHasDraft(true);
+        } else if (settingsData?.theme?.[target]) {
+          setConfig(settingsData.theme[target]);
+          setHasDraft(false);
+        }
+      } catch (err) {
+        console.error('Failed to init theme builder', err);
+      } finally {
+        setIsInitializing(false);
       }
-      setIsInitializing(false);
     }
     init();
-  }, [settingsData, target]);
+  }, [settingsData, settingsLoading, target]);
 
   // Derived state
   const allThemes = useMemo(
@@ -260,33 +269,32 @@ export function ThemeBuilder({
                 <SelectValue placeholder="Select a theme..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  value="_create_new"
-                  disabled
-                  className="text-muted-foreground font-semibold"
-                >
-                  Presets
-                </SelectItem>
-                {PRESET_THEMES.map((pt) => (
-                  <SelectItem key={pt.id} value={pt.id}>
-                    {pt.name}
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  <SelectLabel className="text-muted-foreground font-semibold">
+                    Presets
+                  </SelectLabel>
+                  {PRESET_THEMES.map((pt) => (
+                    <SelectItem key={pt.id} value={pt.id}>
+                      {pt.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
 
                 {config.customThemes && config.customThemes.length > 0 && (
-                  <SelectItem
-                    value="_custom_divider"
-                    disabled
-                    className="text-muted-foreground mt-2 font-semibold"
-                  >
-                    Custom Themes
-                  </SelectItem>
+                  <>
+                    <SelectSeparator />
+                    <SelectGroup>
+                      <SelectLabel className="text-muted-foreground mt-2 font-semibold">
+                        Custom Themes
+                      </SelectLabel>
+                      {config.customThemes.map((ct) => (
+                        <SelectItem key={ct.id} value={ct.id}>
+                          {ct.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </>
                 )}
-                {config.customThemes?.map((ct) => (
-                  <SelectItem key={ct.id} value={ct.id}>
-                    {ct.name}
-                  </SelectItem>
-                ))}
               </SelectContent>
             </Select>
 

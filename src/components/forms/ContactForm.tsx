@@ -15,6 +15,16 @@ type ContactSettings = {
   phone: string;
   email: string;
   address: string;
+  whatsapp?: string;
+  enableForm?: boolean;
+  formHeading?: string;
+  formSuccessMessage?: string;
+  formButtonText?: string;
+  workingHours?: string;
+  facebookUrl?: string;
+  twitterUrl?: string;
+  linkedinUrl?: string;
+  instagramUrl?: string;
 };
 
 export function ContactForm({ settings }: { settings?: ContactSettings }) {
@@ -41,7 +51,7 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
         throw new Error(data.error || 'Failed to send message');
       }
 
-      toast.success('Message sent successfully! We will get back to you soon.');
+      toast.success(settings?.formSuccessMessage || 'Message sent successfully! We will get back to you soon.');
       setMessage('');
       if (!user) {
         setName('');
@@ -68,9 +78,10 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
   const phone = settings?.phone || '+1 (555) 000-0000';
   const contactEmail = settings?.email || 'hello@nazexa.com';
   const address = settings?.address || '123 Tech Avenue, NY 10001';
+  const whatsapp = settings?.whatsapp;
 
   return (
-    <div className="mx-auto mt-12 grid w-full max-w-6xl grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
+    <div className={`mx-auto mt-12 grid w-full max-w-6xl grid-cols-1 gap-10 ${settings?.enableForm !== false ? 'lg:grid-cols-2' : ''} lg:gap-16`}>
       {/* Left info block */}
       <div className="flex flex-col justify-center">
         <h2 className="font-display text-3xl font-semibold tracking-tight lg:text-4xl">{title}</h2>
@@ -144,68 +155,148 @@ export function ContactForm({ settings }: { settings?: ContactSettings }) {
               <p className="text-muted-foreground">{address}</p>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Right form block */}
-      <div className="bg-card/50 border-border/50 relative z-10 rounded-xl border p-6 shadow-xl backdrop-blur-sm md:p-8">
-        <h2 className="mb-6 text-2xl font-semibold tracking-tight">Send us a message</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!user && (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label htmlFor="name">
-                  Name <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
-                  required
-                />
+          {whatsapp && (
+            <div className="flex items-center gap-4">
+              <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-xl">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="email">
-                  Email <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="john@example.com"
-                  required
-                />
+              <div>
+                <h3 className="text-lg font-semibold">WhatsApp</h3>
+                <p className="text-muted-foreground">
+                  <a href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                    {whatsapp}
+                  </a>
+                </p>
               </div>
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <Label htmlFor="message">
-              Message <span className="text-destructive">*</span>
-            </Label>
-            <Textarea
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="How can we help you?"
-              className="min-h-[120px]"
-              required
-            />
-          </div>
+          {settings?.workingHours && (
+            <div className="flex items-center gap-4">
+              <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-xl">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Working Hours</h3>
+                <p className="text-muted-foreground whitespace-pre-wrap">{settings.workingHours}</p>
+              </div>
+            </div>
+          )}
 
-          <Button type="submit" className="mt-2 w-full sm:w-auto" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
-              </>
-            ) : (
-              'Send Message'
-            )}
-          </Button>
-        </form>
+          {(settings?.facebookUrl || settings?.twitterUrl || settings?.linkedinUrl || settings?.instagramUrl) && (
+            <div className="pt-4 flex gap-4 items-center">
+              {settings.facebookUrl && (
+                <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="bg-primary/10 hover:bg-primary/20 text-primary p-3 rounded-full transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                </a>
+              )}
+              {settings.twitterUrl && (
+                <a href={settings.twitterUrl} target="_blank" rel="noopener noreferrer" className="bg-primary/10 hover:bg-primary/20 text-primary p-3 rounded-full transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                </a>
+              )}
+              {settings.instagramUrl && (
+                <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="bg-primary/10 hover:bg-primary/20 text-primary p-3 rounded-full transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                </a>
+              )}
+              {settings.linkedinUrl && (
+                <a href={settings.linkedinUrl} target="_blank" rel="noopener noreferrer" className="bg-primary/10 hover:bg-primary/20 text-primary p-3 rounded-full transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Right form block */}
+      {settings?.enableForm !== false && (
+        <div className="bg-card/50 border-border/50 relative z-10 rounded-xl border p-6 shadow-xl backdrop-blur-sm md:p-8">
+          <h2 className="mb-6 text-2xl font-semibold tracking-tight">{settings?.formHeading || 'Send us a message'}</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {!user && (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="name">
+                    Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="John Doe"
+                    required
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="email">
+                    Email <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="john@example.com"
+                    required
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <Label htmlFor="message">
+                Message <span className="text-destructive">*</span>
+              </Label>
+              <Textarea
+                id="message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="How can we help you?"
+                className="min-h-[120px]"
+                required
+              />
+            </div>
+
+            <Button type="submit" className="mt-2 w-full sm:w-auto" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+                </>
+              ) : (
+                settings?.formButtonText || 'Send Message'
+              )}
+            </Button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

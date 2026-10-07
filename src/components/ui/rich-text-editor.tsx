@@ -12,16 +12,17 @@ interface RichTextEditorProps {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  contentClassName?: string;
 }
 
-export function RichTextEditor({ value, onChange, placeholder, className }: RichTextEditorProps) {
+export function RichTextEditor({ value, onChange, placeholder, className, contentClassName }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [StarterKit],
     content: value,
     editorProps: {
       attributes: {
         class:
-          'min-h-[150px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 prose prose-sm dark:prose-invert max-w-none focus:outline-none',
+          'min-h-[150px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 prose prose-sm dark:prose-invert max-w-none focus:outline-none [&_p]:text-foreground [&_h1]:text-foreground [&_h2]:text-foreground [&_h3]:text-foreground [&_li]:text-foreground [&_strong]:text-foreground',
       },
     },
     onUpdate: ({ editor }) => {
@@ -108,7 +109,7 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
           <ListOrdered className="h-4 w-4" />
         </Toggle>
       </div>
-      <EditorContent editor={editor} className="bg-background rounded-md" />
+      <EditorContent editor={editor} className={cn("bg-transparent rounded-md", contentClassName)} />
     </div>
   );
 }

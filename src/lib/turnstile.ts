@@ -1,13 +1,13 @@
 import { ConfigService } from './config/service';
 
 export async function verifyTurnstile(token: string | null | undefined): Promise<boolean> {
-  if (!token) return false;
-
   const turnstileEnabled = await ConfigService.getConfig<boolean>('captcha.turnstile.enabled', false);
 
   if (!turnstileEnabled) {
     return true; // If disabled globally, bypass check
   }
+
+  if (!token) return false;
 
   const secret = await ConfigService.getSecretConfig('captcha.turnstile.secretKey') || process.env.TURNSTILE_SECRET_KEY;
   if (!secret) {

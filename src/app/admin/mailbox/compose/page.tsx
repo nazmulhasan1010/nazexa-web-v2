@@ -3,18 +3,19 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
-import { Send, Loader2, Plus, X, Paperclip, ChevronDown, RotateCcw } from 'lucide-react';
+import { Send, Loader2, Plus, X, Paperclip, ChevronDown, RotateCcw, Image as ImageIcon, Link as LinkIcon, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { TemplateSelector } from './components/TemplateSelector';
 import { VariableForm, extractVariables } from './components/VariableForm';
 import { renderTemplateString } from '@/lib/email/renderer';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 
 interface MailAccount {
   id: string;
@@ -24,12 +25,10 @@ interface MailAccount {
 }
 
 function TagInput({
-  label,
   values,
   onChange,
   placeholder,
 }: {
-  label: string;
   values: string[];
   onChange: (vals: string[]) => void;
   placeholder?: string;
@@ -45,31 +44,28 @@ function TagInput({
   };
 
   return (
-    <div className="space-y-1.5 w-full">
-      <Label>{label}</Label>
-      <div className="flex flex-wrap gap-1.5 min-h-9 p-2 border rounded-md bg-background focus-within:ring-1 focus-within:ring-ring">
-        {values.map(v => (
-          <span key={v} className="flex items-center gap-1 px-2 py-0.5 bg-secondary text-secondary-foreground rounded text-xs">
-            {v}
-            <button type="button" onClick={() => onChange(values.filter(x => x !== v))}>
-              <X className="h-3 w-3" />
-            </button>
-          </span>
-        ))}
-        <input
-          className="flex-1 min-w-[150px] bg-transparent outline-none text-sm"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addValue(); }
-            if (e.key === 'Backspace' && !input && values.length) {
-              onChange(values.slice(0, -1));
-            }
-          }}
-          onBlur={addValue}
-          placeholder={values.length === 0 ? (placeholder || 'Type email and press Enter') : ''}
-        />
-      </div>
+    <div className="flex flex-1 flex-wrap gap-1.5 items-center bg-transparent group">
+      {values.map(v => (
+        <span key={v} className="flex items-center gap-1 pl-2.5 pr-1.5 py-0.5 bg-muted/60 hover:bg-muted text-foreground border rounded-full text-[13px] font-medium transition-colors">
+          {v}
+          <button type="button" onClick={() => onChange(values.filter(x => x !== v))} className="text-muted-foreground hover:text-foreground rounded-full p-0.5 transition-colors">
+            <X className="h-3 w-3" />
+          </button>
+        </span>
+      ))}
+      <input
+        className="flex-1 min-w-[200px] bg-transparent outline-none text-[14px] px-1 py-1 placeholder:text-muted-foreground/60"
+        value={input}
+        onChange={e => setInput(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addValue(); }
+          if (e.key === 'Backspace' && !input && values.length) {
+            onChange(values.slice(0, -1));
+          }
+        }}
+        onBlur={addValue}
+        placeholder={values.length === 0 ? placeholder : ''}
+      />
     </div>
   );
 }
@@ -108,18 +104,17 @@ function ComposePageContent() {
         if (data.accounts?.length) {
           setSelectedAccountId(data.accounts[0].id);
           if (data.accounts[0].signature) {
-            setBody(`\n\n--\n${data.accounts[0].signature}`);
+            setBody(`<p><br><br></p><p>--<br>${data.accounts[0].signature.replace(/\n/g, '<br>')}</p>`);
           }
         }
       });
   }, []);
 
-  // Pre-fill reply/forward fields
   useEffect(() => {
     const msgId = replyToId || replyAllId || forwardId;
     if (!msgId) return;
 
-    fetch(`/api/admin/mailbox/messages/${msgId}`)
+    fetch(`/api/admin/mailbox/messages/` + msgId)
       .then(res => res.json())
       .then(data => {
         const msg = data.message;
@@ -127,39 +122,26 @@ function ComposePageContent() {
 
         if (replyToId || replyAllId) {
           setTo([msg.fromEmail]);
-          setSubject(msg.subject.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`);
+          setSubject(msg.subject.startsWith('Re:') ? msg.subject : `Re: ` + msg.subject);
           if (replyAllId) {
             const toList = JSON.parse(msg.toAddresses || '[]');
             setCc(toList.map((a: any) => a.email).filter((e: string) => e !== msg.fromEmail));
           }
         } else {
-          setSubject(`Fwd: ${msg.subject}`);
+          setSubject(`Fwd: ` + msg.subject);
         }
 
         const selectedAccount = accounts.find(a => a.id === selectedAccountId);
-        const sig = selectedAccount?.signature ? `\n\n--\n${selectedAccount.signature}` : '';
-        const quotedBody = `\n\n--- Original Message ---\nFrom: ${msg.fromEmail}\nDate: ${new Date(msg.date).toLocaleString()}\nSubject: ${msg.subject}\n\n${msg.bodyText || ''}`;
+        const sig = selectedAccount?.signature ? `<p><br><br></p><p>--<br>${selectedAccount.signature.replace(/\n/g, '<br>')}</p>` : '<p><br><br></p>';
+        const quotedBody = `<blockquote><p>--- Original Message ---<br>From: ${msg.fromEmail}<br>Date: ${new Date(msg.date).toLocaleString()}<br>Subject: ${msg.subject}</p>${msg.bodyHtml || msg.bodyText?.replace(/\n/g, '<br>') || ''}</blockquote>`;
         setBody(sig + quotedBody);
       });
   }, [replyToId, replyAllId, forwardId, accounts, selectedAccountId]);
 
-  // Update signature when account changes
-  useEffect(() => {
-    if (templateId) return; // Don't append plain signature to templates
-    const account = accounts.find(a => a.id === selectedAccountId);
-    if (account?.signature) {
-      setBody(prev => {
-        const sigMarker = '\n\n--\n';
-        const noSig = prev.includes(sigMarker) ? prev.slice(0, prev.indexOf(sigMarker)) : prev;
-        return noSig + sigMarker + account.signature;
-      });
-    }
-  }, [selectedAccountId, accounts, templateId]);
-
   const loadTemplate = async (id: string) => {
     setLoadingTemplate(true);
     try {
-      const res = await fetch(`/api/admin/emails/templates/${id}`);
+      const res = await fetch(`/api/admin/emails/templates/` + id);
       const data = await res.json();
       if (data.template) {
         setTemplateId(id);
@@ -167,10 +149,8 @@ function ComposePageContent() {
         setTemplateSubject(data.template.subject);
         setSubject(data.template.subject);
         
-        // Auto-populate values if possible (e.g. from existing reply context)
         const newVars: Record<string, any> = {};
         if (to.length === 1) {
-          // If we have one recipient, try to guess name
           const email = to[0];
           newVars['user.email'] = email;
           newVars['user.name'] = email.split('@')[0]; 
@@ -203,7 +183,7 @@ function ComposePageContent() {
     try {
       for (const file of files) {
         if (file.size > 15 * 1024 * 1024) {
-          toast.error(`${file.name} is larger than 15MB`);
+          toast.error(file.name + ' is larger than 15MB');
           continue;
         }
         const fd = new FormData();
@@ -218,7 +198,6 @@ function ComposePageContent() {
       }
     } finally {
       setUploadingAttachment(false);
-      // Reset input value to allow re-uploading the same file if needed
       e.target.value = '';
     }
   };
@@ -239,8 +218,8 @@ function ComposePageContent() {
 
   const handleSend = async () => {
     const finalSubject = templateId ? renderTemplateString(subject, variableValues) : subject;
-    const finalHtml = templateId ? renderTemplateString(templateHtml, variableValues) : body.replace(/\n/g, '<br>');
-    const finalText = templateId ? undefined : body;
+    const finalHtml = templateId ? renderTemplateString(templateHtml, variableValues) : body;
+    const finalText = templateId ? undefined : undefined; 
 
     if (!to.length || !selectedAccountId) {
       toast.error('Please fill in To and select an account');
@@ -252,7 +231,7 @@ function ComposePageContent() {
       const manualVars = varsInUse.filter(k => !['currentYear', 'currentDate', 'company.name', 'company.website', 'company.email'].includes(k));
       const missing = manualVars.filter(v => !variableValues[v]);
       if (missing.length > 0) {
-        toast.error(`Missing required variables: ${missing.join(', ')}`);
+        toast.error('Missing required variables: ' + missing.join(', '));
         return;
       }
     }
@@ -285,19 +264,18 @@ function ComposePageContent() {
     }
   };
 
-
-
   return (
-    <div className={cn("flex h-full w-full bg-muted/10", templateId ? "flex-col lg:flex-row overflow-y-auto lg:overflow-hidden" : "")}>
-      <div className={cn("flex flex-col h-full overflow-y-auto p-4 md:p-6 transition-all duration-300 shrink-0", templateId ? "w-full lg:w-1/2 lg:border-r" : "w-full max-w-3xl mx-auto")}>
-        <div className="flex items-center justify-between mb-6 shrink-0 flex-wrap gap-2">
-          <h1 className="text-2xl font-bold tracking-tight">Compose Email</h1>
+    <div className={cn("flex h-full w-full bg-muted/20 relative", templateId ? "flex-col lg:flex-row overflow-y-auto lg:overflow-hidden" : "")}>
+      <div className={cn("flex flex-col h-full overflow-y-auto transition-all duration-300 shrink-0", templateId ? "w-full lg:w-1/2 lg:border-r p-4 md:p-6" : "w-full max-w-4xl mx-auto p-4 md:p-8")}>
+        
+        <div className="flex items-center justify-between mb-6 shrink-0 gap-4">
+          <h1 className="text-2xl font-bold tracking-tight">New Message</h1>
           <div className="flex items-center gap-2">
             {!templateId && <TemplateSelector onSelect={loadTemplate} />}
             {templateId && (
-              <Button variant="ghost" size="sm" onClick={resetTemplate} className="text-muted-foreground hover:text-destructive">
+              <Button variant="outline" size="sm" onClick={resetTemplate} className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 border-destructive/20">
                 <RotateCcw className="h-4 w-4 mr-2" />
-                Reset Mode
+                Discard Template
               </Button>
             )}
             <Button variant="ghost" onClick={() => router.back()}>Cancel</Button>
@@ -305,17 +283,21 @@ function ComposePageContent() {
         </div>
 
         {loadingTemplate ? (
-          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-background rounded-2xl shadow-sm border h-[400px]">
             <Loader2 className="h-8 w-8 animate-spin mb-4" />
             <p>Loading template...</p>
           </div>
         ) : (
-          <Card className="flex-1 shadow-sm">
-            <CardContent className="pt-5 space-y-4">
-              <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-4 items-center">
-                <Label className="text-right text-muted-foreground">From</Label>
+          <div className="flex-1 flex flex-col bg-background rounded-xl shadow-sm border overflow-hidden">
+            
+            {/* Form Header */}
+            <div className="flex flex-col">
+              
+              {/* Account Selector */}
+              <div className="flex items-center px-5 py-2.5 border-b focus-within:bg-muted/10 transition-colors">
+                <span className="w-16 text-muted-foreground text-[14px] font-medium shrink-0">From</span>
                 <Select value={selectedAccountId} onValueChange={setSelectedAccountId}>
-                  <SelectTrigger className="bg-transparent border-0 shadow-none focus:ring-0 p-0 h-auto">
+                  <SelectTrigger className="flex-1 bg-transparent border-0 shadow-none focus:ring-0 p-0 h-auto font-medium text-[14px]">
                     <SelectValue placeholder="Select account..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -326,125 +308,160 @@ function ComposePageContent() {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
 
-                <Label className="text-right text-muted-foreground mt-2">To</Label>
-                <TagInput label="" values={to} onChange={setTo} />
-
-                {showCcBcc && (
-                  <>
-                    <Label className="text-right text-muted-foreground mt-2">CC</Label>
-                    <TagInput label="" values={cc} onChange={setCc} />
-                    <Label className="text-right text-muted-foreground mt-2">BCC</Label>
-                    <TagInput label="" values={bcc} onChange={setBcc} />
-                  </>
-                )}
-                
-                <div />
+              {/* To Field */}
+              <div className="flex items-center px-5 py-2 border-b group">
+                <span className="w-16 text-muted-foreground text-[14px] font-medium shrink-0">To</span>
+                <TagInput values={to} onChange={setTo} placeholder="Recipients..." />
                 <button
                   type="button" 
-                  className="text-xs text-muted-foreground hover:text-foreground text-left w-fit"
+                  className="text-[12px] font-medium text-muted-foreground/60 hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-2 shrink-0"
                   onClick={() => setShowCcBcc(!showCcBcc)}
                 >
-                  {showCcBcc ? 'Hide CC/BCC' : 'Add CC/BCC'}
+                  {showCcBcc ? 'Hide Cc/Bcc' : 'Cc/Bcc'}
                 </button>
+              </div>
 
-                <Label className="text-right text-muted-foreground mt-2">Subject</Label>
-                <div className="flex flex-col gap-1 w-full">
-                  <Input
-                    className="border-0 shadow-none focus-visible:ring-0 p-0 h-auto rounded-none border-b focus-visible:border-primary"
-                    placeholder="Subject (optional)"
+              {/* CC / BCC Fields */}
+              {showCcBcc && (
+                <>
+                  <div className="flex items-center px-5 py-2 border-b">
+                    <span className="w-16 text-muted-foreground text-[14px] font-medium shrink-0">Cc</span>
+                    <TagInput values={cc} onChange={setCc} />
+                  </div>
+                  <div className="flex items-center px-5 py-2 border-b">
+                    <span className="w-16 text-muted-foreground text-[14px] font-medium shrink-0">Bcc</span>
+                    <TagInput values={bcc} onChange={setBcc} />
+                  </div>
+                </>
+              )}
+
+              {/* Subject Field */}
+              <div className="flex items-center px-5 py-3 border-b focus-within:bg-muted/10 transition-colors">
+                <span className="w-16 text-muted-foreground text-[14px] font-medium shrink-0">Subject</span>
+                <div className="flex-1 flex flex-col">
+                  <input
+                    className="w-full bg-transparent outline-none text-[14px] font-semibold placeholder:text-muted-foreground/60 placeholder:font-normal"
+                    placeholder="Enter subject line..."
                     value={subject}
                     onChange={e => setSubject(e.target.value)}
                   />
                   {templateId && subject.includes('{{') && (
-                    <div className="text-xs text-muted-foreground mt-1">
-                      Preview: <span className="font-medium text-foreground">{renderedSubject || 'No Subject'}</span>
-                    </div>
+                    <span className="text-xs text-muted-foreground mt-1 font-normal">
+                      Preview: <span className="font-medium text-foreground">{renderedSubject || '...'}</span>
+                    </span>
                   )}
                 </div>
               </div>
+            </div>
 
-              <Separator className="my-2" />
-
+            {/* Email Body Area */}
+            <div className="flex-1 flex flex-col min-h-[350px]">
               {templateId ? (
-                <div className="pt-2 pb-6">
-                  <h3 className="text-sm font-semibold mb-4">Template Variables</h3>
-                  <div className="h-[400px]">
-                    <VariableForm 
-                      templateHtml={templateHtml}
-                      templateSubject={templateSubject}
-                      values={variableValues}
-                      onChange={(k, v) => setVariableValues(prev => ({ ...prev, [k]: v }))}
-                    />
-                  </div>
+                <div className="p-6 flex-1 overflow-y-auto bg-muted/10">
+                  <h3 className="text-sm font-semibold mb-4 text-foreground/80 flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                    Template Variables
+                  </h3>
+                  <VariableForm 
+                    templateHtml={templateHtml}
+                    templateSubject={templateSubject}
+                    values={variableValues}
+                    onChange={(k, v) => setVariableValues(prev => ({ ...prev, [k]: v }))}
+                  />
                 </div>
               ) : (
-                <textarea
-                  className="w-full min-h-[400px] p-2 text-sm bg-transparent border-0 focus:outline-none resize-none font-sans"
-                  placeholder="Write your message here..."
-                  value={body}
-                  onChange={e => setBody(e.target.value)}
-                />
+                <div className="flex-1 flex flex-col">
+                  <RichTextEditor 
+                    value={body} 
+                    onChange={setBody} 
+                    className="flex-1 flex flex-col gap-0 [&>div:first-child]:border-0 [&>div:first-child]:border-b [&>div:first-child]:rounded-none [&>div:first-child]:px-5 [&>div:first-child]:py-2 [&>div:first-child]:shadow-none [&>div:first-child]:bg-transparent"
+                    contentClassName="flex-1 [&>div]:min-h-[300px] [&>div]:border-0 [&>div]:shadow-none [&>div]:focus-visible:ring-0 [&>div]:rounded-none [&>div]:px-5 [&>div]:py-4 [&>div]:text-[15px]"
+                  />
+                </div>
               )}
+            </div>
 
-              {attachments.length > 0 && (
-                <div className="flex flex-wrap gap-2 pt-2 mt-auto border-t">
+            {/* Attachments Section */}
+            {attachments.length > 0 && (
+              <div className="px-5 py-4 border-t bg-muted/20">
+                <h4 className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Attachments</h4>
+                <div className="flex flex-wrap gap-2">
                   {attachments.map((att, i) => (
-                    <div key={i} className="flex items-center gap-1 bg-muted/50 text-xs px-2 py-1 rounded-md border">
-                      <span className="truncate max-w-[150px]" title={att.filename}>{att.filename}</span>
-                      <span className="text-muted-foreground text-[10px]">({(att.size / 1024 / 1024).toFixed(1)}MB)</span>
-                      <button onClick={() => removeAttachment(i)} className="ml-1 text-muted-foreground hover:text-destructive">
-                        <X className="h-3 w-3" />
+                    <div key={i} className="flex items-center gap-2 bg-background shadow-sm text-sm px-3 py-1.5 rounded-lg border group">
+                      <div className="w-8 h-8 rounded bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                        <Paperclip className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col max-w-[150px]">
+                        <span className="truncate font-medium text-xs" title={att.filename}>{att.filename}</span>
+                        <span className="text-muted-foreground text-[10px]">{(att.size / 1024 / 1024).toFixed(1)}MB</span>
+                      </div>
+                      <button onClick={() => removeAttachment(i)} className="ml-1 text-muted-foreground hover:text-destructive opacity-50 group-hover:opacity-100 transition-opacity p-1">
+                        <X className="h-4 w-4" />
                       </button>
                     </div>
                   ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              <div className="flex items-center justify-between pt-4 mt-auto border-t">
-                <div className="flex items-center gap-2">
-                  <label className="cursor-pointer">
-                    <input type="file" multiple className="hidden" onChange={handleFileUpload} disabled={uploadingAttachment} />
-                    <Button variant="outline" size="sm" type="button" asChild disabled={uploadingAttachment}>
-                      <span className="text-muted-foreground">
-                        {uploadingAttachment ? <Loader2 className="h-4 w-4 animate-spin" /> : <Paperclip className="h-4 w-4 mr-1" />}
-                        {uploadingAttachment ? 'Uploading...' : 'Attach Files'}
-                      </span>
-                    </Button>
-                  </label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" onClick={() => toast.info('Save draft coming in next iteration')} disabled={sending}>
-                    Save Draft
-                  </Button>
-                  <Button onClick={handleSend} disabled={sending} className="gap-2 min-w-[120px]">
+            {/* Footer / Action Bar */}
+            <div className="px-5 py-4 border-t bg-muted/10 flex items-center justify-between mt-auto">
+              <div className="flex items-center gap-1">
+                <label className="cursor-pointer group">
+                  <input type="file" multiple className="hidden" onChange={handleFileUpload} disabled={uploadingAttachment} />
+                  <div className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground group-hover:bg-muted group-hover:text-foreground transition-colors disabled:opacity-50">
+                    {uploadingAttachment ? <Loader2 className="h-4 w-4 animate-spin" /> : <Paperclip className="h-4 w-4" />}
+                  </div>
+                </label>
+                <button type="button" className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors" title="Insert Image">
+                  <ImageIcon className="h-4 w-4" />
+                </button>
+                <button type="button" className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors" title="Insert Link">
+                  <LinkIcon className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" className="text-muted-foreground" onClick={() => toast.info('Save draft coming in next iteration')} disabled={sending}>
+                  Discard
+                </Button>
+                
+                <div className="flex items-center">
+                  <Button onClick={handleSend} disabled={sending} className="gap-2 rounded-r-none pl-5 pr-4 shadow-sm hover:shadow-md transition-all">
                     {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                    {sending ? 'Sending…' : 'Send Email'}
+                    <span className="font-semibold">{sending ? 'Sending…' : 'Send'}</span>
+                  </Button>
+                  <Button variant="default" size="icon" className="rounded-l-none border-l border-primary-foreground/20 px-2 shadow-sm" disabled={sending} onClick={() => toast.info('Schedule send coming soon!')}>
+                    <ChevronDown className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+
+          </div>
         )}
       </div>
 
-      {/* Right Column: Live Preview */}
+      {/* Right Column: Live Preview (Only when template is active) */}
       {templateId && (
-        <div className="w-full lg:w-1/2 h-full min-h-[600px] lg:min-h-0 flex flex-col bg-muted/30 border-t lg:border-t-0 shrink-0">
-          <div className="px-4 md:px-6 py-4 border-b bg-background flex items-center justify-between shrink-0 h-[72px]">
-            <h2 className="font-semibold flex items-center gap-2">
+        <div className="w-full lg:w-1/2 h-full min-h-[600px] lg:min-h-0 flex flex-col bg-muted/10 border-t lg:border-t-0 shrink-0">
+          <div className="px-6 py-4 border-b bg-background flex items-center justify-between shrink-0 h-[72px]">
+            <h2 className="font-semibold flex items-center gap-2 text-[15px]">
               Live Preview
-              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Desktop</span>
+              <span className="text-[10px] uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">Preview Mode</span>
             </h2>
           </div>
-          <div className="flex-1 p-6 overflow-hidden">
-            <div className="w-full h-full bg-white rounded-lg shadow-sm border overflow-hidden flex flex-col">
-              <div className="bg-muted/30 border-b px-4 py-3 shrink-0">
-                <div className="text-sm"><span className="text-muted-foreground mr-2">Subject:</span> {renderedSubject}</div>
+          <div className="flex-1 p-6 overflow-hidden flex flex-col">
+            <div className="w-full h-full bg-white rounded-xl shadow-lg border border-border/50 overflow-hidden flex flex-col max-w-3xl mx-auto">
+              <div className="bg-muted/20 border-b px-5 py-3 shrink-0 flex items-center gap-3">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider shrink-0">Subject</span>
+                <span className="text-sm font-medium text-foreground truncate">{renderedSubject || 'No subject'}</span>
               </div>
               <iframe 
                 srcDoc={renderedHtml} 
-                className="w-full flex-1 border-0" 
+                className="w-full flex-1 border-0 bg-white" 
                 sandbox="allow-popups allow-same-origin"
                 title="Email Preview"
               />
@@ -463,4 +480,3 @@ export default function ComposePage() {
     </Suspense>
   );
 }
-

@@ -13,6 +13,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import {
   Table,
@@ -40,9 +47,11 @@ import {
 export default function MailSubscribersClient({
   activeCount,
   initialHistory,
+  templates,
 }: {
   activeCount: number;
   initialHistory: any[];
+  templates: { id: string; name: string; subject: string; contentHtml: string }[];
 }) {
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
@@ -76,6 +85,23 @@ export default function MailSubscribersClient({
     }
   }
 
+  function handleTemplateSelect(templateId: string) {
+    if (templateId === 'none') {
+      setSubject('');
+      setContent('');
+      return;
+    }
+
+    const template = templates.find((t) => t.id === templateId);
+    if (template) {
+      if ((subject || content) && !window.confirm('Loading this template will overwrite your current subject and content. Continue?')) {
+        return;
+      }
+      setSubject(template.subject);
+      setContent(template.contentHtml);
+    }
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -95,6 +121,23 @@ export default function MailSubscribersClient({
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {templates.length > 0 && (
+                <div className="space-y-2 mb-6">
+                  <Label htmlFor="template">Load Template</Label>
+                  <Select onValueChange={handleTemplateSelect}>
+                    <SelectTrigger id="template" className="w-full">
+                      <SelectValue placeholder="Select a premium template..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Custom Email (Start from scratch)</SelectItem>
+                      {templates.map((t) => (
+                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
               <div className="space-y-2">
                 <Label htmlFor="subject">Subject</Label>
                 <Input
@@ -106,7 +149,11 @@ export default function MailSubscribersClient({
               </div>
               <div className="space-y-2">
                 <Label>Email Content</Label>
-                <RichTextEditor value={content} onChange={setContent} />
+                <RichTextEditor 
+                  value={content} 
+                  onChange={setContent} 
+                  contentClassName="bg-transparent border rounded-md" 
+                />
               </div>
             </CardContent>
             <CardFooter className="bg-muted/50 flex items-center justify-between border-t p-6">

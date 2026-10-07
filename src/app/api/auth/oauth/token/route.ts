@@ -45,6 +45,15 @@ export async function POST(request: Request) {
     }
 
     if (grant_type === 'session_exchange') {
+      const { ConfigService } = await import('@/lib/config/service');
+      const ssoEnabled = await ConfigService.getConfig<boolean>('auth.ssoEnabled', true);
+      if (!ssoEnabled) {
+        return NextResponse.json(
+          { error: 'sso_disabled', message: 'Central SSO authentication is currently disabled.' },
+          { status: 403 }
+        );
+      }
+
       const cookieStore = await cookies();
       const fromCookie = cookieStore.get('nazexa_session')?.value;
       const fromBody =

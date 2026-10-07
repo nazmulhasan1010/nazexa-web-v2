@@ -1347,7 +1347,7 @@ CREATE TABLE `system_config_logs` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `NavigationMenu` (
+CREATE TABLE `navigation_menus` (
     `id` VARCHAR(191) NOT NULL,
     `type` VARCHAR(191) NOT NULL,
     `status` VARCHAR(191) NOT NULL DEFAULT 'draft',
@@ -1359,7 +1359,7 @@ CREATE TABLE `NavigationMenu` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `NavigationItem` (
+CREATE TABLE `navigation_items` (
     `id` VARCHAR(191) NOT NULL,
     `menuId` VARCHAR(191) NOT NULL,
     `parentId` VARCHAR(191) NULL,
@@ -1480,7 +1480,7 @@ ALTER TABLE `mail_templates` ADD CONSTRAINT `mail_templates_categoryId_fkey` FOR
 ALTER TABLE `system_email_template_versions` ADD CONSTRAINT `system_email_template_versions_templateId_fkey` FOREIGN KEY (`templateId`) REFERENCES `system_email_templates`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `NavigationItem` ADD CONSTRAINT `NavigationItem_menuId_fkey` FOREIGN KEY (`menuId`) REFERENCES `NavigationMenu`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `navigation_items` ADD CONSTRAINT `navigation_items_menuId_fkey` FOREIGN KEY (`menuId`) REFERENCES `navigation_menus`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `NavigationItem` ADD CONSTRAINT `NavigationItem_parentId_fkey` FOREIGN KEY (`parentId`) REFERENCES `NavigationItem`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `navigation_items` ADD CONSTRAINT `navigation_items_parentId_fkey` FOREIGN KEY (`parentId`) REFERENCES `navigation_items`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION;

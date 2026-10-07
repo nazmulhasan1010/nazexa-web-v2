@@ -131,6 +131,19 @@ export async function fetchContentItems(collection: string) {
   })) as ContentItem[];
 }
 
+export async function fetchContentItemBySlug(collection: string, slug: string) {
+  const item = await db.contentItem.findFirst({
+    where: { collection, slug, published: true },
+  });
+  if (!item) return null;
+  return {
+    ...item,
+    data: JSON.parse(item.data || '{}') as Record<string, unknown>,
+    created_at: item.created_at.toISOString(),
+    updated_at: item.updated_at.toISOString(),
+  } as ContentItem;
+}
+
 export async function fetchAdminContentItems(collection: string) {
   const items = await db.contentItem.findMany({
     where: { collection },

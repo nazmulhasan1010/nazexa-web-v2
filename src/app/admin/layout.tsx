@@ -76,7 +76,7 @@ type FlatNavItem = {
   label: string;
   icon: React.ElementType;
   exact?: boolean;
-  badge?: 'payments' | 'messages' | 'mailbox';
+  badge?: 'payments' | 'messages' | 'mailbox' | 'support';
 };
 
 type GroupNavItem = {
@@ -144,7 +144,7 @@ const nav: NavItem[] = [
     icon: MessageSquare,
     badge: 'messages',
   },
-  { kind: 'flat', to: '/admin/support', label: 'Support Desk', icon: LifeBuoy },
+  { kind: 'flat', to: '/admin/support', label: 'Support Desk', icon: LifeBuoy, badge: 'support' },
   { kind: 'flat', to: '/admin/mailbox', label: 'Mailbox', icon: Inbox, badge: 'mailbox' },
   { kind: 'flat', to: '/admin/ai-management', label: 'AI Management', icon: Bot },
   { kind: 'flat', to: '/admin/payments', label: 'Payments', icon: CreditCard, badge: 'payments' },
@@ -620,7 +620,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          <div className={pathname.startsWith('/admin/mailbox') ? 'relative flex-1 flex flex-col w-full overflow-hidden' : 'mx-auto max-w-6xl p-4 sm:p-6 lg:p-8 w-full'}>{children}</div>
+          <div className={pathname.startsWith('/admin/mailbox') || pathname.startsWith('/admin/builder') ? 'relative flex-1 flex flex-col w-full overflow-hidden' : 'mx-auto max-w-6xl p-4 sm:p-6 lg:p-8 w-full'}>{children}</div>
         </main>
         <AdminSearch open={adminSearchOpen} onOpenChange={setAdminSearchOpen} />
       </div>

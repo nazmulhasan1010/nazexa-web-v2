@@ -15,6 +15,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
     }
 
+    const { ConfigService } = await import('@/lib/config/service');
+    const registrationEnabled = await ConfigService.getConfig<boolean>('auth.registrationEnabled', true);
+    if (!registrationEnabled) {
+      return NextResponse.json({ error: 'Registration is currently disabled.', code: 'REGISTRATION_DISABLED' }, { status: 403 });
+    }
+
+    const emailPasswordEnabled = await ConfigService.getConfig<boolean>('auth.emailPasswordEnabled', true);
+    if (!emailPasswordEnabled) {
+      return NextResponse.json({ error: 'Email and password registration is currently disabled.', code: 'EMAIL_PASSWORD_DISABLED' }, { status: 403 });
+    }
+
     const isTurnstileValid = await verifyTurnstile(turnstileToken);
     if (!isTurnstileValid) {
       return NextResponse.json({ error: 'Invalid security verification' }, { status: 400 });

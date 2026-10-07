@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { defs, genericFaq } from '@/lib/site-content';
 import { pageOverrides } from '@/lib/page-blocks';
 import { products } from '@/lib/products';
+import { seedMailTemplates } from './seed-mail-templates';
 
 const prisma = new PrismaClient();
 
@@ -97,6 +98,7 @@ async function main() {
         collection: 'services',
         title: item.title,
         subtitle: item.body,
+        body: `<p>Detailed overview of <strong>${item.title}</strong>.</p><p>${item.body}</p><h2>What to expect</h2><ul><li>Dedicated expertise</li><li>Clear communication</li><li>Long-term support</li></ul>`,
       }))
     );
   }
@@ -510,14 +512,71 @@ async function main() {
     { key: 'smtp.port', category: 'Email', value: 587, valueType: 'number' },
     { key: 'smtp.user', category: 'Email', value: 'your_email@gmail.com' },
     { key: 'smtp.pass', category: 'Email', value: 'YOUR_SMTP_PASSWORD', isSecret: true },
-    { key: 'email.from.address', category: 'Email', value: 'Nazexa <onboarding@yourdomain.com>' },
+    { key: 'smtp.secure', category: 'Email', value: false, valueType: 'boolean' },
+    { key: 'email.from.name', category: 'Email', value: 'Nazexa' },
+    { key: 'email.from.address', category: 'Email', value: 'onboarding@yourdomain.com' },
     
     { key: 'socket.url', category: 'Realtime', value: 'https://ws.nazexa.com' },
     { key: 'socket.projectId', category: 'Realtime', value: 'cmu5iawh30003xzsoa34az77q' },
     { key: 'socket.secretKey', category: 'Realtime', value: 'YOUR_SOCKET_SECRET_KEY', isSecret: true },
     
     { key: 'captcha.turnstile.siteKey', category: 'CAPTCHA', value: '0x4AAAAAAEz4XZrG4XDvB1H9' },
-    { key: 'captcha.turnstile.secretKey', category: 'CAPTCHA', value: 'YOUR_TURNSTILE_SECRET_KEY', isSecret: true }
+    { key: 'captcha.turnstile.secretKey', category: 'CAPTCHA', value: 'YOUR_TURNSTILE_SECRET_KEY', isSecret: true },
+
+    { key: 'contact.channels', category: 'Contact', valueType: 'json', value: [
+      {
+        title: 'Sales',
+        body: 'Scoping, pricing, migration estimates and procurement paperwork for teams evaluating the platform.',
+        action: 'sales@nazexa.com · +31 20 123 4567',
+      },
+      {
+        title: 'Support',
+        body: 'Technical help for existing customers. Include your project ID and a request ID for the fastest resolution.',
+        action: 'support@nazexa.com · in-console chat',
+      },
+      {
+        title: 'Partnerships',
+        body: 'Agencies, technology vendors and cloud marketplaces looking to build, resell or co-market.',
+        action: 'partners@nazexa.com',
+      },
+      {
+        title: 'Press',
+        body: 'Interviews, embargoed briefings, data requests and brand assets.',
+        action: 'press@nazexa.com',
+      },
+      {
+        title: 'Security',
+        body: 'Vulnerability reports and responsible disclosure. PGP key published on the security page.',
+        action: 'security@nazexa.com',
+      },
+      {
+        title: 'Careers',
+        body: 'Questions about a role, the process or accessibility accommodations during interviews.',
+        action: 'people@nazexa.com',
+      },
+    ]},
+    { key: 'contact.offices', category: 'Contact', valueType: 'json', value: {
+      columns: ['Location', 'Address', 'Best for'],
+      rows: [
+        ['Amsterdam (HQ)', 'Keizersgracht 241, 1016 EA', 'Engineering, executive'],
+        ['London', '18 Finsbury Circus, EC2M 7EB', 'Sales, services'],
+        ['New York', '412 Broadway, NY 10013', 'Americas sales and support'],
+      ]
+    }},
+    { key: 'contact.faq', category: 'Contact', valueType: 'json', value: [
+      {
+        title: 'Having an incident?',
+        body: 'Check the status page first, then open a P1 in the console — that pages the on-call engineer directly.',
+      },
+      {
+        title: 'Need a signed DPA or BAA?',
+        body: 'Sales can send both within one business day; standard terms are pre-approved by most legal teams.',
+      },
+      {
+        title: 'Want a technical deep dive?',
+        body: 'Ask for a solutions architect on the call and we will bring someone who has read your architecture.',
+      },
+    ]}
   ];
 
   console.log('Seeding System Configurations...');
@@ -565,6 +624,7 @@ async function main() {
     });
   }
 
+  await seedMailTemplates(prisma);
   console.log('Database seeded successfully!');
 }
 

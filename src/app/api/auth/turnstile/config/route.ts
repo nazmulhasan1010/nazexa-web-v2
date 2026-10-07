@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { ConfigService } from '@/lib/config/service';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,20 +13,12 @@ export async function OPTIONS() {
 
 export async function GET() {
   try {
-    const config = await db.securitySettings.findUnique({
-      where: { id: 'global' },
-    });
-
-    if (!config) {
-      return NextResponse.json({
-        enabled: false,
-        siteKey: null,
-      }, { headers: corsHeaders });
-    }
+    const enabled = await ConfigService.getConfig<boolean>('captcha.turnstile.enabled', false);
+    const siteKey = await ConfigService.getConfig<string>('captcha.turnstile.siteKey', '');
 
     return NextResponse.json({
-      enabled: config.turnstileEnabled,
-      siteKey: config.turnstileSiteKey,
+      enabled,
+      siteKey: siteKey || null,
     }, { headers: corsHeaders });
   } catch (error) {
     console.error('[Turnstile Config] API error:', error);

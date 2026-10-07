@@ -9,6 +9,9 @@ import { ServerThemeSync } from '@/components/site/ServerThemeSync';
 import { resolveThemeLogo } from '@/lib/theme-utils';
 import '../styles.css';
 
+export const dynamic = 'force-dynamic';
+
+
 export const metadata: Metadata = {
   ...constructMetadata({
     description:

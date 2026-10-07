@@ -146,8 +146,8 @@ export function ServicesSection({ title, subtitle, content }: SectionProps) {
                     )}
                   </div>
                   <h3 className="mt-5 text-base font-semibold">{s.title}</h3>
-                  <p className="text-muted-foreground mt-2 flex-1 text-sm">
-                    {s.body || s.subtitle}
+                  <p className="text-muted-foreground mt-2 flex-1 text-sm line-clamp-3">
+                    {s.body ? s.body.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&') : s.subtitle}
                   </p>
                   <span className="text-primary mt-5 inline-flex items-center text-sm font-medium">
                     {s.link_label || 'Learn more'}
@@ -295,18 +295,35 @@ export function WhyNazexaSection({ title }: SectionProps) {
         {stats.length > 0 && (
           <Reveal delay={120}>
             <div className="surface-card mt-6 grid gap-6 p-8 sm:grid-cols-2 lg:grid-cols-4">
-              {stats.map((q) => (
-                <div key={q.id} className="text-center">
-                  <div className="text-gradient font-display text-3xl font-semibold">
-                    <Counter
-                      to={Number(q.title ?? 0)}
-                      suffix={String(q.data?.['suffix'] ?? '')}
-                      decimals={Number(q.data?.['decimals'] ?? 0)}
-                    />
+              {stats.map((q) => {
+                const rawValue = String(q.data?.['value'] || '0');
+                const numMatch = rawValue.match(/[\d.]+/);
+                const to = numMatch ? parseFloat(numMatch[0]) : 0;
+                
+                const decimals = numMatch?.[0].includes('.') ? numMatch[0].split('.')[1].length : 0;
+                
+                const suffixIndex = numMatch ? rawValue.indexOf(numMatch[0]) + numMatch[0].length : 0;
+                const suffix = rawValue.substring(suffixIndex).trim() || String(q.data?.['suffix'] ?? '');
+                
+                const prefixIndex = numMatch ? rawValue.indexOf(numMatch[0]) : 0;
+                const prefix = rawValue.substring(0, prefixIndex).trim();
+
+                const label = q.title || q.body;
+
+                return (
+                  <div key={q.id} className="text-center">
+                    <div className="text-gradient font-display text-3xl font-semibold">
+                      <Counter
+                        to={to}
+                        prefix={prefix}
+                        suffix={suffix}
+                        decimals={decimals}
+                      />
+                    </div>
+                    <p className="text-muted-foreground mt-1.5 text-xs">{label}</p>
                   </div>
-                  <p className="text-muted-foreground mt-1.5 text-xs">{q.body}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </Reveal>
         )}

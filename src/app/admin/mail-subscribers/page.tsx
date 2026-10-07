@@ -16,5 +16,16 @@ export default async function MailSubscribersPage() {
     take: 10,
   });
 
-  return <MailSubscribersClient activeCount={activeCount} initialHistory={history} />;
+  const templates = await db.systemEmailTemplate.findMany({
+    where: { status: 'published' },
+    orderBy: { name: 'asc' },
+    select: {
+      id: true,
+      name: true,
+      subject: true,
+      contentHtml: true,
+    }
+  });
+
+  return <MailSubscribersClient activeCount={activeCount} initialHistory={history} templates={templates as any} />;
 }

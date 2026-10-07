@@ -15,6 +15,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing credentials' }, { status: 400 });
     }
 
+    const { ConfigService } = await import('@/lib/config/service');
+    const emailPasswordEnabled = await ConfigService.getConfig<boolean>('auth.emailPasswordEnabled', true);
+    if (!emailPasswordEnabled) {
+      return NextResponse.json({ error: 'Email and password login is currently disabled.', code: 'EMAIL_PASSWORD_DISABLED' }, { status: 403 });
+    }
+
     const isTurnstileValid = await verifyTurnstile(turnstileToken);
     if (!isTurnstileValid) {
       return NextResponse.json({ error: 'Invalid security verification' }, { status: 400 });
@@ -51,10 +57,15 @@ export async function POST(request: Request) {
       });
     });
 
-    await createSession(user.id);
+    const sessionResult = await createSession(user.id);
+
+    const emailVerificationRequired = await ConfigService.getConfig<boolean>('auth.emailVerificationRequired', false);
+    const requiresVerification = Boolean(emailVerificationRequired && !user.emailVerified);
 
     return NextResponse.json({
       success: true,
+      requiresVerification,
+      token: sessionResult?.token,
       user: {
         id: user.id,
         name: user.name,

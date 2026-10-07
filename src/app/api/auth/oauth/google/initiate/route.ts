@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getAppUrlsAction } from '@/lib/app-urls.actions';
+import { db } from '@/lib/db';
 
 /**
  * Google OAuth Initiation — with callback_url support
@@ -17,8 +18,13 @@ export async function GET(request: NextRequest) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
 
   const urls = await getAppUrlsAction();
-
   const { ConfigService } = await import('@/lib/config/service');
+  const isEnabled = await ConfigService.getConfig<boolean>('oauth.google.enabled', false);
+
+  if (!isEnabled) {
+    return NextResponse.json({ error: 'Google Login is disabled' }, { status: 403 });
+  }
+
   const clientId = await ConfigService.getConfig<string>('oauth.google.clientId', process.env.GOOGLE_CLIENT_ID);
   const redirectUri = await ConfigService.getConfig<string>('oauth.google.redirectUri', process.env.GOOGLE_REDIRECT_URI) || `${baseUrl}/api/auth/callback/google`;
 
@@ -33,9 +39,27 @@ export async function GET(request: NextRequest) {
   if (rawCallbackUrl) {
     try {
       const parsed = new URL(rawCallbackUrl);
-      const allowedOrigins = [baseUrl, urls['nazexa-db'], urls['nazexa-socket-platform']].filter(
-        Boolean
-      );
+      const apps = await db.application.findMany({ select: { allowedOrigins: true, redirectUris: true } });
+      const dynamicOrigins = apps.flatMap((a) => [
+        ...(a.allowedOrigins || '').split(','),
+        ...(a.redirectUris || '').split(','),
+      ])
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((u) => {
+          try {
+            return new URL(u).origin;
+          } catch {
+            return '';
+          }
+        })
+        .filter(Boolean);
+
+      const allowedOrigins = [
+        baseUrl,
+        ...Object.values(urls),
+        ...dynamicOrigins,
+      ].filter(Boolean) as string[];
 
       const isValidOrigin = allowedOrigins.some((origin) => {
         try {

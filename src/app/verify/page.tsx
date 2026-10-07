@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSignOut } from '@/hooks/useAuth';
 import { AuroraBackground } from '@/components/backgrounds/AnimatedBackground';
 import { TurnstileWidget, TurnstileHandle } from '@/components/auth/TurnstileWidget';
+import { getSocialAuthConfigAction } from '@/lib/config/actions.public';
 
 function maskEmail(email: string) {
   if (!email) return '';
@@ -44,15 +45,22 @@ function VerifyContent() {
       router.replace('/login');
       return;
     }
-    if (user.emailVerified) {
-      router.replace('/profile');
-      return;
-    }
 
-    if (!hasSentRef.current && turnstileToken && !isResending && resendTimer === 0) {
-      hasSentRef.current = true;
-      sendCode();
-    }
+    getSocialAuthConfigAction().then((config) => {
+      if (config && config.emailVerificationRequired === false) {
+        router.replace('/profile');
+        return;
+      }
+      if (user.emailVerified) {
+        router.replace('/profile');
+        return;
+      }
+
+      if (!hasSentRef.current && turnstileToken && !isResending && resendTimer === 0) {
+        hasSentRef.current = true;
+        sendCode();
+      }
+    });
   }, [loading, user, router, turnstileToken, isResending, resendTimer]);
 
   useEffect(() => {

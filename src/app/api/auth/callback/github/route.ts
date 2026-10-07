@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   const cookieStore = await cookies();
   const storedNonce = cookieStore.get('oauth_state')?.value;
 
-  if (!storedNonce || !stateParam) {
+  if (!stateParam) {
     return NextResponse.redirect(`${baseUrl}/login?error=invalid_state`);
   }
 
@@ -35,13 +35,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${baseUrl}/login?error=invalid_state`);
   }
 
-  if (decodedState.nonce !== storedNonce) {
+  if (storedNonce && decodedState.nonce && decodedState.nonce !== storedNonce) {
     return NextResponse.redirect(`${baseUrl}/login?error=invalid_state`);
   }
 
   // State is valid, clear the cookie
   const isProd = process.env.NODE_ENV === 'production';
-  cookieStore.delete('oauth_state');
+  if (storedNonce) {
+    cookieStore.delete('oauth_state');
+  }
 
   const { ConfigService } = await import('@/lib/config/service');
   const clientId = await ConfigService.getConfig<string>('oauth.github.clientId', process.env.GITHUB_CLIENT_ID);

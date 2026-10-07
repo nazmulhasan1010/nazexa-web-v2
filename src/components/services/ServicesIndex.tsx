@@ -27,6 +27,14 @@ import {
 import { type ContentItem } from '@/lib/cms';
 import { getIcon } from '@/lib/icons';
 
+function stripHtml(html: string) {
+  if (!html) return '';
+  return html
+    .replace(/<[^>]+>/g, '') // Strip all tags
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&');
+}
+
 export function ServicesIndex({ cmsServices = [] }: { cmsServices?: ContentItem[] }) {
   const finalServices =
     cmsServices.length > 0
@@ -37,7 +45,7 @@ export function ServicesIndex({ cmsServices = [] }: { cmsServices?: ContentItem[
           category: s.category || 'Service',
           name: s.title || '',
           tagline: s.subtitle || '',
-          summary: (s.body as string) || '',
+          summary: stripHtml(s.body as string),
         }))
       : services;
 
@@ -58,7 +66,7 @@ export function ServicesShowcase({ cmsServices = [] }: { cmsServices?: ContentIt
           tone: s.tone || 'brand-1',
           icon: getIcon(s.icon || 'Box'),
           name: s.title || '',
-          summary: (s.body as string) || '',
+          summary: stripHtml(s.body as string),
         }))
       : services;
 
@@ -68,8 +76,7 @@ export function ServicesShowcase({ cmsServices = [] }: { cmsServices?: ContentIt
         {finalServices.slice(0, 6).map((s, i) => (
           <Reveal key={s.slug} delay={(i % 3) * 80}>
             <Link
-              href="/services/$slug"
-              params={{ slug: s.slug }}
+              href={`/services/${s.slug}`}
               className="surface-card hover-lift group flex h-full flex-col p-6"
               style={{ ['--primary' as string]: `var(--${s.tone})` }}
             >
@@ -77,7 +84,7 @@ export function ServicesShowcase({ cmsServices = [] }: { cmsServices?: ContentIt
                 <s.icon className="text-primary h-5 w-5" />
               </div>
               <h3 className="mt-5 text-base font-semibold">{s.name}</h3>
-              <p className="text-muted-foreground mt-2 flex-1 text-sm">{s.summary}</p>
+              <p className="text-muted-foreground mt-2 flex-1 text-sm line-clamp-3">{s.summary}</p>
             </Link>
           </Reveal>
         ))}
@@ -165,8 +172,7 @@ function ServicesBody({ servicesList }: { servicesList: any[] }) {
           {servicesList.map((s, i) => (
             <Reveal key={s.slug} delay={(i % 3) * 80}>
               <Link
-                href="/services/$slug"
-                params={{ slug: s.slug }}
+                href={`/services/${s.slug}`}
                 className="surface-card hover-lift group flex h-full flex-col p-6"
                 style={{ ['--primary' as string]: `var(--${s.tone})` }}
               >
@@ -180,7 +186,7 @@ function ServicesBody({ servicesList }: { servicesList: any[] }) {
                 </div>
                 <h3 className="mt-5 text-base font-semibold">{s.name}</h3>
                 <p className="text-primary mt-1 text-sm">{s.tagline}</p>
-                <p className="text-muted-foreground mt-3 flex-1 text-sm">{s.summary}</p>
+                <p className="text-muted-foreground mt-3 flex-1 text-sm line-clamp-3">{s.summary}</p>
                 <span className="text-primary mt-5 inline-flex items-center text-sm font-medium">
                   Explore service
                   <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -1,8 +1,16 @@
-import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
+import * as nextEnv from '@next/env';
 
 declare global {
   var prisma: PrismaClient | undefined;
+}
+
+// Next.js standalone mode worker threads might not have the correct environment variables.
+// We load them explicitly using Next's native env loader to ensure both main and worker threads have them.
+const projectDir = process.cwd();
+const loadEnvConfig = nextEnv.loadEnvConfig || (nextEnv as any).default?.loadEnvConfig;
+if (loadEnvConfig) {
+  loadEnvConfig(projectDir);
 }
 
 console.log('=== PRISMA INIT ===');
@@ -20,7 +28,5 @@ if (!globalThis.prisma) {
       console.error(e);
     });
 }
-
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = db;
 
 if (process.env.NODE_ENV !== 'production') globalThis.prisma = db;
